@@ -24,11 +24,16 @@ import org.sonar.api.rule.RuleKey;
 import org.sonar.plugins.java.api.tree.CompilationUnitTree;
 import org.sonar.plugins.java.api.tree.Tree;
 
+import javax.annotation.Nullable;
+
 @Beta
 public interface JavaFileScannerContext {
 
   CompilationUnitTree getTree();
 
   void addIssue(Tree tree, RuleKey ruleKey, String message);
+
+  @Nullable
+  Object getSemanticModel();
 
 }
