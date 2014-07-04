@@ -20,14 +20,23 @@
 package org.sonar.plugins.java;
 
 import org.junit.Test;
+import org.sonar.api.config.Settings;
 
 import static org.fest.assertions.Assertions.assertThat;
 
-public class JavaSquidPluginTest {
+public class JavaTest {
 
   @Test
-  public void test() {
-    assertThat(new JavaSquidPlugin().getExtensions().size()).isEqualTo(23);
-  }
+  public void should_return_java_file_suffixes() {
 
+    Settings settings = new Settings();
+    Java language = new Java(settings);
+    assertThat(language.getFileSuffixes()).containsOnly(".java", ".jav");
+
+    settings.setProperty(Java.FILE_SUFFIXES_KEY, "");
+    assertThat(language.getFileSuffixes()).containsOnly(".java", ".jav");
+
+    settings.setProperty(Java.FILE_SUFFIXES_KEY, ".bar, .foo");
+    assertThat(language.getFileSuffixes()).containsOnly(".bar", ".foo");
+  }
 }
