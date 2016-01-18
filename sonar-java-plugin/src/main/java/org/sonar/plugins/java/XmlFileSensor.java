@@ -26,39 +26,39 @@ import org.sonar.api.batch.fs.FileSystem;
 import org.sonar.api.resources.Project;
 import org.sonar.java.SonarComponents;
 import org.sonar.java.checks.CheckList;
-import org.sonar.maven.MavenAnalyzer;
+import org.sonar.java.xml.XmlAnalyzer;
 
 import java.io.File;
 
-public class MavenFileSensor implements Sensor {
+public class XmlFileSensor implements Sensor {
 
   private final FileSystem fs;
-  private final FilePredicate pomFilePredicate;
+  private final FilePredicate xmlFilePredicate;
   private final SonarComponents sonarComponents;
 
-  public MavenFileSensor(SonarComponents sonarComponents, FileSystem fs) {
+  public XmlFileSensor(SonarComponents sonarComponents, FileSystem fs) {
     this.fs = fs;
-    this.pomFilePredicate = fs.predicates().matchesPathPattern("**/pom.xml");
+    this.xmlFilePredicate = fs.predicates().matchesPathPattern("**/*.xml");
     this.sonarComponents = sonarComponents;
   }
 
   @Override
   public boolean shouldExecuteOnProject(Project project) {
-    return fs.hasFiles(pomFilePredicate);
+    return fs.hasFiles(xmlFilePredicate);
   }
 
   @Override
   public void analyse(Project module, SensorContext context) {
-    sonarComponents.registerCheckClasses(CheckList.REPOSITORY_KEY, CheckList.getMavenChecks());
-    new MavenAnalyzer(sonarComponents, sonarComponents.checkClasses()).scan(getPomFiles());
+    sonarComponents.registerCheckClasses(CheckList.REPOSITORY_KEY, CheckList.getXmlChecks());
+    new XmlAnalyzer(sonarComponents, sonarComponents.checkClasses()).scan(getXmlFiles());
   }
 
-  private Iterable<File> getPomFiles() {
-    return fs.files(pomFilePredicate);
+  private Iterable<File> getXmlFiles() {
+    return fs.files(xmlFilePredicate);
   }
 
   @Override
   public String toString() {
-    return MavenFileSensor.class.getSimpleName();
+    return XmlFileSensor.class.getSimpleName();
   }
 }

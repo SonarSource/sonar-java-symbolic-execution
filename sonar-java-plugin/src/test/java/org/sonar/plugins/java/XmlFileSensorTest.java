@@ -34,7 +34,7 @@ import org.sonar.api.rule.RuleKey;
 import org.sonar.api.rules.RuleAnnotationUtils;
 import org.sonar.java.AnalyzerMessage;
 import org.sonar.java.SonarComponents;
-import org.sonar.java.checks.maven.PomElementOrderCheck;
+import org.sonar.java.checks.xml.maven.PomElementOrderCheck;
 import org.sonar.plugins.java.api.JavaCheck;
 import org.sonar.squidbridge.api.CodeVisitor;
 
@@ -47,20 +47,20 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class MavenFileSensorTest {
+public class XmlFileSensorTest {
 
   private DefaultFileSystem fileSystem;
-  private MavenFileSensor sensor;
+  private XmlFileSensor sensor;
 
   @Before
   public void setUp() {
     fileSystem = new DefaultFileSystem(null);
-    sensor = new MavenFileSensor(mock(SonarComponents.class), fileSystem);
+    sensor = new XmlFileSensor(mock(SonarComponents.class), fileSystem);
   }
 
   @Test
   public void to_string() {
-    assertThat(sensor.toString()).isEqualTo("MavenFileSensor");
+    assertThat(sensor.toString()).isEqualTo("XmlFileSensor");
   }
 
   @Test
@@ -69,10 +69,10 @@ public class MavenFileSensorTest {
     fileSystem.add(new DefaultInputFile("fake.java").setLanguage(Java.KEY));
     assertThat(sensor.shouldExecuteOnProject(project)).isFalse();
 
-    fileSystem.add(new DefaultInputFile("fake.xml").setLanguage(Java.KEY));
-    assertThat(sensor.shouldExecuteOnProject(project)).isFalse();
+    fileSystem.add(new DefaultInputFile("fake.xml"));
+    assertThat(sensor.shouldExecuteOnProject(project)).isTrue();
 
-    fileSystem.add(new DefaultInputFile("myModule/pom.xml").setLanguage(Java.KEY));
+    fileSystem.add(new DefaultInputFile("myModule/pom.xml"));
     assertThat(sensor.shouldExecuteOnProject(project)).isTrue();
   }
 
@@ -80,14 +80,14 @@ public class MavenFileSensorTest {
   public void test_issues_creation() throws Exception {
     DefaultFileSystem fs = new DefaultFileSystem(new File(""));
     final File file = new File("src/test/files/maven/pom.xml");
-    fs.add(new DefaultInputFile(file.getPath()).setFile(file).setLanguage(Java.KEY));
+    fs.add(new DefaultInputFile(file.getPath()).setFile(file));
     SonarComponents sonarComponents = createSonarComponentsMock(fs);
-    MavenFileSensor mps = new MavenFileSensor(sonarComponents, fs);
+    XmlFileSensor sensor = new XmlFileSensor(sonarComponents, fs);
 
     SensorContext context = mock(SensorContext.class);
     when(context.getResource(any(InputPath.class))).thenReturn(org.sonar.api.resources.File.create("src/test/files/maven/pom.xml"));
 
-    mps.analyse(mock(Project.class), context);
+    sensor.analyse(mock(Project.class), context);
 
     verify(sonarComponents, times(1)).reportIssue(Mockito.argThat(new ArgumentMatcher<AnalyzerMessage>() {
       @Override
