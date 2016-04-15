@@ -17,25 +17,18 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
  */
-package org.sonar.plugins.java;
+package org.sonar.java;
 
-import org.sonar.api.profiles.ProfileDefinition;
-import org.sonar.api.profiles.RulesProfile;
-import org.sonar.api.utils.ValidationMessages;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Replacement for org.sonar.plugins.squid.SonarWayProfile
+ * This annotation is used for rules with a legacy key to refer to the correct RSPEC.
  */
-public class JavaSonarWayProfile extends ProfileDefinition {
-
-  private final JavaRulesDefinition rulesDefinition;
-
-  public JavaSonarWayProfile(JavaRulesDefinition rulesDefinition) {
-    this.rulesDefinition = rulesDefinition;
-  }
-
-  @Override
-  public RulesProfile createProfile(ValidationMessages messages) {
-    return rulesDefinition.getProfile("Sonar way");
-  }
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.TYPE)
+public @interface RspecKey {
+  String value();
 }
