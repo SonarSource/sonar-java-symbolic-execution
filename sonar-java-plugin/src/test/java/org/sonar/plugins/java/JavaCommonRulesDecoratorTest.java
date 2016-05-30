@@ -24,13 +24,15 @@ import org.sonar.api.batch.fs.internal.DefaultFileSystem;
 import org.sonar.api.batch.rule.CheckFactory;
 import org.sonar.api.component.ResourcePerspectives;
 
+import java.io.File;
+
 import static org.fest.assertions.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 public class JavaCommonRulesDecoratorTest {
   @Test
   public void test_declaration() throws Exception {
-    JavaCommonRulesDecorator decorator = new JavaCommonRulesDecorator(new DefaultFileSystem(null), mock(CheckFactory.class), mock(ResourcePerspectives.class));
+    JavaCommonRulesDecorator decorator = new JavaCommonRulesDecorator(new DefaultFileSystem((File)null), mock(CheckFactory.class), mock(ResourcePerspectives.class));
     assertThat(decorator.language()).isEqualTo(Java.KEY);
   }
 }
