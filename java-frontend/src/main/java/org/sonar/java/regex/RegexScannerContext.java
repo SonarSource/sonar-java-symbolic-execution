@@ -24,10 +24,13 @@ import javax.annotation.Nullable;
 import org.sonar.java.regex.ast.FlagSet;
 import org.sonar.java.regex.ast.RegexSyntaxElement;
 import org.sonar.plugins.java.api.tree.LiteralTree;
+import org.sonar.plugins.java.api.tree.Tree;
 
 public interface RegexScannerContext {
 
   void reportIssue(RegexCheck regexCheck, RegexSyntaxElement regexSyntaxElement, String message, @Nullable Integer cost, List<RegexCheck.RegexIssueLocation> secondaries);
+
+  void reportIssue(RegexCheck regexCheck, Tree javaSyntaxElement, String message, @Nullable Integer cost, List<RegexCheck.RegexIssueLocation> secondaries);
 
   RegexParseResult regexForLiterals(FlagSet initialFlags, LiteralTree... stringLiterals);
 
