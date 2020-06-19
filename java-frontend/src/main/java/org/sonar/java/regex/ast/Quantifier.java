@@ -24,7 +24,7 @@ import javax.annotation.CheckForNull;
 public abstract class Quantifier extends RegexSyntaxElement {
 
   public enum Modifier {
-    GREEDY, LAZY, POSSESSIVE
+    GREEDY, RELUCTANT, POSSESSIVE
   }
 
   private final Modifier modifier;
@@ -46,5 +46,7 @@ public abstract class Quantifier extends RegexSyntaxElement {
   public boolean isOpenEnded() {
     return getMaximumRepetitions() == null;
   }
+
+  public abstract boolean isFixed();
 
 }
