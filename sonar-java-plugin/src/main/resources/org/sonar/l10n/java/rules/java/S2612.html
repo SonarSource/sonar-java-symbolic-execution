@@ -1,0 +1,77 @@
+<p>In Unix file system permissions, the "<code>others</code>" category refers to all users except the owner of the file system resource and the
+members of the group assigned to this resource.</p>
+<p>Granting permissions to this category can lead to unintended access to files or directories that could allow attackers to obtain sensitive
+information, disrupt services or elevate privileges.</p>
+<h2>Ask Yourself Whether</h2>
+<ul>
+  <li> The application is designed to be run on a multi-user environment. </li>
+  <li> Corresponding files and directories may contain confidential information. </li>
+</ul>
+<p>There is a risk if you answered yes to any of those questions.</p>
+<h2>Recommended Secure Coding Practices</h2>
+<p>The most restrictive possible permissions should be assigned to files and directories.</p>
+<h2>Sensitive Code Example</h2>
+<pre>
+    public void setPermissions(String filePath) {
+        Set&lt;PosixFilePermission&gt; perms = new HashSet&lt;PosixFilePermission&gt;();
+        // user permission
+        perms.add(PosixFilePermission.OWNER_READ);
+        perms.add(PosixFilePermission.OWNER_WRITE);
+        perms.add(PosixFilePermission.OWNER_EXECUTE);
+        // group permissions
+        perms.add(PosixFilePermission.GROUP_READ);
+        perms.add(PosixFilePermission.GROUP_EXECUTE);
+        // others permissions
+        perms.add(PosixFilePermission.OTHERS_READ); // Sensitive
+        perms.add(PosixFilePermission.OTHERS_WRITE); // Sensitive
+        perms.add(PosixFilePermission.OTHERS_EXECUTE); // Sensitive
+
+        Files.setPosixFilePermissions(Paths.get(filePath), perms);
+    }
+</pre>
+<pre>
+    public void setPermissionsUsingRuntimeExec(String filePath) {
+        Runtime.getRuntime().exec("chmod 777 file.json"); // Sensitive
+    }
+</pre>
+<pre>
+    public void setOthersPermissionsHardCoded(String filePath ) {
+        Files.setPosixFilePermissions(Paths.get(filePath), PosixFilePermissions.fromString("rwxrwxrwx")); // Sensitive
+    }
+</pre>
+<h2>Compliant Solution</h2>
+<p>On operating systems that implement POSIX standard. This will throw a <code>UnsupportedOperationException</code> on Windows.</p>
+<pre>
+    public void setPermissionsSafe(String filePath) throws IOException {
+        Set&lt;PosixFilePermission&gt; perms = new HashSet&lt;PosixFilePermission&gt;();
+        // user permission
+        perms.add(PosixFilePermission.OWNER_READ);
+        perms.add(PosixFilePermission.OWNER_WRITE);
+        perms.add(PosixFilePermission.OWNER_EXECUTE);
+        // group permissions
+        perms.add(PosixFilePermission.GROUP_READ);
+        perms.add(PosixFilePermission.GROUP_EXECUTE);
+        // others permissions removed
+        perms.remove(PosixFilePermission.OTHERS_READ); // Compliant
+        perms.remove(PosixFilePermission.OTHERS_WRITE); // Compliant
+        perms.remove(PosixFilePermission.OTHERS_EXECUTE); // Compliant
+
+        Files.setPosixFilePermissions(Paths.get(filePath), perms);
+    }
+</pre>
+<h2>See</h2>
+<ul>
+  <li> <a href="https://owasp.org/Top10/A01_2021-Broken_Access_Control/">OWASP Top 10 2021 Category A1</a> - Broken Access Control </li>
+  <li> <a href="https://owasp.org/Top10/A04_2021-Insecure_Design/">OWASP Top 10 2021 Category A4</a> - Insecure Design </li>
+  <li> <a href="https://owasp.org/www-project-top-ten/2017/A5_2017-Broken_Access_Control">OWASP Top 10 2017 Category A5</a> - Broken Access Control
+  </li>
+  <li> <a
+  href="https://owasp.org/www-project-web-security-testing-guide/latest/4-Web_Application_Security_Testing/02-Configuration_and_Deployment_Management_Testing/09-Test_File_Permission">OWASP File Permission</a> </li>
+  <li> <a href="https://cwe.mitre.org/data/definitions/732">MITRE, CWE-732</a> - Incorrect Permission Assignment for Critical Resource </li>
+  <li> <a href="https://cwe.mitre.org/data/definitions/266">MITRE, CWE-266</a> - Incorrect Privilege Assignment </li>
+  <li> <a href="https://wiki.sei.cmu.edu/confluence/display/java/FIO01-J.+Create+files+with+appropriate+access+permissions">CERT, FIO01-J.</a> -
+  Create files with appropriate access permissions </li>
+  <li> <a href="https://wiki.sei.cmu.edu/confluence/display/c/FIO06-C.+Create+files+with+appropriate+access+permissions">CERT, FIO06-C.</a> - Create
+  files with appropriate access permissions </li>
+</ul>
+

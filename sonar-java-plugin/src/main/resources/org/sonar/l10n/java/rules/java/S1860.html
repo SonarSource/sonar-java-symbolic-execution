@@ -1,0 +1,104 @@
+<h2>Why is this an issue?</h2>
+<p>In Java, value-based classes are those for which instances are final and immutable, like <code>String</code>, <code>Integer</code> and so on, and
+their identity relies on their value and not their reference. When a variable of one of these types is instantiated, the JVM caches its value, and the
+variable is just a reference to that value. For example, multiple <code>String</code> variables with the same value "Hello world!" will refer to the
+same cached string literal in memory.</p>
+<p>The <code>synchronized</code> keyword tells the JVM to only allow the execution of the code contained in the following block to one
+<code>Thread</code> at a time. This mechanism relies on the identity of the object that is being synchronized between threads, to prevent that if
+object X is locked, it will still be possible to lock another object Y.</p>
+<p>It means that the JVM will fail to correctly synchronize threads on instances of the aforementioned value-based classes, for instance:</p>
+<pre>
+// These variables "a" and "b" will effectively reference the same object in memory
+Integer a = 0;
+Integer b = 0;
+
+// This means that in the following code, the JVM could try to lock and execute
+// on the variable "a" because "b" was notified to be released, as the two Integer variables
+// are the same object to the JVM
+void syncMethod(int x) {
+    synchronized (a) {
+        if (a == x) {
+        // ... do something here
+        }
+    }
+    synchronized (b) {
+        if (b == x) {
+        // ... do something else
+        }
+    }
+}
+</pre>
+<p>This behavior can cause unrelated threads to deadlock with unclear stacktraces.</p>
+<p>Within the JDK, types which should not be used for synchronization include:</p>
+<ul>
+  <li> <code>String</code> literals </li>
+  <li> Primitive wrapper classes in <code>java.lang</code> (such as <code>Boolean</code> with <code>Boolean.FALSE</code> and
+  <code>Boolean.TRUE</code>) </li>
+  <li> The class <code>java.lang.Runtime.Version</code> </li>
+  <li> The <code>Optional*</code> classes in <code>java.util</code>: <code>Optional</code>, <code>OptionalInt</code>, <code>OptionalLong</code>, and
+  <code>OptionalDouble</code> </li>
+  <li> Various classes in the <code>java.time</code> API: <code>Instant</code>, <code>LocalDate</code>, <code>LocalTime</code>,
+  <code>LocalDateTime</code>, <code>ZonedDateTime</code>, <code>ZoneId</code>, <code>OffsetTime</code>, <code>OffsetDateTime</code>,
+  <code>ZoneOffset</code>, <code>Duration</code>, <code>Period</code>, <code>Year</code>, <code>YearMonth</code>, and <code>MonthDay</code> </li>
+  <li> Various classes in the <code>java.time.chrono</code> API: <code>MinguoDate</code>, <code>HijrahDate</code>, <code>JapaneseDate</code>, and
+  <code>ThaiBuddhistDate</code> </li>
+  <li> The interface <code>java.lang.ProcessHandle</code> and its implementation classes </li>
+  <li> The implementation classes of the collection factories in <code>java.util</code>: <code>List.of</code>, <code>List.copyOf</code>,
+  <code>Set.of</code>, <code>Set.copyOf</code>, <code>Map.of</code>, <code>Map.copyOf</code>, <code>Map.ofEntries</code>, and <code>Map.entry</code>.
+  </li>
+</ul>
+<h2>How to fix it</h2>
+<p>Replace instances of value-based classes with a new object instance to synchronize on.</p>
+<h3>Code examples</h3>
+<h4>Noncompliant code example</h4>
+<pre data-diff-id="1" data-diff-type="noncompliant">
+private static final Boolean bLock = Boolean.FALSE;
+private static final Integer iLock = Integer.valueOf(0);
+private static final String sLock = "LOCK";
+private static final List&lt;String&gt; listLock = List.of("a", "b", "c", "d");
+
+public void doSomething() {
+
+  synchronized(bLock) {  // Noncompliant
+      ...
+  }
+  synchronized(iLock) {  // Noncompliant
+      ...
+  }
+  synchronized(sLock) {  // Noncompliant
+      ...
+  }
+  synchronized(listLock) {  // Noncompliant
+      ...
+  }
+</pre>
+<h4>Compliant solution</h4>
+<pre data-diff-id="1" data-diff-type="compliant">
+private static final Object lock1 = new Object();
+private static final Integer iLock = new Integer(42);
+private static final String sLock = new String("A brand new string in memory!");
+private static final List&lt;String&gt; listLock = new ArrayList&lt;&gt;();
+
+public void doSomething() {
+
+  synchronized(lock1) { // Compliant
+      ...
+  }
+  synchronized(iLock) { // Compliant
+      ...
+  }
+  synchronized(sLock) { // Compliant
+      ...
+  }
+  synchronized(listLock) { // Compliant
+      ...
+  }
+</pre>
+<h2>Resources</h2>
+<ul>
+  <li> CERT - <a href="https://wiki.sei.cmu.edu/confluence/x/1zdGBQ">Do not synchronize on objects that may be reused</a> </li>
+  <li> OpenJDK - <a href="https://openjdk.java.net/jeps/390">JEP 390: Warnings for Value-Based Classes</a> </li>
+  <li> Java Documentation - <a href="https://docs.oracle.com/en/java/javase/17/docs/api/java.base/java/lang/doc-files/ValueBased.html">Value-based
+  Classes</a> </li>
+</ul>
+

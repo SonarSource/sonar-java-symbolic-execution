@@ -1,0 +1,18 @@
+<h2>Why is this an issue?</h2>
+<p>Type parameters that aren’t used are dead code, which can only distract and possibly confuse developers during maintenance. Therefore, unused type
+parameters should be removed.</p>
+<h3>Noncompliant code example</h3>
+<pre>
+int &lt;T&gt; Add(int a, int b) // Noncompliant; &lt;T&gt; is ignored
+{
+  return a + b;
+}
+</pre>
+<h3>Compliant solution</h3>
+<pre>
+int Add(int a, int b)
+{
+  return a + b;
+}
+</pre>
+

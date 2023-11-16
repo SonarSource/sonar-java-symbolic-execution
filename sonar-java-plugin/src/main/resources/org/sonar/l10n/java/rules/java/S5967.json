@@ -1,0 +1,23 @@
+{
+  "title": "Tests method should not be annotated with competing annotations",
+  "type": "BUG",
+  "code": {
+    "impacts": {
+      "RELIABILITY": "MEDIUM"
+    },
+    "attribute": "LOGICAL"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "2min"
+  },
+  "tags": [
+    "tests"
+  ],
+  "defaultSeverity": "Major",
+  "ruleSpecification": "RSPEC-5967",
+  "sqKey": "S5967",
+  "scope": "Tests",
+  "quickfix": "unknown"
+}

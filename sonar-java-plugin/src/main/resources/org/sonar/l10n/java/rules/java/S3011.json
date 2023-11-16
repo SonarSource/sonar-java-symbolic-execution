@@ -1,0 +1,28 @@
+{
+  "title": "Reflection should not be used to increase accessibility of classes, methods, or fields",
+  "type": "CODE_SMELL",
+  "code": {
+    "impacts": {
+      "MAINTAINABILITY": "MEDIUM"
+    },
+    "attribute": "MODULAR"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "30min"
+  },
+  "tags": [
+    "cert"
+  ],
+  "defaultSeverity": "Major",
+  "ruleSpecification": "RSPEC-3011",
+  "sqKey": "S3011",
+  "scope": "Main",
+  "quickfix": "unknown",
+  "securityStandards": {
+    "CERT": [
+      "SEC05-J."
+    ]
+  }
+}

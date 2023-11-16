@@ -1,0 +1,57 @@
+<p>Storing data locally is a common task for mobile applications. Such data includes files among other things. One convenient way to store files is to
+use the external file storage which usually offers a larger amount of disc space compared to internal storage.</p>
+<p>Files created on the external storage are globally readable and writable. Therefore, a malicious application having the permissions
+<code>WRITE_EXTERNAL_STORAGE</code> or <code>READ_EXTERNAL_STORAGE</code> could try to read sensitive information from the files that other
+applications have stored on the external storage.</p>
+<p>External storage can also be removed by the user (e.g when based on SD card) making the files unavailable to the application.</p>
+<h2>Ask Yourself Whether</h2>
+<p>Your application uses external storage to:</p>
+<ul>
+  <li> store files that contain sensitive data. </li>
+  <li> store files that are not meant to be shared with other application. </li>
+  <li> store files that are critical for the application to work. </li>
+</ul>
+<p>There is a risk if you answered yes to any of those questions.</p>
+<h2>Recommended Secure Coding Practices</h2>
+<ul>
+  <li> Use internal storage whenever possible as the system prevents other apps from accessing this location. </li>
+  <li> Only use external storage if you need to share non-sensitive files with other applications. </li>
+  <li> If your application has to use the external storage to store sensitive data, make sure it encrypts the files using <a
+  href="https://developer.android.com/reference/androidx/security/crypto/EncryptedFile">EncryptedFile</a>. </li>
+  <li> Data coming from external storage should always be considered untrusted and should be validated. </li>
+  <li> As some external storage can be removed, make sure to never store files on it that are critical for the usability of your application. </li>
+</ul>
+<h2>Sensitive Code Example</h2>
+<pre>
+import android.content.Context;
+
+public class AccessExternalFiles {
+
+    public void accessFiles(Context context) {
+        context.getExternalFilesDir(null); // Sensitive
+    }
+}
+</pre>
+<h2>Compliant Solution</h2>
+<pre>
+import android.content.Context;
+
+public class AccessExternalFiles {
+
+    public void accessFiles(Context context) {
+        context.getFilesDir();
+    }
+}
+</pre>
+<h2>See</h2>
+<ul>
+  <li> <a href="https://owasp.org/Top10/A04_2021-Insecure_Design/">OWASP Top 10 2021 Category A4</a> - Insecure Design </li>
+  <li> <a href="https://developer.android.com/privacy-and-security/security-tips#ExternalStorage">Android Security tips on external file storage</a>
+  </li>
+  <li> <a href="https://mobile-security.gitbook.io/masvs/security-requirements/0x07-v2-data_storage_and_privacy_requirements">Mobile AppSec
+  Verification Standard</a> - Data Storage and Privacy Requirements </li>
+  <li> <a href="https://owasp.org/www-project-mobile-top-10/2016-risks/m2-insecure-data-storage">OWASP Mobile Top 10 2016 Category M2</a> - Insecure
+  Data Storage </li>
+  <li> <a href="https://cwe.mitre.org/data/definitions/312">MITRE, CWE-312</a> - Cleartext Storage of Sensitive Information </li>
+</ul>
+

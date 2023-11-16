@@ -1,0 +1,30 @@
+{
+  "title": "\"ThreadGroup\" should not be used",
+  "type": "CODE_SMELL",
+  "code": {
+    "impacts": {
+      "MAINTAINABILITY": "HIGH"
+    },
+    "attribute": "CONVENTIONAL"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "45min"
+  },
+  "tags": [
+    "design",
+    "cert",
+    "suspicious"
+  ],
+  "defaultSeverity": "Blocker",
+  "ruleSpecification": "RSPEC-3014",
+  "sqKey": "S3014",
+  "scope": "Main",
+  "securityStandards": {
+    "CERT": [
+      "THI01-J."
+    ]
+  },
+  "quickfix": "unknown"
+}

@@ -1,0 +1,29 @@
+{
+  "title": "Control structures should use curly braces",
+  "type": "CODE_SMELL",
+  "code": {
+    "impacts": {
+      "MAINTAINABILITY": "HIGH"
+    },
+    "attribute": "CLEAR"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "2min"
+  },
+  "tags": [
+    "cert",
+    "pitfall"
+  ],
+  "defaultSeverity": "Critical",
+  "ruleSpecification": "RSPEC-121",
+  "sqKey": "S121",
+  "scope": "All",
+  "quickfix": "unknown",
+  "securityStandards": {
+    "CERT": [
+      "EXP52-J."
+    ]
+  }
+}

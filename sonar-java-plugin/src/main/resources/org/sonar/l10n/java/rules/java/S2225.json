@@ -1,0 +1,32 @@
+{
+  "title": "\"toString()\" and \"clone()\" methods should not return null",
+  "type": "BUG",
+  "code": {
+    "impacts": {
+      "RELIABILITY": "MEDIUM"
+    },
+    "attribute": "LOGICAL"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "5min"
+  },
+  "tags": [
+    "cwe",
+    "cert"
+  ],
+  "defaultSeverity": "Major",
+  "ruleSpecification": "RSPEC-2225",
+  "sqKey": "S2225",
+  "scope": "Main",
+  "securityStandards": {
+    "CERT": [
+      "EXP01-J."
+    ],
+    "CWE": [
+      476
+    ]
+  },
+  "quickfix": "covered"
+}

@@ -1,0 +1,27 @@
+<h2>Why is this an issue?</h2>
+<p>Shared coding conventions make it possible to collaborate efficiently. This rule makes it mandatory to place the open curly brace at the beginning
+of a line.</p>
+<h3>Noncompliant code example</h3>
+<pre>
+public void myMethod {  // Noncompliant
+  if(something) {  // Noncompliant
+    executeTask();
+  } else {  // Noncompliant
+    doSomethingElse();
+  }
+}
+</pre>
+<h3>Compliant solution</h3>
+<pre>
+public void myMethod
+{
+  if(something)
+  {
+    executeTask();
+  } else
+  {
+    doSomethingElse();
+  }
+}
+</pre>
+

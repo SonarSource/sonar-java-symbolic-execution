@@ -1,0 +1,47 @@
+<h2>Why is this an issue?</h2>
+<p>When using the <code>Stream</code> API, call chains should be simplified as much as possible. Not only does it make the code easier to read, it
+also avoid creating unnecessary temporary objects.</p>
+<p>This rule raises an issue when one of the following substitution is possible:</p>
+<table>
+  <colgroup>
+    <col style="width: 50%;">
+    <col style="width: 50%;">
+  </colgroup>
+  <thead>
+    <tr>
+      <th>Original</th>
+      <th>Preferred</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><p><code>stream.filter(predicate).findFirst().isPresent()</code></p></td>
+      <td><p><code>stream.anyMatch(predicate)</code></p></td>
+    </tr>
+    <tr>
+      <td><p><code>stream.filter(predicate).findAny().isPresent()</code></p></td>
+      <td><p><code>stream.anyMatch(predicate)</code></p></td>
+    </tr>
+    <tr>
+      <td><p><code>!stream.anyMatch(predicate)</code></p></td>
+      <td><p><code>stream.noneMatch(predicate)</code></p></td>
+    </tr>
+    <tr>
+      <td><p><code>!stream.anyMatch(x -&gt; !(...))</code></p></td>
+      <td><p><code>stream.allMatch(...)</code></p></td>
+    </tr>
+    <tr>
+      <td><p><code>stream.map(mapper).anyMatch(Boolean::booleanValue)</code></p></td>
+      <td><p><code>stream.anyMatch(predicate)</code></p></td>
+    </tr>
+  </tbody>
+</table>
+<h3>Noncompliant code example</h3>
+<pre>
+boolean hasRed = widgets.stream().filter(w -&gt; w.getColor() == RED).findFirst().isPresent(); // Noncompliant
+</pre>
+<h3>Compliant solution</h3>
+<pre>
+boolean hasRed = widgets.stream().anyMatch(w -&gt; w.getColor() == RED);
+</pre>
+

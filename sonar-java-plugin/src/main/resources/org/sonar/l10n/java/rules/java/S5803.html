@@ -1,0 +1,34 @@
+<h2>Why is this an issue?</h2>
+<p>@VisibleForTesting can be used to mark methods, fields and classes whose visibility restrictions have been relaxed more than necessary for the API
+to allow for easier unit testing.</p>
+<p>Access to such methods, fields and classes only possible thanks to this relaxed visibility is fine for test code, but it should be avoided in
+production code. In production code these methods should be treated as if they are private.</p>
+<p>Supported framework:</p>
+<ul>
+  <li> Guava: <code>com.google.common.annotations.VisibleForTesting</code> </li>
+  <li> AssertJ: <code>org.assertj.core.util.VisibleForTesting</code> </li>
+  <li> Android: <code>androidx.annotation.VisibleForTesting</code> </li>
+  <li> Apache Flink: <code>org.apache.flink.annotation.VisibleForTesting</code> </li>
+</ul>
+<p>or any other annotation named <code>VisibleForTesting</code></p>
+<h3>Noncompliant code example</h3>
+<pre>
+/** src/main/java/MyObject.java */
+
+@VisibleForTesting String foo;
+
+/** src/main/java/Service.java */
+
+new MyObject().foo; // Noncompliant, foo is accessed from production code
+</pre>
+<h3>Compliant solution</h3>
+<pre>
+/** src/main/java/MyObject.java */
+
+@VisibleForTesting String foo;
+
+/** src/test/java/MyObjectTest.java */
+
+new MyObject().foo; // Compliant, foo is accessed from test code
+</pre>
+

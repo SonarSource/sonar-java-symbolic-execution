@@ -1,0 +1,28 @@
+{
+  "title": "\"equals\" methods should be symmetric and work for subclasses",
+  "type": "BUG",
+  "code": {
+    "impacts": {
+      "RELIABILITY": "LOW"
+    },
+    "attribute": "LOGICAL"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "5min"
+  },
+  "tags": [
+    "cert"
+  ],
+  "defaultSeverity": "Minor",
+  "ruleSpecification": "RSPEC-2162",
+  "sqKey": "S2162",
+  "scope": "All",
+  "securityStandards": {
+    "CERT": [
+      "MET08-J."
+    ]
+  },
+  "quickfix": "unknown"
+}

@@ -1,0 +1,29 @@
+{
+  "title": "\"volatile\" variables should not be used with compound operators",
+  "type": "BUG",
+  "code": {
+    "impacts": {
+      "RELIABILITY": "MEDIUM"
+    },
+    "attribute": "LOGICAL"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "15min"
+  },
+  "tags": [
+    "multi-threading",
+    "cert"
+  ],
+  "defaultSeverity": "Major",
+  "ruleSpecification": "RSPEC-3078",
+  "sqKey": "S3078",
+  "scope": "Main",
+  "securityStandards": {
+    "CERT": [
+      "VNA02-J."
+    ]
+  },
+  "quickfix": "unknown"
+}

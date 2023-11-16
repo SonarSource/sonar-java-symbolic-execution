@@ -1,0 +1,30 @@
+{
+  "title": "Synchronizing on a \"Lock\" object should be avoided",
+  "type": "CODE_SMELL",
+  "code": {
+    "impacts": {
+      "MAINTAINABILITY": "MEDIUM"
+    },
+    "attribute": "LOGICAL"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "15min"
+  },
+  "tags": [
+    "multi-threading",
+    "cert",
+    "clumsy"
+  ],
+  "defaultSeverity": "Major",
+  "ruleSpecification": "RSPEC-2442",
+  "sqKey": "S2442",
+  "scope": "All",
+  "securityStandards": {
+    "CERT": [
+      "LCK03-J."
+    ]
+  },
+  "quickfix": "unknown"
+}

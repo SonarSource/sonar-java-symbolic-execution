@@ -1,0 +1,23 @@
+{
+  "title": "\"String.valueOf()\" should not be appended to a \"String\"",
+  "type": "CODE_SMELL",
+  "code": {
+    "impacts": {
+      "MAINTAINABILITY": "LOW"
+    },
+    "attribute": "CLEAR"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "5min"
+  },
+  "tags": [
+    "clumsy"
+  ],
+  "defaultSeverity": "Minor",
+  "ruleSpecification": "RSPEC-1153",
+  "sqKey": "S1153",
+  "scope": "All",
+  "quickfix": "targeted"
+}

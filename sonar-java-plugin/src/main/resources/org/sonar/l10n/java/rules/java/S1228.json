@@ -1,0 +1,23 @@
+{
+  "title": "Packages should have a javadoc file \u0027package-info.java\u0027",
+  "type": "CODE_SMELL",
+  "code": {
+    "impacts": {
+      "MAINTAINABILITY": "LOW"
+    },
+    "attribute": "CONVENTIONAL"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "20min"
+  },
+  "tags": [
+    "convention"
+  ],
+  "defaultSeverity": "Minor",
+  "ruleSpecification": "RSPEC-1228",
+  "sqKey": "S1228",
+  "scope": "Main",
+  "quickfix": "unknown"
+}

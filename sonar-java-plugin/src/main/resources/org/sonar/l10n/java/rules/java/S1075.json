@@ -1,0 +1,29 @@
+{
+  "title": "URIs should not be hardcoded",
+  "type": "CODE_SMELL",
+  "code": {
+    "impacts": {
+      "MAINTAINABILITY": "LOW"
+    },
+    "attribute": "CONVENTIONAL"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "20min"
+  },
+  "tags": [
+    "android",
+    "cert"
+  ],
+  "defaultSeverity": "Minor",
+  "ruleSpecification": "RSPEC-1075",
+  "sqKey": "S1075",
+  "scope": "Main",
+  "quickfix": "unknown",
+  "securityStandards": {
+    "CERT": [
+      "MSC03-J."
+    ]
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "title": "Strings and Boxed types should be compared using \"equals()\"",
+  "type": "BUG",
+  "code": {
+    "impacts": {
+      "RELIABILITY": "MEDIUM"
+    },
+    "attribute": "LOGICAL"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "5min"
+  },
+  "tags": [
+    "cwe",
+    "cert"
+  ],
+  "defaultSeverity": "Major",
+  "ruleSpecification": "RSPEC-4973",
+  "sqKey": "S4973",
+  "scope": "All",
+  "securityStandards": {
+    "CWE": [
+      595,
+      597
+    ],
+    "CERT": [
+      "EXP03-J.",
+      "EXP50-J."
+    ]
+  },
+  "quickfix": "covered"
+}

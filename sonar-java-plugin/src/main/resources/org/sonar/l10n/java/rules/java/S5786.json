@@ -1,0 +1,24 @@
+{
+  "title": "JUnit5 test classes and methods should have default package visibility",
+  "type": "CODE_SMELL",
+  "code": {
+    "impacts": {
+      "MAINTAINABILITY": "LOW"
+    },
+    "attribute": "CLEAR"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "2min"
+  },
+  "tags": [
+    "junit",
+    "tests"
+  ],
+  "defaultSeverity": "Info",
+  "ruleSpecification": "RSPEC-5786",
+  "sqKey": "S5786",
+  "scope": "Tests",
+  "quickfix": "covered"
+}

@@ -1,0 +1,80 @@
+<h2>Why is this an issue?</h2>
+<p>When handling a caught exception, the original exception’s message and stack trace should be logged or passed forward.</p>
+<h3>Noncompliant code example</h3>
+<pre>
+try {
+  /* ... */
+} catch (Exception e) {   // Noncompliant - exception is lost
+  LOGGER.info("context");
+}
+
+try {
+  /* ... */
+} catch (Exception e) {  // Noncompliant - exception is lost (only message is preserved)
+  LOGGER.info(e.getMessage());
+}
+
+try {
+  /* ... */
+} catch (Exception e) {  // Noncompliant - original exception is lost
+  throw new RuntimeException("context");
+}
+</pre>
+<h3>Compliant solution</h3>
+<pre>
+try {
+  /* ... */
+} catch (Exception e) {
+  LOGGER.info(e);  // exception is logged
+}
+
+try {
+  /* ... */
+} catch (Exception e) {
+  throw new RuntimeException(e);   // exception stack trace is propagated
+}
+
+try {
+  /* ... */
+} catch (RuntimeException e) {
+  doSomething();
+  throw e;  // original exception passed forward
+} catch (Exception e) {
+  throw new RuntimeException(e);  // Conversion into unchecked exception is also allowed
+}
+</pre>
+<h3>Exceptions</h3>
+<p><code>InterruptedException</code>, <code>NumberFormatException</code>, <code>DateTimeParseException</code>, <code>ParseException</code> and
+<code>MalformedURLException</code> exceptions are arguably used to indicate nonexceptional outcomes. Similarly, handling
+<code>NoSuchMethodException</code> is often required when dealing with the Java reflection API.</p>
+<p>Because they are part of Java, developers have no choice but to deal with them. This rule does not verify that those particular exceptions are
+correctly handled.</p>
+<pre>
+int myInteger;
+try {
+  myInteger = Integer.parseInt(myString);
+} catch (NumberFormatException e) {
+  // It is perfectly acceptable to not handle "e" here
+  myInteger = 0;
+}
+</pre>
+<p>Furthermore, no issue will be raised if the exception message is logged with additional information, as it shows that the developer added some
+context to the error message.</p>
+<pre>
+try {
+  /* ... */
+} catch (Exception e) {
+  String message = "Exception raised while authenticating user: " + e.getMessage();
+  LOGGER.warn(message); // Compliant - exception message logged with some contextual information
+}
+</pre>
+<h2>Resources</h2>
+<ul>
+  <li> <a href="https://owasp.org/Top10/A09_2021-Security_Logging_and_Monitoring_Failures/">OWASP Top 10 2021 Category A9</a> - Security Logging and
+  Monitoring Failures </li>
+  <li> <a href="https://owasp.org/www-project-top-ten/2017/A10_2017-Insufficient_Logging%2526Monitoring">OWASP Top 10 2017 Category A10</a> -
+  Insufficient Logging &amp; Monitoring </li>
+  <li> <a href="https://wiki.sei.cmu.edu/confluence/x/xDdGBQ">CERT, ERR00-J.</a> - Do not suppress or ignore checked exceptions </li>
+  <li> <a href="https://cwe.mitre.org/data/definitions/778">MITRE, CWE-778</a> - Insufficient Logging </li>
+</ul>
+

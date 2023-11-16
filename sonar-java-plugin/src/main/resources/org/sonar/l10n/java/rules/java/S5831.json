@@ -1,0 +1,24 @@
+{
+  "title": "AssertJ configuration should be applied",
+  "type": "BUG",
+  "code": {
+    "impacts": {
+      "RELIABILITY": "MEDIUM"
+    },
+    "attribute": "COMPLETE"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "5min"
+  },
+  "tags": [
+    "tests",
+    "assertj"
+  ],
+  "defaultSeverity": "Major",
+  "ruleSpecification": "RSPEC-5831",
+  "sqKey": "S5831",
+  "scope": "Tests",
+  "quickfix": "unknown"
+}

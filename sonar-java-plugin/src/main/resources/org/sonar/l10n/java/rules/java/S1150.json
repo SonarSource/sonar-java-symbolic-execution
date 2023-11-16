@@ -1,0 +1,23 @@
+{
+  "title": "\"Enumeration\" should not be implemented",
+  "type": "CODE_SMELL",
+  "code": {
+    "impacts": {
+      "MAINTAINABILITY": "MEDIUM"
+    },
+    "attribute": "CONVENTIONAL"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "30min"
+  },
+  "tags": [
+    "obsolete"
+  ],
+  "defaultSeverity": "Major",
+  "ruleSpecification": "RSPEC-1150",
+  "sqKey": "S1150",
+  "scope": "Main",
+  "quickfix": "unknown"
+}

@@ -1,0 +1,40 @@
+<h2>Why is this an issue?</h2>
+<p>Well-named functions can allow the users of your code to understand at a glance what to expect from the function - even before reading the
+documentation. Toward that end, methods returning a boolean should have names that start with "is" or "has" rather than with "get".</p>
+<h3>Noncompliant code example</h3>
+<pre>
+public boolean getFoo() { // Noncompliant
+  // ...
+}
+
+public boolean getBar(Bar c) { // Noncompliant
+  // ...
+}
+
+public boolean testForBar(Bar c) { // Compliant - The method does not start by 'get'.
+  // ...
+}
+</pre>
+<h3>Compliant solution</h3>
+<pre>
+public boolean isFoo() {
+  // ...
+}
+
+public boolean hasBar(Bar c) {
+  // ...
+}
+
+public boolean testForBar(Bar c) {
+  // ...
+}
+</pre>
+<h3>Exceptions</h3>
+<p>Overriding methods are excluded.</p>
+<pre>
+@Override
+public boolean getFoo(){
+  // ...
+}
+</pre>
+

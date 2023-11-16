@@ -1,0 +1,29 @@
+{
+  "title": "Empty arrays and collections should be returned instead of null",
+  "type": "CODE_SMELL",
+  "code": {
+    "impacts": {
+      "MAINTAINABILITY": "MEDIUM"
+    },
+    "attribute": "CLEAR"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "30min"
+  },
+  "tags": [
+    "cert"
+  ],
+  "defaultSeverity": "Major",
+  "ruleSpecification": "RSPEC-1168",
+  "sqKey": "S1168",
+  "scope": "Main",
+  "quickfix": "partial",
+  "securityStandards": {
+    "CERT": [
+      "MSC19-C.",
+      "MET55-J."
+    ]
+  }
+}

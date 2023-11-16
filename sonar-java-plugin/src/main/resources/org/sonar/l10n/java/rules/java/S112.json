@@ -1,0 +1,33 @@
+{
+  "title": "Generic exceptions should never be thrown",
+  "type": "CODE_SMELL",
+  "code": {
+    "impacts": {
+      "MAINTAINABILITY": "MEDIUM"
+    },
+    "attribute": "COMPLETE"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "20min"
+  },
+  "tags": [
+    "cwe",
+    "error-handling",
+    "cert"
+  ],
+  "defaultSeverity": "Major",
+  "ruleSpecification": "RSPEC-112",
+  "sqKey": "S112",
+  "scope": "Main",
+  "securityStandards": {
+    "CERT": [
+      "ERR07-J."
+    ],
+    "CWE": [
+      397
+    ]
+  },
+  "quickfix": "unknown"
+}

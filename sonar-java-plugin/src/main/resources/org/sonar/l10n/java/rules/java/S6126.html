@@ -1,0 +1,30 @@
+<h2>Why is this an issue?</h2>
+<p>In Java 15 Text Blocks are now official and can be used. The most common pattern for multiline strings in Java &lt; 15 was to write String
+concatenation. Now it’s possible to do it in a more natural way using Text Blocks.</p>
+<h3>Noncompliant code example</h3>
+<pre>
+String textBlock =
+               "&lt;html&gt;\n" +
+               "    &lt;body&gt;\n" +
+               "        &lt;tag&gt;\n" +
+               "        &lt;/tag&gt;\n" +
+               "    &lt;/body&gt;\n" +
+               "&lt;/html&gt;";
+</pre>
+<h3>Compliant solution</h3>
+<pre>
+String textBlock = """
+        &lt;html&gt;
+            &lt;body&gt;
+                &lt;tag&gt;
+                &lt;/tag&gt;
+            &lt;/body&gt;
+        &lt;/html&gt;""";
+</pre>
+<h2>Resources</h2>
+<ul>
+  <li> <a href="https://openjdk.java.net/jeps/378">JEP 378: Text Blocks</a> </li>
+  <li> <a href="https://openjdk.org/projects/amber/guides/text-blocks-guide">Programmer’s Guide To Text Blocks</a>, by Jim Laskey and Stuart Marks
+  </li>
+</ul>
+

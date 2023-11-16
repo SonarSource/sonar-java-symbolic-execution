@@ -1,0 +1,23 @@
+{
+  "title": "The diamond operator (\"\u003c\u003e\") should be used",
+  "type": "CODE_SMELL",
+  "code": {
+    "impacts": {
+      "MAINTAINABILITY": "LOW"
+    },
+    "attribute": "CLEAR"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "1min"
+  },
+  "tags": [
+    "clumsy"
+  ],
+  "defaultSeverity": "Minor",
+  "ruleSpecification": "RSPEC-2293",
+  "sqKey": "S2293",
+  "scope": "All",
+  "quickfix": "covered"
+}

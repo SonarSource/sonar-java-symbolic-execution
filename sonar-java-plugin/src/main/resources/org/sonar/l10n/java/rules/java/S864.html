@@ -1,0 +1,95 @@
+<h2>Why is this an issue?</h2>
+<p>The rules of operator precedence are complicated and can lead to errors. For this reason, parentheses should be used for clarification in complex
+statements. However, this does not mean that parentheses should be gratuitously added around every operation.</p>
+<p>This rule raises issues when <code>&amp;&amp;</code> and <code>||</code> are used in combination, when assignment and equality or relational
+operators are used together in a condition, and for other operator combinations according to the following table:</p>
+<table>
+  <colgroup>
+    <col style="width: 16.6666%;">
+    <col style="width: 16.6666%;">
+    <col style="width: 16.6666%;">
+    <col style="width: 16.6666%;">
+    <col style="width: 16.6666%;">
+    <col style="width: 16.667%;">
+  </colgroup>
+  <thead>
+    <tr>
+      <th></th>
+      <th><code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>%</code></th>
+      <th><code>&lt;&lt;</code>, <code>&gt;&gt;</code>, <code>&gt;&gt;&gt;</code></th>
+      <th><code>&amp;</code></th>
+      <th><code>^</code></th>
+      <th><code>|</code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><p><code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>%</code></p></td>
+      <td></td>
+      <td><p>x</p></td>
+      <td><p>x</p></td>
+      <td><p>x</p></td>
+      <td><p>x</p></td>
+    </tr>
+    <tr>
+      <td><p><code>&lt;&lt;</code>, <code>&gt;&gt;</code>, <code>&gt;&gt;&gt;</code></p></td>
+      <td><p>x</p></td>
+      <td></td>
+      <td><p>x</p></td>
+      <td><p>x</p></td>
+      <td><p>x</p></td>
+    </tr>
+    <tr>
+      <td><p><code>&amp;</code></p></td>
+      <td><p>x</p></td>
+      <td><p>x</p></td>
+      <td></td>
+      <td><p>x</p></td>
+      <td><p>x</p></td>
+    </tr>
+    <tr>
+      <td><p><code>^</code></p></td>
+      <td><p>x</p></td>
+      <td><p>x</p></td>
+      <td><p>x</p></td>
+      <td></td>
+      <td><p>x</p></td>
+    </tr>
+    <tr>
+      <td><p><code>|</code></p></td>
+      <td><p>x</p></td>
+      <td><p>x</p></td>
+      <td><p>x</p></td>
+      <td><p>x</p></td>
+      <td></td>
+    </tr>
+  </tbody>
+</table>
+<p>This rule also raises an issue when the "true" or "false" expression of a ternary operator is not trivial and not wrapped inside parentheses.</p>
+<h3>Noncompliant code example</h3>
+<pre>
+x = a + b - c;
+x = a + 1 &lt;&lt; b;  // Noncompliant
+y = a == b ? a * 2 : a + b;  // Noncompliant
+
+if ( a &gt; b || c &lt; d || a == d) {...}
+if ( a &gt; b &amp;&amp; c &lt; d || a == b) {...}  // Noncompliant
+if (a = f(b,c) == 1) { ... } // Noncompliant; == evaluated first
+</pre>
+<h3>Compliant solution</h3>
+<pre>
+x = a + b - c;
+x = (a + 1) &lt;&lt; b;
+y = a == b ? (a * 2) : (a + b);
+
+if ( a &gt; b || c &lt; d || a == d) {...}
+if ( (a &gt; b &amp;&amp; c &lt; d) || a == b) {...}
+if ( (a = f(b,c)) == 1) { ... }
+</pre>
+<h2>Resources</h2>
+<ul>
+  <li> <a href="https://wiki.sei.cmu.edu/confluence/x/YdYxBQ">CERT, EXP00-C.</a> - Use parentheses for precedence of operation </li>
+  <li> <a href="https://wiki.sei.cmu.edu/confluence/x/ZzZGBQ">CERT, EXP53-J.</a> - Use parentheses for precedence of operation </li>
+  <li> <a href="https://cwe.mitre.org/data/definitions/783">MITRE, CWE-783</a> - Operator Precedence Logic Error </li>
+</ul>
+

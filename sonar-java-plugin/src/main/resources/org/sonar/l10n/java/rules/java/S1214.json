@@ -1,0 +1,23 @@
+{
+  "title": "Interfaces should not solely consist of constants",
+  "type": "CODE_SMELL",
+  "code": {
+    "impacts": {
+      "MAINTAINABILITY": "HIGH"
+    },
+    "attribute": "MODULAR"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "10min"
+  },
+  "tags": [
+    "bad-practice"
+  ],
+  "defaultSeverity": "Critical",
+  "ruleSpecification": "RSPEC-1214",
+  "sqKey": "S1214",
+  "scope": "All",
+  "quickfix": "unknown"
+}

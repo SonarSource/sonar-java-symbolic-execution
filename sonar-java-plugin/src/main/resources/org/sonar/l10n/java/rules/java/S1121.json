@@ -1,0 +1,35 @@
+{
+  "title": "Assignments should not be made from within sub-expressions",
+  "type": "CODE_SMELL",
+  "code": {
+    "impacts": {
+      "MAINTAINABILITY": "MEDIUM"
+    },
+    "attribute": "CLEAR"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "5min"
+  },
+  "tags": [
+    "cwe",
+    "cert",
+    "suspicious"
+  ],
+  "defaultSeverity": "Major",
+  "ruleSpecification": "RSPEC-1121",
+  "sqKey": "S1121",
+  "scope": "All",
+  "securityStandards": {
+    "CERT": [
+      "EXP45-C.",
+      "EXP51-J.",
+      "EXP19-CPP."
+    ],
+    "CWE": [
+      481
+    ]
+  },
+  "quickfix": "unknown"
+}

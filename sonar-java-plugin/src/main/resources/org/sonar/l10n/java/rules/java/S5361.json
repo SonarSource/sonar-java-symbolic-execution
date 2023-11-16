@@ -1,0 +1,24 @@
+{
+  "type": "CODE_SMELL",
+  "code": {
+    "impacts": {
+      "MAINTAINABILITY": "HIGH"
+    },
+    "attribute": "EFFICIENT"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "2min"
+  },
+  "tags": [
+    "regex",
+    "performance"
+  ],
+  "defaultSeverity": "Critical",
+  "ruleSpecification": "RSPEC-5361",
+  "sqKey": "S5361",
+  "scope": "All",
+  "quickfix": "unknown",
+  "title": "\"String#replace\" should be preferred to \"String#replaceAll\""
+}

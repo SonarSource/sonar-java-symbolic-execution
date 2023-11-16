@@ -1,0 +1,27 @@
+<h2>Why is this an issue?</h2>
+<p>The use of escape sequences is mostly unnecessary in text blocks.</p>
+<h3>Noncompliant code example</h3>
+<p><code>\n</code> can be replaced by simply introducing the newline, <code>\"\"\"</code> it is sufficient to escape only the first qoute.</p>
+<pre>
+String textBlock = """
+        \"\"\" this \nis
+        text  block!
+        !!!!
+      """;
+</pre>
+<h3>Compliant solution</h3>
+<pre>
+String textBlock = """
+        \""" this
+        is
+        text  block!
+        !!!!
+      """;
+</pre>
+<h2>Resources</h2>
+<ul>
+  <li> <a href="https://openjdk.java.net/jeps/378">JEP 378: Text Blocks</a> </li>
+  <li> <a href="https://openjdk.org/projects/amber/guides/text-blocks-guide">Programmer’s Guide To Text Blocks</a>, by Jim Laskey and Stuart Marks
+  </li>
+</ul>
+

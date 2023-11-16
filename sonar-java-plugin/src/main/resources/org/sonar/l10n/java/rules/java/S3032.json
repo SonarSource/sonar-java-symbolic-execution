@@ -1,0 +1,23 @@
+{
+  "title": "JEE applications should not \"getClassLoader\"",
+  "type": "BUG",
+  "code": {
+    "impacts": {
+      "RELIABILITY": "LOW"
+    },
+    "attribute": "CLEAR"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "5min"
+  },
+  "tags": [
+    "jee"
+  ],
+  "defaultSeverity": "Minor",
+  "ruleSpecification": "RSPEC-3032",
+  "sqKey": "S3032",
+  "scope": "Main",
+  "quickfix": "unknown"
+}

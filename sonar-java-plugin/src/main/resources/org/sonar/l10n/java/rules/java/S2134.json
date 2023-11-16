@@ -1,0 +1,24 @@
+{
+  "title": "Classes extending java.lang.Thread should provide a specific \"run\" behavior",
+  "type": "BUG",
+  "code": {
+    "impacts": {
+      "RELIABILITY": "MEDIUM"
+    },
+    "attribute": "COMPLETE"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "5min"
+  },
+  "tags": [
+    "multi-threading",
+    "pitfall"
+  ],
+  "defaultSeverity": "Major",
+  "ruleSpecification": "RSPEC-2134",
+  "sqKey": "S2134",
+  "scope": "All",
+  "quickfix": "unknown"
+}

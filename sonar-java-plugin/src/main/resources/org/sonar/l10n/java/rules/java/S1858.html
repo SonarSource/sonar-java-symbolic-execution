@@ -1,0 +1,14 @@
+<h2>Why is this an issue?</h2>
+<p>Invoking a method designed to return a string representation of an object which is already a string is a waste of keystrokes. This redundant
+construction may be optimized by the compiler, but will be confusing in the meantime.</p>
+<h3>Noncompliant code example</h3>
+<pre>
+String message = "hello world";
+System.out.println(message.toString()); // Noncompliant;
+</pre>
+<h3>Compliant solution</h3>
+<pre>
+String message = "hello world";
+System.out.println(message);
+</pre>
+

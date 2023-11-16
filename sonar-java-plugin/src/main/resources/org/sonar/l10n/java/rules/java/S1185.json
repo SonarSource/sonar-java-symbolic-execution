@@ -1,0 +1,24 @@
+{
+  "title": "Overriding methods should do more than simply call the same method in the super class ",
+  "type": "CODE_SMELL",
+  "code": {
+    "impacts": {
+      "MAINTAINABILITY": "LOW"
+    },
+    "attribute": "CLEAR"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "2min"
+  },
+  "tags": [
+    "redundant",
+    "clumsy"
+  ],
+  "defaultSeverity": "Minor",
+  "ruleSpecification": "RSPEC-1185",
+  "sqKey": "S1185",
+  "scope": "All",
+  "quickfix": "unknown"
+}

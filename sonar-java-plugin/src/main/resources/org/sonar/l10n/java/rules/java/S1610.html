@@ -1,0 +1,26 @@
+<p>This rule is deprecated, and will eventually be removed.</p>
+<h2>Why is this an issue?</h2>
+<p>With Java 8’s "default method" feature, any abstract class without direct or inherited field should be converted into an interface. However, this
+change may not be appropriate in libraries or other applications where the class is intended to be used as an API.</p>
+<p><strong>Note</strong> that this rule is automatically disabled when the project’s <code>sonar.java.source</code> is lower than <code>8</code>.</p>
+<h3>Noncompliant code example</h3>
+<pre>
+public abstract class Car {
+  public abstract void start(Environment c);
+
+  public void stop(Environment c) {
+    c.freeze(this);
+  }
+}
+</pre>
+<h3>Compliant solution</h3>
+<pre>
+public interface Car {
+  public void start(Environment c);
+
+  public default void stop(Environment c) {
+    c.freeze(this);
+  }
+}
+</pre>
+

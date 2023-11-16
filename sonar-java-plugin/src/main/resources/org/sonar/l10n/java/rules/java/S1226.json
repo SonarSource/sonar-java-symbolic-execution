@@ -1,0 +1,21 @@
+{
+  "title": "Method parameters, caught exceptions and foreach variables\u0027 initial values should not be ignored",
+  "type": "BUG",
+  "code": {
+    "impacts": {
+      "RELIABILITY": "LOW"
+    },
+    "attribute": "CLEAR"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "5min"
+  },
+  "tags": [],
+  "defaultSeverity": "Minor",
+  "ruleSpecification": "RSPEC-1226",
+  "sqKey": "S1226",
+  "scope": "All",
+  "quickfix": "unknown"
+}

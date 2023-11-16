@@ -1,0 +1,21 @@
+{
+  "title": "Classes should not be loaded dynamically",
+  "type": "VULNERABILITY",
+  "code": {
+    "impacts": {
+      "SECURITY": "HIGH"
+    },
+    "attribute": "CONVENTIONAL"
+  },
+  "status": "deprecated",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "45min"
+  },
+  "tags": [],
+  "defaultSeverity": "Critical",
+  "ruleSpecification": "RSPEC-2658",
+  "sqKey": "S2658",
+  "scope": "Main",
+  "quickfix": "unknown"
+}

@@ -1,0 +1,47 @@
+<h2>Why is this an issue?</h2>
+<p>In software development, logs serve as a record of events within an application, providing crucial insights for debugging. When logging, it is
+essential to ensure that the logs are:</p>
+<ul>
+  <li> easily accessible </li>
+  <li> uniformly formatted for readability </li>
+  <li> properly recorded </li>
+  <li> securely logged when dealing with sensitive data </li>
+</ul>
+<p>Those requirements are not met if a program directly writes to the standard outputs (e.g., System.out, System.err). That is why defining and using
+a dedicated logger is highly recommended.</p>
+<h3>Code examples</h3>
+<p>The following noncompliant code:</p>
+<pre data-diff-id="1" data-diff-type="noncompliant">
+class MyClass {
+  public void doSomething() {
+    System.out.println("My Message");  // Noncompliant, output directly to System.out without a logger
+  }
+}
+</pre>
+<p>Could be replaced by:</p>
+<pre data-diff-id="1" data-diff-type="compliant">
+import java.util.logging.Logger;
+
+class MyClass {
+
+  Logger logger = Logger.getLogger(getClass().getName());
+
+  public void doSomething() {
+    // ...
+    logger.info("My Message");  // Compliant, output via logger
+    // ...
+  }
+}
+</pre>
+<h2>Resources</h2>
+<h3>Documentation</h3>
+<ul>
+  <li> <a href="https://docs.oracle.com/javase/7/docs/api/java/util/logging/Logger.html">Java SE 7 API Specification: java.util.logging.Logger</a>
+  </li>
+  <li> <a href="https://owasp.org/Top10/A09_2021-Security_Logging_and_Monitoring_Failures/">OWASP Top 10 2021 Category A9</a> - Security Logging and
+  Monitoring Failures </li>
+  <li> <a href="https://www.owasp.org/www-project-top-ten/2017/A3_2017-Sensitive_Data_Exposure">OWASP Top 10 2017 Category A3</a> - Sensitive Data
+  Exposure </li>
+  <li> <a href="https://wiki.sei.cmu.edu/confluence/x/nzdGBQ">CERT, ERR02-J.</a> - Prevent exceptions while logging data </li>
+</ul>
+

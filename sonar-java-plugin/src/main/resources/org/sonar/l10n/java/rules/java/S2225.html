@@ -1,0 +1,25 @@
+<h2>Why is this an issue?</h2>
+<p>Calling <code>toString()</code> or <code>clone()</code> on an object should always return a string or an object. Returning <code>null</code>
+instead contravenes the method’s implicit contract.</p>
+<h3>Noncompliant code example</h3>
+<pre>
+public String toString () {
+  if (this.collection.isEmpty()) {
+    return null; // Noncompliant
+  } else {
+    // ...
+</pre>
+<h3>Compliant solution</h3>
+<pre>
+public String toString () {
+  if (this.collection.isEmpty()) {
+    return "";
+  } else {
+    // ...
+</pre>
+<h2>Resources</h2>
+<ul>
+  <li> <a href="https://cwe.mitre.org/data/definitions/476">MITRE, CWE-476</a> - NULL Pointer Dereference </li>
+  <li> <a href="https://wiki.sei.cmu.edu/confluence/x/aDdGBQ">CERT, EXP01-J.</a> - Do not use a null in a case where an object is required </li>
+</ul>
+

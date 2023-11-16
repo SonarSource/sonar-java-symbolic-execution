@@ -1,0 +1,29 @@
+{
+  "title": "\"notifyAll()\" should be preferred over \"notify()\"",
+  "type": "BUG",
+  "code": {
+    "impacts": {
+      "RELIABILITY": "MEDIUM"
+    },
+    "attribute": "COMPLETE"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "2min"
+  },
+  "tags": [
+    "multi-threading",
+    "cert"
+  ],
+  "defaultSeverity": "Major",
+  "ruleSpecification": "RSPEC-2446",
+  "sqKey": "S2446",
+  "scope": "All",
+  "securityStandards": {
+    "CERT": [
+      "THI02-J."
+    ]
+  },
+  "quickfix": "covered"
+}

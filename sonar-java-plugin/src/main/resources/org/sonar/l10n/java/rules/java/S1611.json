@@ -1,0 +1,23 @@
+{
+  "title": "Parentheses should be removed from a single lambda parameter when its type is inferred",
+  "type": "CODE_SMELL",
+  "code": {
+    "impacts": {
+      "MAINTAINABILITY": "LOW"
+    },
+    "attribute": "CLEAR"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "2min"
+  },
+  "tags": [
+    "java8"
+  ],
+  "defaultSeverity": "Minor",
+  "ruleSpecification": "RSPEC-1611",
+  "sqKey": "S1611",
+  "scope": "All",
+  "quickfix": "unknown"
+}

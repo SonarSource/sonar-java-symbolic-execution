@@ -1,0 +1,37 @@
+{
+  "title": "Math operands should be cast before assignment",
+  "type": "BUG",
+  "code": {
+    "impacts": {
+      "RELIABILITY": "LOW"
+    },
+    "attribute": "CLEAR"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "5min"
+  },
+  "tags": [
+    "cwe",
+    "overflow",
+    "cert"
+  ],
+  "defaultSeverity": "Minor",
+  "ruleSpecification": "RSPEC-2184",
+  "sqKey": "S2184",
+  "scope": "All",
+  "securityStandards": {
+    "CERT": [
+      "NUM50-J.",
+      "INT18-C."
+    ],
+    "CWE": [
+      190
+    ],
+    "ASVS 4.0": [
+      "5.4.3"
+    ]
+  },
+  "quickfix": "unknown"
+}

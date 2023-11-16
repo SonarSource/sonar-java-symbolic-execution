@@ -1,0 +1,23 @@
+{
+  "title": "\"private\" and \"final\" methods that don\u0027t access instance data should be \"static\"",
+  "type": "CODE_SMELL",
+  "code": {
+    "impacts": {
+      "MAINTAINABILITY": "LOW"
+    },
+    "attribute": "CLEAR"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "5min"
+  },
+  "tags": [
+    "pitfall"
+  ],
+  "defaultSeverity": "Minor",
+  "ruleSpecification": "RSPEC-2325",
+  "sqKey": "S2325",
+  "scope": "All",
+  "quickfix": "covered"
+}

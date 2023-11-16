@@ -1,0 +1,34 @@
+{
+  "title": "Limited dependence should be placed on operator precedence",
+  "type": "CODE_SMELL",
+  "code": {
+    "impacts": {
+      "MAINTAINABILITY": "MEDIUM"
+    },
+    "attribute": "CLEAR"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "2min"
+  },
+  "tags": [
+    "cwe",
+    "cert"
+  ],
+  "defaultSeverity": "Major",
+  "ruleSpecification": "RSPEC-864",
+  "sqKey": "S864",
+  "scope": "All",
+  "securityStandards": {
+    "CERT": [
+      "EXP00-C.",
+      "EXP00-CPP.",
+      "EXP53-J."
+    ],
+    "CWE": [
+      783
+    ]
+  },
+  "quickfix": "unknown"
+}

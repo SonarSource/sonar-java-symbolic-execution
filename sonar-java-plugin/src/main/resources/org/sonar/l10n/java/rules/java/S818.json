@@ -1,0 +1,31 @@
+{
+  "title": "Literal suffixes should be upper case",
+  "type": "CODE_SMELL",
+  "code": {
+    "impacts": {
+      "MAINTAINABILITY": "LOW"
+    },
+    "attribute": "IDENTIFIABLE"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "2min"
+  },
+  "tags": [
+    "convention",
+    "cert",
+    "pitfall"
+  ],
+  "defaultSeverity": "Minor",
+  "ruleSpecification": "RSPEC-818",
+  "sqKey": "S818",
+  "scope": "All",
+  "quickfix": "unknown",
+  "securityStandards": {
+    "CERT": [
+      "DCL16-C.",
+      "DCL50-J."
+    ]
+  }
+}

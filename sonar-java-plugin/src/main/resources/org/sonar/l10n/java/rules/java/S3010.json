@@ -1,0 +1,21 @@
+{
+  "title": "Static fields should not be updated in constructors",
+  "type": "CODE_SMELL",
+  "code": {
+    "impacts": {
+      "MAINTAINABILITY": "MEDIUM"
+    },
+    "attribute": "LOGICAL"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "20min"
+  },
+  "tags": [],
+  "defaultSeverity": "Major",
+  "ruleSpecification": "RSPEC-3010",
+  "sqKey": "S3010",
+  "scope": "Main",
+  "quickfix": "unknown"
+}

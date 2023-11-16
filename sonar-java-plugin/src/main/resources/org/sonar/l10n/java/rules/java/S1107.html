@@ -1,0 +1,47 @@
+<h2>Why is this an issue?</h2>
+<p>Shared coding conventions make it possible for a team to collaborate efficiently.</p>
+<p>This rule makes it mandatory to place closing curly braces on the same line as the next <code>else</code>, <code>catch</code> or
+<code>finally</code> keywords.</p>
+<h3>Noncompliant code example</h3>
+<pre>
+public void myMethod() {
+  if(something) {
+    executeTask();
+  } else if (somethingElse) {
+    doSomethingElse();
+  }
+  else {                               // Noncompliant
+     generateError();
+  }
+
+  try {
+    generateOrder();
+  } catch (Exception e) {
+    log(e);
+  }
+  finally {                            // Noncompliant
+    closeConnection();
+  }
+}
+</pre>
+<h3>Compliant solution</h3>
+<pre>
+public void myMethod() {
+  if(something) {
+    executeTask();
+  } else if (somethingElse) {
+    doSomethingElse();
+  } else {
+     generateError();
+  }
+
+  try {
+    generateOrder();
+  } catch (Exception e) {
+    log(e);
+  } finally {
+    closeConnection();
+  }
+}
+</pre>
+

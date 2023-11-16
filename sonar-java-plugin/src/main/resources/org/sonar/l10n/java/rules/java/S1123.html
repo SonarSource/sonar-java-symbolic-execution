@@ -1,0 +1,58 @@
+<h2>Why is this an issue?</h2>
+<p>Deprecation should be marked with both the <code>@Deprecated</code> annotation and @deprecated Javadoc tag. The annotation enables tools such as
+IDEs to warn about referencing deprecated elements, and the tag can be used to explain when it was deprecated, why, and how references should be
+refactored.</p>
+<h3>Noncompliant code example</h3>
+<pre>
+class MyClass {
+
+  @Deprecated
+  public void foo1() {    // Noncompliant: Add the missing @deprecated Javadoc tag.
+  }
+
+  /**
+    * @deprecated
+    */
+  public void foo2() {    // Noncompliant: Add the missing @Deprecated annotation.
+  }
+
+}
+</pre>
+<h3>Compliant solution</h3>
+<pre>
+class MyClass {
+
+  /**
+    * @deprecated (when, why, refactoring advice...)
+    */
+  @Deprecated
+  public void foo1() {
+  }
+
+}
+</pre>
+<h3>Exceptions</h3>
+<p>The members and methods of a deprecated class or interface are ignored by this rule. The classes and interfaces themselves are still subject to
+it.</p>
+<pre>
+/**
+ * @deprecated (when, why, etc...)
+ */
+@Deprecated
+class Qix  {
+
+  public void foo() {} // Compliant; class is deprecated
+
+}
+
+/**
+ * @deprecated (when, why, etc...)
+ */
+@Deprecated
+interface Plop {
+
+  void bar();
+
+}
+</pre>
+

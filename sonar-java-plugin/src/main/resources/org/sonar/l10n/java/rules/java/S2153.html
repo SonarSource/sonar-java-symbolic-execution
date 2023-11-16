@@ -1,0 +1,55 @@
+<h2>Why is this an issue?</h2>
+<p>Boxing is the process of putting a primitive value into a wrapper object, such as creating an <code>Integer</code> to hold an <code>int</code>
+value. Unboxing is the process of retrieving the primitive value from such an object. Since the original value is unchanged during boxing and
+unboxing, there is no point in doing either when not needed.</p>
+<p>Instead, you should rely on Java’s implicit boxing/unboxing to convert from the primitive type to the wrapper type and vice versa, for better
+readability.</p>
+<h3>Noncompliant code example</h3>
+<pre data-diff-id="1" data-diff-type="noncompliant">
+public void examinePrimitiveInt(int a) {
+  //...
+}
+
+public void examineBoxedInteger(Integer a) {
+  // ...
+}
+
+public void func() {
+  int primitiveInt = 0;
+  Integer boxedInt = Integer.valueOf(0);
+  double d = 1.0;
+
+  int dIntValue = Double.valueOf(d).intValue(); // Noncompliant; should be replaced with a simple cast
+
+  examinePrimitiveInt(boxedInt.intValue()); // Noncompliant; unnecessary unboxing
+  examinePrimitiveInt(Integer.valueOf(primitiveInt));  // Noncompliant; boxed int will be auto-unboxed
+
+  examineBoxedInteger(Integer.valueOf(primitiveInt)); // Noncompliant; unnecessary boxing
+  examineBoxedInteger(boxedInt.intValue()); // Noncompliant; unboxed int will be autoboxed
+}
+</pre>
+<h3>Compliant solution</h3>
+<pre data-diff-id="1" data-diff-type="compliant">
+public void examinePrimitiveInt(int a) {
+  //...
+}
+
+public void examineBoxedInteger(Integer a) {
+  // ...
+}
+
+public void func() {
+  int primitiveInt = 0;
+  Integer boxedInt = Integer.valueOf(0);
+  double d = 1.0;
+
+  int dIntValue = (int) d;
+
+  examinePrimitiveInt(primitiveInt);
+  examinePrimitiveInt(boxedInt);
+
+  examineBoxedInteger(primitiveInt);
+  examineBoxedInteger(boxedInt);
+}
+</pre>
+

@@ -1,0 +1,34 @@
+{
+  "title": "Switch cases should end with an unconditional \"break\" statement",
+  "type": "CODE_SMELL",
+  "code": {
+    "impacts": {
+      "MAINTAINABILITY": "HIGH"
+    },
+    "attribute": "CLEAR"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "10min"
+  },
+  "tags": [
+    "cwe",
+    "cert",
+    "suspicious"
+  ],
+  "defaultSeverity": "Blocker",
+  "ruleSpecification": "RSPEC-128",
+  "sqKey": "S128",
+  "scope": "All",
+  "securityStandards": {
+    "CERT": [
+      "MSC17-C.",
+      "MSC52-J."
+    ],
+    "CWE": [
+      484
+    ]
+  },
+  "quickfix": "unknown"
+}

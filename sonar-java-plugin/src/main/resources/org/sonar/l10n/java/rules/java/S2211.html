@@ -1,0 +1,26 @@
+<h2>Why is this an issue?</h2>
+<p>Shared coding conventions allow teams to collaborate effectively. While types for lambda arguments are optional, specifying them anyway makes the
+code clearer and easier to read.</p>
+<h3>Noncompliant code example</h3>
+<pre>
+Arrays.sort(rosterAsArray,
+    (a, b) -&gt; {  // Noncompliant
+        return a.getBirthday().compareTo(b.getBirthday());
+    }
+);
+</pre>
+<h3>Compliant solution</h3>
+<pre>
+Arrays.sort(rosterAsArray,
+    (Person a, Person b) -&gt; {
+        return a.getBirthday().compareTo(b.getBirthday());
+    }
+);
+</pre>
+<h3>Exceptions</h3>
+<p>When the lambda has one or two parameters and does not have a block this rule will not fire up an issue as things are considered more readable in
+those cases.</p>
+<pre>
+stream.map((a, b) -&gt; a.length); // compliant
+</pre>
+

@@ -1,0 +1,23 @@
+{
+  "title": "\"close()\" calls should not be redundant",
+  "type": "CODE_SMELL",
+  "code": {
+    "impacts": {
+      "MAINTAINABILITY": "LOW"
+    },
+    "attribute": "CLEAR"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "2min"
+  },
+  "tags": [
+    "redundant"
+  ],
+  "defaultSeverity": "Minor",
+  "ruleSpecification": "RSPEC-4087",
+  "sqKey": "S4087",
+  "scope": "All",
+  "quickfix": "unknown"
+}

@@ -1,0 +1,21 @@
+{
+  "title": "\"Collection.toArray()\" should be passed an array of the proper type",
+  "type": "BUG",
+  "code": {
+    "impacts": {
+      "RELIABILITY": "LOW"
+    },
+    "attribute": "LOGICAL"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "5min"
+  },
+  "tags": [],
+  "defaultSeverity": "Minor",
+  "ruleSpecification": "RSPEC-3020",
+  "sqKey": "S3020",
+  "scope": "All",
+  "quickfix": "covered"
+}

@@ -1,0 +1,23 @@
+{
+  "title": "\"iterator\" should not return \"this\"",
+  "type": "BUG",
+  "code": {
+    "impacts": {
+      "RELIABILITY": "MEDIUM"
+    },
+    "attribute": "LOGICAL"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "10min"
+  },
+  "tags": [
+    "pitfall"
+  ],
+  "defaultSeverity": "Major",
+  "ruleSpecification": "RSPEC-4348",
+  "sqKey": "S4348",
+  "scope": "All",
+  "quickfix": "unknown"
+}

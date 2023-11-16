@@ -1,0 +1,24 @@
+{
+  "title": "Fields should not be initialized to default values",
+  "type": "CODE_SMELL",
+  "code": {
+    "impacts": {
+      "MAINTAINABILITY": "LOW"
+    },
+    "attribute": "CLEAR"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "2min"
+  },
+  "tags": [
+    "convention",
+    "finding"
+  ],
+  "defaultSeverity": "Minor",
+  "ruleSpecification": "RSPEC-3052",
+  "sqKey": "S3052",
+  "scope": "All",
+  "quickfix": "unknown"
+}

@@ -1,0 +1,26 @@
+{
+  "title": "Exceptions in \"throws\" clauses should not be superfluous",
+  "type": "CODE_SMELL",
+  "code": {
+    "impacts": {
+      "MAINTAINABILITY": "LOW"
+    },
+    "attribute": "CLEAR"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "5min"
+  },
+  "tags": [
+    "error-handling",
+    "unused",
+    "redundant",
+    "clumsy"
+  ],
+  "defaultSeverity": "Minor",
+  "ruleSpecification": "RSPEC-1130",
+  "sqKey": "S1130",
+  "scope": "All",
+  "quickfix": "covered"
+}

@@ -1,0 +1,30 @@
+{
+  "title": "Constructors should only call non-overridable methods",
+  "type": "CODE_SMELL",
+  "code": {
+    "impacts": {
+      "MAINTAINABILITY": "HIGH"
+    },
+    "attribute": "LOGICAL"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "10min"
+  },
+  "tags": [
+    "cert",
+    "pitfall"
+  ],
+  "defaultSeverity": "Critical",
+  "ruleSpecification": "RSPEC-1699",
+  "sqKey": "S1699",
+  "scope": "Main",
+  "quickfix": "unknown",
+  "securityStandards": {
+    "CERT": [
+      "MET05-J.",
+      "OOP50-CPP."
+    ]
+  }
+}

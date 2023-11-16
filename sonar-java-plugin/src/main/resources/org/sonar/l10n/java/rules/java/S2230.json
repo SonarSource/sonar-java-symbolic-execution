@@ -1,0 +1,24 @@
+{
+  "title": "Methods with Spring proxying annotations should be public",
+  "type": "BUG",
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "5min"
+  },
+  "tags": [
+    "spring"
+  ],
+  "code": {
+    "impacts": {
+      "MAINTAINABILITY": "HIGH",
+      "RELIABILITY": "MEDIUM"
+    },
+    "attribute": "CONVENTIONAL"
+  },
+  "defaultSeverity": "Major",
+  "ruleSpecification": "RSPEC-2230",
+  "sqKey": "S2230",
+  "scope": "Main",
+  "quickfix": "unknown"
+}

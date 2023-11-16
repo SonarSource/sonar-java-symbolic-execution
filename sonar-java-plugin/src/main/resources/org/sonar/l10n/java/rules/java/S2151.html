@@ -1,0 +1,26 @@
+<h2>Why is this an issue?</h2>
+<p>Enabling <code>runFinalizersOnExit</code> is unsafe as it might result in erratic behavior and deadlocks on application exit.</p>
+<p>Indeed, finalizers might be force-called on live objects while other threads are concurrently manipulating them.</p>
+<p>Instead, if you want to execute something when the virtual machine begins its shutdown sequence, you should attach a shutdown hook.</p>
+<h3>Noncompliant code example</h3>
+<pre data-diff-id="1" data-diff-type="noncompliant">
+public static void main(String [] args) {
+  System.runFinalizersOnExit(true);  // Noncompliant
+}
+
+protected void finalize(){
+  doShutdownOperations();
+}
+</pre>
+<h3>Compliant solution</h3>
+<pre data-diff-id="1" data-diff-type="compliant">
+public static void main(String [] args) {
+  Thread myThread = new Thread( () -&gt; { doShutdownOperations(); });
+  Runtime.getRuntime().addShutdownHook(myThread);
+}
+</pre>
+<h2>Resources</h2>
+<ul>
+  <li> <a href="https://wiki.sei.cmu.edu/confluence/x/4jZGBQ">CERT, MET12-J.</a> - Do not use finalizers </li>
+</ul>
+

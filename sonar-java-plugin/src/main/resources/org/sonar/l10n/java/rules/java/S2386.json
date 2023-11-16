@@ -1,0 +1,35 @@
+{
+  "title": "Mutable fields should not be \"public static\"",
+  "type": "CODE_SMELL",
+  "code": {
+    "impacts": {
+      "MAINTAINABILITY": "LOW"
+    },
+    "attribute": "CONVENTIONAL"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "15min"
+  },
+  "tags": [
+    "cwe",
+    "unpredictable",
+    "cert"
+  ],
+  "defaultSeverity": "Minor",
+  "ruleSpecification": "RSPEC-2386",
+  "sqKey": "S2386",
+  "scope": "Main",
+  "securityStandards": {
+    "CERT": [
+      "OBJ01-J.",
+      "OBJ13-J."
+    ],
+    "CWE": [
+      607,
+      582
+    ]
+  },
+  "quickfix": "unknown"
+}

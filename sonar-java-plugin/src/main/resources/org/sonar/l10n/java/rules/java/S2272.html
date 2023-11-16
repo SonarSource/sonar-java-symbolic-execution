@@ -1,0 +1,31 @@
+<h2>Why is this an issue?</h2>
+<p>The <code>java.util.Iterator.next()</code> method must throw a <code>NoSuchElementException</code> when there are no more elements in the
+iteration. Any other behavior is non-compliant with the API contract and may cause unexpected behavior for users.</p>
+<h3>Noncompliant code example</h3>
+<pre data-diff-id="1" data-diff-type="noncompliant">
+public class MyIterator implements Iterator&lt;String&gt; {
+  public String next() {
+    if (!hasNext()) {
+      return null;
+    }
+    // ...
+  }
+}
+</pre>
+<h3>Compliant solution</h3>
+<pre data-diff-id="1" data-diff-type="compliant">
+public class MyIterator implements Iterator&lt;String&gt; {
+  public String next() {
+    if (!hasNext()) {
+      throw new NoSuchElementException();
+    }
+    // ...
+  }
+}
+</pre>
+<h2>Resources</h2>
+<h3>Documentation</h3>
+<ul>
+  <li> <a href="https://docs.oracle.com/javase/7/docs/api/java/util/Iterator.html#next--">Java SE 7 API Specification: Iterator</a> </li>
+</ul>
+

@@ -1,0 +1,20 @@
+<h2>Why is this an issue?</h2>
+<p>Testing equality or nullness with JUnit’s <code>assertTrue()</code> or <code>assertFalse()</code> should be simplified to the corresponding
+dedicated assertion.</p>
+<h3>Noncompliant code example</h3>
+<pre>
+Assert.assertTrue(a.equals(b));
+Assert.assertTrue(a == b);
+Assert.assertTrue(a == null);
+Assert.assertTrue(a != null);
+Assert.assertFalse(a.equals(b));
+</pre>
+<h3>Compliant solution</h3>
+<pre>
+Assert.assertEquals(a, b);
+Assert.assertSame(a, b);
+Assert.assertNull(a);
+Assert.assertNotNull(a);
+Assert.assertNotEquals(a, b);
+</pre>
+

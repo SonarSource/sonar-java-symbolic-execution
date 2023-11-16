@@ -1,0 +1,34 @@
+{
+  "title": "Unused assignments should be removed",
+  "type": "CODE_SMELL",
+  "code": {
+    "impacts": {
+      "MAINTAINABILITY": "MEDIUM"
+    },
+    "attribute": "LOGICAL"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "1min"
+  },
+  "tags": [
+    "cwe",
+    "cert",
+    "unused"
+  ],
+  "defaultSeverity": "Major",
+  "ruleSpecification": "RSPEC-1854",
+  "sqKey": "S1854",
+  "scope": "All",
+  "securityStandards": {
+    "CERT": [
+      "MSC13-C.",
+      "MSC56-J."
+    ],
+    "CWE": [
+      563
+    ]
+  },
+  "quickfix": "unknown"
+}

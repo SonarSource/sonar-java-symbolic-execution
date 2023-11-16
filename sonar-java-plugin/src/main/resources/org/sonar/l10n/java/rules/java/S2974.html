@@ -1,0 +1,27 @@
+<h2>Why is this an issue?</h2>
+<p>Classes with only <code>private</code> constructors should be marked <code>final</code> to prevent any mistaken extension attempts.</p>
+<h3>Noncompliant code example</h3>
+<pre>
+public class PrivateConstructorClass {  // Noncompliant
+  private PrivateConstructorClass() {
+    // ...
+  }
+
+  public static int magic(){
+    return 42;
+  }
+}
+</pre>
+<h3>Compliant solution</h3>
+<pre>
+public final class PrivateConstructorClass {  // Compliant
+  private PrivateConstructorClass() {
+    // ...
+  }
+
+  public static int magic(){
+    return 42;
+  }
+}
+</pre>
+

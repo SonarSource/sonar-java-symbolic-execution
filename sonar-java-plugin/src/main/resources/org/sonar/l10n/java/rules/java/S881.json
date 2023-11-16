@@ -1,0 +1,30 @@
+{
+  "title": "Increment (++) and decrement (--) operators should not be used in a method call or mixed with other operators in an expression",
+  "type": "CODE_SMELL",
+  "code": {
+    "impacts": {
+      "MAINTAINABILITY": "MEDIUM"
+    },
+    "attribute": "LOGICAL"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "5min"
+  },
+  "tags": [
+    "cert"
+  ],
+  "defaultSeverity": "Major",
+  "ruleSpecification": "RSPEC-881",
+  "sqKey": "S881",
+  "scope": "All",
+  "quickfix": "unknown",
+  "securityStandards": {
+    "CERT": [
+      "EXP30-C.",
+      "EXP50-CPP.",
+      "EXP05-J."
+    ]
+  }
+}

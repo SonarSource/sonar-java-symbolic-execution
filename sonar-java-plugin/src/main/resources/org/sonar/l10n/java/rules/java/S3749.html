@@ -1,0 +1,40 @@
+<h2>Why is this an issue?</h2>
+<p>Spring <code>@Component</code>, <code>@Controller</code>, <code>@Service</code>, and <code>@Repository</code> classes are singletons by default,
+meaning only one instance of the class is ever instantiated in the application. Typically such a class might have a few <code>static</code> members,
+such as a logger, but all non-<code>static</code> members should be managed by Spring.</p>
+<p>This rule raises an issue when a singleton <code>@Component</code>, <code>@Controller</code>, <code>@Service</code>, or <code>@Repository</code>,
+not annotated with <code>@ConfigurationProperties</code>, has non-<code>static</code> members that are not annotated with one of:</p>
+<ul>
+  <li> <code>org.springframework.beans.factory.annotation.Autowired</code> </li>
+  <li> <code>org.springframework.beans.factory.annotation.Value</code> </li>
+  <li> <code>javax.annotation.Inject</code> </li>
+  <li> <code>javax.annotation.Resource</code> </li>
+</ul>
+<h2>How to fix it</h2>
+<p>Add one of these annotations to all non-<code>static</code> members: <code>@Resource</code>, <code>@Inject</code>, <code>@Autowired</code> or
+<code>@Value</code>.</p>
+<h3>Code examples</h3>
+<h4>Noncompliant code example</h4>
+<pre>
+@Controller
+public class HelloWorld {
+
+  private String name = null;
+
+  @RequestMapping("/greet", method = GET)
+  public String greet(String greetee) {
+
+    if (greetee != null) {
+      this.name = greetee;
+    }
+
+    return "Hello " + this.name;  // if greetee is null, you see the previous user's data
+  }
+}
+</pre>
+<h2>Resources</h2>
+<ul>
+  <li> <a href="https://www.owasp.org/www-project-top-ten/2017/A3_2017-Sensitive_Data_Exposure">OWASP Top 10 2017 Category A3</a> - Sensitive Data
+  Exposure </li>
+</ul>
+

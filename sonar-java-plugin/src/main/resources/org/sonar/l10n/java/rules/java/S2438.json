@@ -1,0 +1,24 @@
+{
+  "title": "\"Thread\" should not be used where a \"Runnable\" argument is expected",
+  "type": "CODE_SMELL",
+  "code": {
+    "impacts": {
+      "MAINTAINABILITY": "MEDIUM"
+    },
+    "attribute": "CONVENTIONAL"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "15min"
+  },
+  "tags": [
+    "multi-threading",
+    "pitfall"
+  ],
+  "defaultSeverity": "Major",
+  "ruleSpecification": "RSPEC-2438",
+  "sqKey": "S2438",
+  "scope": "All",
+  "quickfix": "unknown"
+}

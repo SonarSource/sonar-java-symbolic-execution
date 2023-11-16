@@ -1,0 +1,24 @@
+{
+  "title": "Annotated Mockito objects should be initialized",
+  "type": "BUG",
+  "code": {
+    "impacts": {
+      "RELIABILITY": "HIGH"
+    },
+    "attribute": "LOGICAL"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "2min"
+  },
+  "tags": [
+    "tests",
+    "mockito"
+  ],
+  "defaultSeverity": "Blocker",
+  "ruleSpecification": "RSPEC-5979",
+  "sqKey": "S5979",
+  "scope": "Tests",
+  "quickfix": "unknown"
+}

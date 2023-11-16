@@ -1,0 +1,35 @@
+{
+  "title": "\"\u003d\u003d\" and \"!\u003d\" should not be used when \"equals\" is overridden",
+  "type": "CODE_SMELL",
+  "code": {
+    "impacts": {
+      "MAINTAINABILITY": "LOW"
+    },
+    "attribute": "CLEAR"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "2min"
+  },
+  "tags": [
+    "cwe",
+    "cert",
+    "suspicious"
+  ],
+  "defaultSeverity": "Minor",
+  "ruleSpecification": "RSPEC-1698",
+  "sqKey": "S1698",
+  "scope": "Main",
+  "securityStandards": {
+    "CERT": [
+      "EXP03-J.",
+      "EXP50-J."
+    ],
+    "CWE": [
+      595,
+      597
+    ]
+  },
+  "quickfix": "unknown"
+}

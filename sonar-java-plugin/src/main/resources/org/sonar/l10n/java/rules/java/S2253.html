@@ -1,0 +1,14 @@
+<h2>Why is this an issue?</h2>
+<p>This rule allows banning certain methods.</p>
+<h3>Noncompliant code example</h3>
+<p>Given parameters:</p>
+<ul>
+  <li> className:java.lang.String </li>
+  <li> methodName: replace </li>
+  <li> argumentTypes: java.lang.CharSequence, java.lang.CharSequence </li>
+</ul>
+<pre>
+String name;
+name.replace("A","a");  // Noncompliant
+</pre>
+

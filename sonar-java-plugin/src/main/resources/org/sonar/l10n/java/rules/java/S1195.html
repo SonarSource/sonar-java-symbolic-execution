@@ -1,0 +1,25 @@
+<h2>Why is this an issue?</h2>
+<p>Placing the array designators <code>[]</code> after the type helps maintain backward compatibility with older versions of the Java SE platform.
+This syntax contributes to better readability as it becomes easier to distinguish between array types and non-array types. It helps convey the
+intention of the method to both the developer implementing it and the developer using it.</p>
+<h3>Noncompliant code example</h3>
+<pre data-diff-id="1" data-diff-type="noncompliant">
+public class Cube {
+    private int magicNumbers[] = { 42 };      // Noncompliant
+    public int getVector()[] { /* ... */ }    // Noncompliant
+    public int[] getMatrix()[] { /* ... */ }  // Noncompliant
+}
+</pre>
+<h3>Compliant solution</h3>
+<pre data-diff-id="1" data-diff-type="compliant">
+public class Cube {
+    private int[] magicNumbers = { 42 };      // Compliant
+    public int[] getVector() { /* ... */ }    // Compliant
+    public int[][] getMatrix() { /* ... */ }  // Compliant
+}
+</pre>
+<h2>Documentation</h2>
+<ul>
+  <li> <a href="https://docs.oracle.com/javase/specs/jls/se20/html/jls-10.html">Oracle Java Language Specification</a> - Arrays </li>
+</ul>
+

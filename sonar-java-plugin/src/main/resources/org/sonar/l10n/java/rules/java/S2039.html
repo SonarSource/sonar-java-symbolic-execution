@@ -1,0 +1,37 @@
+<h2>Why is this an issue?</h2>
+<p>Failing to explicitly declare the visibility of a member variable could result it in having a visibility you don’t expect, and potentially leave it
+open to unexpected modification by other classes.</p>
+<p>The default access level modifier may be intentional; in that case, this rule can report false positives.</p>
+<h3>Noncompliant code example</h3>
+<pre data-diff-id="1" data-diff-type="noncompliant">
+class Ball {
+  String color = "red";  // Noncompliant
+}
+enum A {
+  B;
+  int a;  // Noncompliant
+}
+</pre>
+<h3>Compliant solution</h3>
+<pre data-diff-id="1" data-diff-type="compliant">
+class Ball {
+  private String color = "red";  // Compliant
+}
+enum A {
+  B;
+  private int a;  // Compliant
+}
+</pre>
+<h3>Exceptions</h3>
+<ul>
+  <li> Members with comments containing the word <code>modifier</code> are ignored, as it indicates the modifier is intentionally omitted. </li>
+  <li> Members annotated with the <code>@VisibleForTesting</code> annotation are ignored, as it indicates that visibility has been purposely relaxed
+  to make the code testable. </li>
+</ul>
+<pre>
+class Cone {
+  @VisibleForTesting
+  Logger logger; // Compliant
+}
+</pre>
+

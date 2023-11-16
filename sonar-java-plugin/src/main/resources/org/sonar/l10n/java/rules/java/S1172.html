@@ -1,0 +1,65 @@
+<h2>Why is this an issue?</h2>
+<p>A typical code smell known as unused function parameters refers to parameters declared in a function but not used anywhere within the function’s
+body. While this might seem harmless at first glance, it can lead to confusion and potential errors in your code. Disregarding the values passed to
+such parameters, the function’s behavior will be the same, but the programmer’s intention won’t be clearly expressed anymore. Therefore, removing
+function parameters that are not being utilized is considered best practice.</p>
+<h3>Exceptions</h3>
+<p>The rule will not raise issues for unused parameters:</p>
+<ul>
+  <li> that are annotated with <code>@javax.enterprise.event.Observes</code> </li>
+  <li> in overrides and implementation methods </li>
+  <li> in interface <code>default</code> methods </li>
+  <li> in non-private methods that only <code>throw</code> or that have empty bodies </li>
+  <li> in annotated methods, unless the annotation is <code>@SuppressWarning("unchecked")</code> or <code>@SuppressWarning("rawtypes")</code>, in
+  which case the annotation will be ignored </li>
+  <li> in overridable methods (non-final, or not member of a final class, non-static, non-private), if the parameter is documented with a proper
+  javadoc. </li>
+</ul>
+<h2>How to fix it</h2>
+<p>Having unused function parameters in your code can lead to confusion and misunderstanding of a developer’s intention. They reduce code readability
+and introduce the potential for errors. To avoid these problems, developers should remove unused parameters from function declarations.</p>
+<h3>Code examples</h3>
+<h4>Noncompliant code example</h4>
+<pre data-diff-id="1" data-diff-type="noncompliant">
+void doSomething(int a, int b) { // Noncompliant, "b" is unused
+  compute(a);
+}
+</pre>
+<h4>Compliant solution</h4>
+<pre data-diff-id="1" data-diff-type="compliant">
+void doSomething(int a) {
+  compute(a);
+}
+</pre>
+<p>Examples of exceptions:</p>
+<pre>
+@Override
+void doSomething(int a, int b) {     // no issue reported on b
+  compute(a);
+}
+
+public void foo(String s) {
+  // designed to be extended but noop in standard case
+}
+
+protected void bar(String s) {
+  //open-closed principle
+}
+
+public void qix(String s) {
+  throw new UnsupportedOperationException("This method should be implemented in subclasses");
+}
+
+/**
+ * @param s This string may be used for further computation in overriding classes
+ */
+protected void foobar(int a, String s) { // no issue, method is overridable and unused parameter has proper javadoc
+  compute(a);
+}
+</pre>
+<h2>Resources</h2>
+<ul>
+  <li> <a href="https://wiki.sei.cmu.edu/confluence/x/5dUxBQ">CERT, MSC12-C.</a> - Detect and remove code that has no effect or is never executed
+  </li>
+</ul>
+

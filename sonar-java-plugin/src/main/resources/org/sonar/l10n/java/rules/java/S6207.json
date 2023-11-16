@@ -1,0 +1,23 @@
+{
+  "type": "CODE_SMELL",
+  "code": {
+    "impacts": {
+      "MAINTAINABILITY": "MEDIUM"
+    },
+    "attribute": "CLEAR"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "5min"
+  },
+  "tags": [
+    "java16"
+  ],
+  "defaultSeverity": "Major",
+  "ruleSpecification": "RSPEC-6207",
+  "sqKey": "S6207",
+  "scope": "Main",
+  "quickfix": "unknown",
+  "title": "Redundant constructors\/methods should be avoided in records"
+}

@@ -1,0 +1,21 @@
+{
+  "title": "Indexes to passed to \"String\" operations should be within the string\u0027s bounds",
+  "type": "BUG",
+  "code": {
+    "impacts": {
+      "RELIABILITY": "MEDIUM"
+    },
+    "attribute": "LOGICAL"
+  },
+  "status": "ready",
+  "remediation": {
+    "func": "Constant\/Issue",
+    "constantCost": "15min"
+  },
+  "tags": [],
+  "defaultSeverity": "Major",
+  "ruleSpecification": "RSPEC-3039",
+  "sqKey": "S3039",
+  "scope": "Main",
+  "quickfix": "unknown"
+}

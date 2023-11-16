@@ -1,0 +1,49 @@
+<h2>Why is this an issue?</h2>
+<p><code>static</code> methods can be accessed without an instance of the enclosing class, so there’s no reason to instantiate a class that has only
+<code>static</code> methods.</p>
+<h3>Noncompliant code example</h3>
+<pre>
+public class TextUtils {
+  public static String stripHtml(String source) {
+    return source.replaceAll("&lt;[^&gt;]+&gt;", "");
+  }
+}
+
+public class TextManipulator {
+
+  // ...
+
+  public void cleanText(String source) {
+    TextUtils textUtils = new TextUtils(); // Noncompliant
+
+    String stripped = textUtils.stripHtml(source);
+
+    //...
+  }
+}
+</pre>
+<h3>Compliant solution</h3>
+<pre>
+public class TextUtils {
+  public static String stripHtml(String source) {
+    return source.replaceAll("&lt;[^&gt;]+&gt;", "");
+  }
+}
+
+public class TextManipulator {
+
+  // ...
+
+  public void cleanText(String source) {
+    String stripped = TextUtils.stripHtml(source);
+
+    //...
+  }
+}
+</pre>
+<h2>Resources</h2>
+<h3>Related rules</h3>
+<ul>
+  <li> {rule:java:S1118} - Utility classes should not have public constructors </li>
+</ul>
+
