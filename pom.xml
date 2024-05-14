@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.sonarsource.parent</groupId>
+    <artifactId>parent</artifactId>
+    <version>72.0.0.1405</version>
+  </parent>
+
+  <groupId>org.sonarsource.java</groupId>
+  <artifactId>sonar-java-symbolic-execution</artifactId>
+  <version>1.0.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>SonarJavaSE</name>
+  <description>Symbolic Execution rules for Java</description>
+  <inceptionYear>2024</inceptionYear>
+  <organization>
+    <name>SonarSource</name>
+    <url>http://www.sonarsource.com</url>
+  </organization>
+
+  <scm>
+    <connection>scm:git:git@github.com:SonarSource/sonar-java-symbolic-execution.git</connection>
+    <developerConnection>scm:git:git@github.com:SonarSource/sonar-java-symbolic-execution.git</developerConnection>
+    <url>https://github.com/SonarSource/sonar-java-symbolic-execution</url>
+    <tag>HEAD</tag>
+  </scm>
+  <issueManagement>
+    <system>JIRA</system>
+    <url>https://sonarsource.atlassian.net/browse/SONARJAVA</url>
+  </issueManagement>
+  <ciManagement>
+    <system>Cirrus</system>
+    <url>https://cirrus-ci.com/github/SonarSource/sonar-java-symbolic-execution</url>
+  </ciManagement>
+
+  <properties>
+    <gitRepositoryName>sonar-java-symbolic-execution</gitRepositoryName>
+  </properties>
+
+  <dependencyManagement>
+  </dependencyManagement>
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <dependencies>
+            <dependency>
+                <groupId>de.skuzzle.enforcer</groupId>
+                <artifactId>restrict-imports-enforcer-rule</artifactId>
+                <version>1.1.0</version>
+            </dependency>
+        </dependencies>
+        <executions>
+          <execution>
+            <id>ban-internal-api-usage</id>
+            <phase>process-sources</phase>
+            <goals>
+                <goal>enforce</goal>
+            </goals>
+            <configuration>
+                <rules>
+                    <restrictImports implementation="de.skuzzle.enforcer.restrictimports.rule.RestrictImports">
+                      <reason>Do not use classes from org.sonar.api.internal in production code</reason>
+                      <bannedImports>
+                        <bannedImport>org.sonar.api.internal.**</bannedImport>
+                      </bannedImports>
+                    </restrictImports>
+                </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>3.1.2</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-shade-plugin</artifactId>
+          <version>3.5.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>3.4.0</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+</project>
