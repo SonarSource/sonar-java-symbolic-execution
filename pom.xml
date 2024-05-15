@@ -21,6 +21,10 @@
     <url>http://www.sonarsource.com</url>
   </organization>
 
+  <modules>
+    <module>symbolic-execution-plugin</module>
+  </modules>
+
   <scm>
     <connection>scm:git:git@github.com:SonarSource/sonar-java-symbolic-execution.git</connection>
     <developerConnection>scm:git:git@github.com:SonarSource/sonar-java-symbolic-execution.git</developerConnection>
@@ -38,9 +42,24 @@
 
   <properties>
     <gitRepositoryName>sonar-java-symbolic-execution</gitRepositoryName>
+    <version.sonar.plugin.api>10.7.0.2191</version.sonar.plugin.api>
+    <sonar.java.require.version>7.24.0.32100</sonar.java.require.version>
   </properties>
 
   <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.sonarsource.api.plugin</groupId>
+        <artifactId>sonar-plugin-api</artifactId>
+        <version>${version.sonar.plugin.api}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>com.google.code.findbugs</groupId>
+        <artifactId>jsr305</artifactId>
+        <version>3.0.2</version>
+      </dependency>
+    </dependencies>
   </dependencyManagement>
   <build>
     <plugins>
