@@ -46,3 +46,22 @@ build_task:
     - source cirrus-env BUILD-PRIVATE
     - regular_mvn_build_deploy_analyze
   cleanup_before_cache_script: cleanup_maven_repository
+
+promote_task:
+  depends_on:
+    - build
+#  <<: *ONLY_SONARSOURCE_QA
+  eks_container:
+    <<: *CONTAINER_DEFINITION
+    cpu: 0.5
+    memory: 500M
+  env:
+    ARTIFACTORY_PROMOTE_ACCESS_TOKEN: VAULT[development/artifactory/token/${CIRRUS_REPO_OWNER}-${CIRRUS_REPO_NAME}-promoter access_token]
+    #artifacts that will have downloadable links in burgr
+    ARTIFACTS: "com.sonarsource.java:sonar-symbolic-execution-plugin:jar"
+  maven_cache:
+    folder: "${CIRRUS_WORKING_DIR}/.m2/repository"
+  main_script:
+    - cirrus_promote_maven
+  cleanup_before_cache_script:
+    - cleanup_maven_repository
