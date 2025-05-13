@@ -14,10 +14,9 @@
   <name>SonarQube Java :: Symbolic Execution Plugin</name>
 
   <properties>
-      <maven.compiler.source>17</maven.compiler.source>
-      <maven.compiler.target>17</maven.compiler.target>
       <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
       <maven.deploy.skip>false</maven.deploy.skip>
+      <sonar.java.version>8.14.0.39102</sonar.java.version>
   </properties>
 
   <build>
@@ -98,8 +97,10 @@
         </executions>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
         <configuration>
+          <release>17</release>
           <source>17</source>
           <target>17</target>
         </configuration>
@@ -128,9 +129,9 @@
 
   <dependencies>
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>org.sonarsource.java</groupId>
       <artifactId>java-frontend</artifactId>
-      <version>${project.version}</version>
+      <version>${sonar.java.version}</version>
     </dependency>
     <dependency>
       <groupId>org.sonarsource.api.plugin</groupId>
@@ -163,13 +164,13 @@
     <dependency>
       <groupId>org.sonarsource.java</groupId>
       <artifactId>test-classpath-reader</artifactId>
-      <version>${project.version}</version>
+      <version>${sonar.java.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>org.sonarsource.java</groupId>
       <artifactId>java-checks-testkit</artifactId>
-      <version>${project.version}</version>
+      <version>${sonar.java.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -204,9 +205,9 @@
     </dependency>
     <!-- to make sure issue filters are still workin -->
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>org.sonarsource.java</groupId>
       <artifactId>java-checks</artifactId>
-      <version>${project.version}</version>
+      <version>${sonar.java.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
