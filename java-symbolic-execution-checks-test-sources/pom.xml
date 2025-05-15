@@ -6,7 +6,7 @@
 
   <parent>
     <groupId>org.sonarsource.java</groupId>
-    <artifactId>java-se</artifactId>
+    <artifactId>sonar-java-symbolic-execution</artifactId>
     <version>8.15.0-SNAPSHOT</version>
   </parent>
 
