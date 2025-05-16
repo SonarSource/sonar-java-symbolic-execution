@@ -32,7 +32,7 @@
           <sonarLintSupported>true</sonarLintSupported>
           <skipDependenciesPackaging>true</skipDependenciesPackaging>
           <pluginApiMinVersion>9.14.0.375</pluginApiMinVersion>
-          <requirePlugins>java:${project.version}</requirePlugins>
+          <requirePlugins>java:${sonar.java.version}</requirePlugins>
           <requiredForLanguages>java,jsp</requiredForLanguages>
         </configuration>
       </plugin>
@@ -86,12 +86,6 @@
                     <exclude>NOTICE*</exclude>
                   </excludes>
                 </filter>
-                <filter>
-                  <artifact>org.sonarsource.java:java-frontend</artifact>
-                  <includes>
-                    <include>**</include>
-                  </includes>
-                </filter>
               </filters>
             </configuration>
           </execution>
@@ -128,9 +122,9 @@
 
   <dependencies>
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>org.sonarsource.java</groupId>
       <artifactId>java-frontend</artifactId>
-      <version>${project.version}</version>
+      <version>${sonar.java.version}</version>
     </dependency>
     <dependency>
       <groupId>org.sonarsource.api.plugin</groupId>
@@ -163,13 +157,13 @@
     <dependency>
       <groupId>org.sonarsource.java</groupId>
       <artifactId>test-classpath-reader</artifactId>
-      <version>${project.version}</version>
+      <version>${sonar.java.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>org.sonarsource.java</groupId>
       <artifactId>java-checks-testkit</artifactId>
-      <version>${project.version}</version>
+      <version>${sonar.java.version}</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -204,9 +198,9 @@
     </dependency>
     <!-- to make sure issue filters are still workin -->
     <dependency>
-      <groupId>${project.groupId}</groupId>
+      <groupId>org.sonarsource.java</groupId>
       <artifactId>java-checks</artifactId>
-      <version>${project.version}</version>
+      <version>${sonar.java.version}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
