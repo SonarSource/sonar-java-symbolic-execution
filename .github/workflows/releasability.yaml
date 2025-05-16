@@ -33,7 +33,7 @@ jobs:
           ARTIFACTORY_URL: ${{ fromJSON(steps.secrets.outputs.vault).ARTIFACTORY_URL }}
           REPO: sonarsource-public-builds
           GROUP_ID: org.sonarsource.java
-          ARTIFACT_ID: sonar-java-plugin
+          ARTIFACT_ID: sonar-java-symbolic-execution-plugin
         run: |
           if [[ -z "${{ github.event.inputs.version }}" ]]; then
             echo "version not provided, pulling latest version from $REPO."
