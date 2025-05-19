@@ -49,8 +49,8 @@
             <configuration>
               <rules>
                 <requireFilesSize>
-                  <maxsize>15000000</maxsize>
-                  <minsize>10000000</minsize>
+                  <maxsize>1000000</maxsize>
+                  <minsize>500000</minsize>
                   <files>
                     <file>${project.build.directory}/${project.build.finalName}.jar</file>
                   </files>
@@ -125,6 +125,7 @@
       <groupId>org.sonarsource.java</groupId>
       <artifactId>java-frontend</artifactId>
       <version>${sonar.java.version}</version>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.sonarsource.api.plugin</groupId>
