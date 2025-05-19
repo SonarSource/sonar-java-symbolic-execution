@@ -9,11 +9,11 @@
   </parent>
 
   <groupId>org.sonarsource.java</groupId>
-  <artifactId>java</artifactId>
+  <artifactId>sonar-java-symbolic-execution</artifactId>
   <version>8.15.0-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>SonarJava</name>
-  <description>Code Analyzer for Java</description>
+  <name>SonarQube Java :: Symbolic Execution</name>
+  <description>Symbolic execution analyzer for Java</description>
   <url>http://redirect.sonarsource.com/plugins/java.html</url>
   <inceptionYear>2012</inceptionYear>
   <organization>
@@ -60,7 +60,7 @@
   </scm>
   <issueManagement>
     <system>JIRA</system>
-    <url>https://jira.sonarsource.com/browse/SONARJAVA</url>
+    <url>https://jira.sonarsource.com/browse/JAVASE</url>
   </issueManagement>
   <ciManagement>
     <system>Cirrus CI</system>
@@ -93,7 +93,7 @@
     <artifactsToPublish>${project.groupId}:sonar-java-symbolic-execution-plugin:jar</artifactsToPublish>
 
     <!-- Overrides parent pom to use a more recent version of jacoco -->
-    <version.jacoco.plugin>0.8.11</version.jacoco.plugin>
+    <version.jacoco.plugin>0.8.13</version.jacoco.plugin>
   </properties>
 
   <distributionManagement>
