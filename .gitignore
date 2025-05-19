@@ -4,9 +4,7 @@ dependency-reduced-pom.xml
 *.versionsBackup
 
 # ---- IntelliJ IDEA
-*.iws
 *.iml
-*.ipr
 .idea/
 
 # ---- Eclipse
@@ -24,12 +22,6 @@ dependency-reduced-pom.xml
 
 # ---- Mac OS X
 .DS_Store
-Icon?
-# Thumbnails
-._*
-# Files that might appear on external disk
-.Spotlight-V100
-.Trashes
 
 # ---- Windows
 # Windows image file caches
@@ -37,5 +29,4 @@ Thumbs.db
 # Folder config file
 Desktop.ini
 
-.java-version
 .mvn/.develocity/
