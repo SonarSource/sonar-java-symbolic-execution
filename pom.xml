@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.sonarsource.parent</groupId>
+    <artifactId>parent</artifactId>
+    <version>83.0.0.2369</version>
+  </parent>
+
+  <groupId>org.sonarsource.java</groupId>
+  <artifactId>java</artifactId>
+  <version>8.15.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>SonarJava</name>
+  <description>Code Analyzer for Java</description>
+  <url>http://redirect.sonarsource.com/plugins/java.html</url>
+  <inceptionYear>2012</inceptionYear>
+  <organization>
+    <name>SonarSource</name>
+    <url>http://www.sonarsource.com</url>
+  </organization>
+  <licenses>
+    <license>
+      <name>SSALv1</name>
+      <url>https://sonarsource.com/license/ssal/</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <developers>
+    <!-- Main maintainers -->
+    <developer><name>Alban Auzeill</name>         <id>alban-auzeill</id>                     <organization>SonarSource</organization></developer>
+    <developer><name>Angelo Buono</name>          <id>ADarko22</id>                          <organization>SonarSource</organization></developer>
+    <developer><name>Dorian Burihabwa</name>      <id>dorian-burihabwa-sonarsource</id>      <organization>SonarSource</organization></developer>
+    <developer><name>Irina Batinic</name>         <id>irina-batinic-sonarsource</id>         <organization>SonarSource</organization></developer>
+    <developer><name>Johann Beleites</name>       <id>johann-beleites-sonarsource</id>       <organization>SonarSource</organization></developer>
+    <developer><name>Leonardo Pilastri</name>     <id>leonardo-pilastri-sonarsource</id>     <organization>SonarSource</organization></developer>
+    <developer><name>Marco Kaufmann</name>        <id>kaufco</id>                            <organization>SonarSource</organization></developer>
+    <developer><name>Margarita Nedzelska</name>   <id>leveretka</id>                         <organization>SonarSource</organization></developer>
+    <developer><name>Michael Gumowski</name>      <id>Wohops</id>                            <organization>SonarSource</organization></developer>
+    <!-- Frequent Contributors -->
+    <developer><name>Chrislain Razafimahefa</name><id>chrislain-razafimahefa-sonarsource</id><organization>SonarSource</organization></developer>
+    <developer><name>Evgeny Mandrikov</name>      <id>godin</id>                             <organization>SonarSource</organization></developer>
+    <developer><name>Nicolas Peru</name>          <id>benzonico</id>                         <organization>SonarSource</organization></developer>
+    <developer><name>Quentin Jaquier</name>       <id>quentin-jaquier-sonarsource</id>       <organization>SonarSource</organization></developer>
+    <developer><name>Sebastian Hungerecker</name> <id>sebastian-hungerecker-sonarsource</id> <organization>SonarSource</organization></developer>
+    <developer><name>Tibor Blenessy</name>        <id>saberduck</id>                         <organization>SonarSource</organization></developer>
+  </developers>
+
+  <modules>
+    <module>java-symbolic-execution</module>
+  </modules>
+
+  <scm>
+    <connection>scm:git:git@github.com:SonarSource/sonar-java-symbolic-execution.git</connection>
+    <developerConnection>scm:git:git@github.com:SonarSource/sonar-java-symbolic-execution.git</developerConnection>
+    <url>https://github.com/SonarSource/sonar-java-symbolic-execution</url>
+    <tag>HEAD</tag>
+  </scm>
+  <issueManagement>
+    <system>JIRA</system>
+    <url>https://jira.sonarsource.com/browse/SONARJAVA</url>
+  </issueManagement>
+  <ciManagement>
+    <system>Cirrus CI</system>
+    <url>https://cirrus-ci.com/github/SonarSource/sonar-java-symbolic-execution</url>
+  </ciManagement>
+
+  <properties>
+    <license.title>SonarQube Java</license.title>
+
+    <jdk.min.version>17</jdk.min.version>
+
+    <maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
+
+    <sonar.java.version>8.15.0.39210</sonar.java.version>
+    <sonar.version>25.1.0.102122</sonar.version>
+    <!--
+      sonar-plugin-api should be compatible with SQ peach. You can see which version SQ is using
+      at SonarSource/sonarqube/gradle.properties
+     -->
+    <sonar.plugin.api.version>11.0.0.2664</sonar.plugin.api.version>
+    <sonarlint.plugin.api.version>10.13.0.79996</sonarlint.plugin.api.version>
+    <analyzer.commons.version>2.17.0.3322</analyzer.commons.version>
+    <orchestrator.version>5.5.0.2535</orchestrator.version>
+    <sslr.version>1.24.0.633</sslr.version>
+    <argLine>-Xmx512m</argLine>
+    <gitRepositoryName>sonar-java-symbolic-execution</gitRepositoryName>
+    <!-- Use more recent version than the one in parent-oss to support jreMinVersion -->
+
+    <!-- Release: enable publication to Bintray -->
+    <artifactsToPublish>${project.groupId}:sonar-java-symbolic-execution-plugin:jar</artifactsToPublish>
+
+    <!-- Overrides parent pom to use a more recent version of jacoco -->
+    <version.jacoco.plugin>0.8.11</version.jacoco.plugin>
+  </properties>
+
+  <distributionManagement>
+    <repository>
+      <id>local-folder</id>
+      <name>Local folder to test deployment configuration</name>
+      <url>file:./local-deployment</url>
+    </repository>
+  </distributionManagement>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.sonarsource.api.plugin</groupId>
+        <artifactId>sonar-plugin-api</artifactId>
+        <version>${sonar.plugin.api.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.sonarsource.api.plugin</groupId>
+        <artifactId>sonar-plugin-api-test-fixtures</artifactId>
+        <version>${sonar.plugin.api.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.sonarsource.sonarlint.core</groupId>
+        <artifactId>sonarlint-plugin-api</artifactId>
+        <version>${sonarlint.plugin.api.version}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.sonarsource.sonarlint.core</groupId>
+        <artifactId>sonarlint-core</artifactId>
+        <version>${sonarlint.plugin.api.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.sonarsource.sonarqube</groupId>
+        <artifactId>sonar-plugin-api-impl</artifactId>
+        <version>${sonar.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.sonarsource.sonarqube</groupId>
+        <artifactId>sonar-testing-harness</artifactId>
+        <version>${sonar.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.sonarsource.analyzer-commons</groupId>
+        <artifactId>sonar-analyzer-commons</artifactId>
+        <version>${analyzer.commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonarsource.analyzer-commons</groupId>
+        <artifactId>sonar-analyzer-recognizers</artifactId>
+        <version>${analyzer.commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonarsource.analyzer-commons</groupId>
+        <artifactId>sonar-xml-parsing</artifactId>
+        <version>${analyzer.commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonarsource.analyzer-commons</groupId>
+        <artifactId>sonar-analyzer-test-commons</artifactId>
+        <version>${analyzer.commons.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.sonarsource.analyzer-commons</groupId>
+        <artifactId>sonar-regex-parsing</artifactId>
+        <version>${analyzer.commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonarsource.analyzer-commons</groupId>
+        <artifactId>sonar-performance-measure</artifactId>
+        <version>${analyzer.commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonarsource.sslr</groupId>
+        <artifactId>sslr-core</artifactId>
+        <version>${sslr.version}</version>
+        <exclusions>
+          <exclusion>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>33.3.1-jre</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.code.findbugs</groupId>
+        <artifactId>jsr305</artifactId>
+        <version>3.0.2</version>
+      </dependency>
+      <dependency>
+        <groupId>org.sonarsource.sslr</groupId>
+        <artifactId>sslr-testing-harness</artifactId>
+        <version>${sslr.version}</version>
+        <scope>test</scope>
+        <exclusions>
+          <exclusion>
+            <groupId>org.easytesting</groupId>
+            <artifactId>fest-assert</artifactId>
+          </exclusion>
+          <!-- junit 4.12 depends on more recent hamcrest -->
+          <exclusion>
+            <artifactId>hamcrest-all</artifactId>
+            <groupId>org.hamcrest</groupId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+
+      <dependency>
+        <groupId>org.junit</groupId>
+        <artifactId>junit-bom</artifactId>
+        <version>5.11.2</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>junit</groupId>
+        <artifactId>junit</artifactId>
+        <version>4.13.2</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-core</artifactId>
+        <version>5.14.2</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.mockito</groupId>
+        <artifactId>mockito-junit-jupiter</artifactId>
+        <version>5.14.2</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.assertj</groupId>
+        <artifactId>assertj-core</artifactId>
+        <version>3.26.3</version>
+        <scope>test</scope>
+      </dependency>
+
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>1.7.30</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.maven</groupId>
+        <artifactId>maven-project</artifactId>
+        <version>2.2.1</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.apache.commons</groupId>
+        <artifactId>commons-lang3</artifactId>
+        <version>3.17.0</version>
+      </dependency>
+      <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-expression</artifactId>
+        <version>6.1.13</version>
+      </dependency>
+      <dependency>
+        <groupId>commons-io</groupId>
+        <artifactId>commons-io</artifactId>
+        <version>2.17.0</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.code.gson</groupId>
+        <artifactId>gson</artifactId>
+        <version>2.11.0</version>
+        <scope>compile</scope>
+      </dependency>
+      <!-- staxmate is used by java-surefire -->
+      <dependency>
+        <groupId>com.fasterxml.staxmate</groupId>
+        <artifactId>staxmate</artifactId>
+        <version>2.4.1</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>de.thetaphi</groupId>
+          <artifactId>forbiddenapis</artifactId>
+          <version>3.6</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>${version.jar.plugin}</version>
+          <configuration>
+            <archive>
+              <addMavenDescriptor>false</addMavenDescriptor>
+              <manifestEntries>
+                <!--
+                  Develocity can reduce the build duration using its cache only for deterministic build.
+                  'Build-Time', defined in the parent pom, changes at each build and prevents us from benefiting from the cache.
+                  We didn't find a solution to unset 'Build-Time', so as a workaround, we provide a constant value '_'.
+                -->
+                <Build-Time>_</Build-Time>
+              </manifestEntries>
+            </archive>
+          </configuration>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+
+    <plugins>
+      <plugin>
+        <groupId>de.thetaphi</groupId>
+        <artifactId>forbiddenapis</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <configuration>
+              <failOnUnresolvableSignatures>false</failOnUnresolvableSignatures>
+              <signatures>
+                <![CDATA[
+                com.google.common.base.Preconditions#checkNotNull(java.lang.Object) @ use java.util.Objects#requireNonNull(java.lang.Object) instead
+
+                com.google.common.collect.ImmutableList#of(java.lang.Object) @ use java.util.Collections#singletonList(java.util.Objects#requireNonNull(java.lang.Object)) instead, and also consider omitting unnecessary null-checks
+                com.google.common.collect.ImmutableSet#of(java.lang.Object) @ use java.util.Collections#singleton(java.util.Objects#requireNonNull(java.lang.Object)) instead, and also consider omitting unnecessary null-checks
+
+                com.google.common.collect.ImmutableList#of() @ use java.util.Collections#emptyList() instead
+                com.google.common.collect.ImmutableSet#of() @ use java.util.Collections#emptySet() instead
+
+                # According to javadoc of following methods
+                # "for Java 7 and later: this method is now unnecessary and should be treated as deprecated"
+                @defaultMessage use diamond operator instead
+                com.google.common.collect.Lists#newArrayList()
+                com.google.common.collect.Lists#newLinkedList()
+                com.google.common.collect.Maps#newHashMap()
+                com.google.common.collect.Sets#newHashSet()
+                com.google.common.base.Objects @ use java.util.Objects instead
+                ]]>
+              </signatures>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <runOrder>alphabetical</runOrder>
+          <environmentVariables>
+            <M2_REPO>${settings.localRepository}</M2_REPO>
+          </environmentVariables>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+
+</project>

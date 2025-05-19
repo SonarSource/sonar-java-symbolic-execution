@@ -1,0 +1,55 @@
+name: Update Rule Metadata
+
+on: workflow_dispatch
+
+env:
+  PR_BRANCH_NAME: gh-action/update-rule-metadata
+
+jobs:
+  UpdateRuleMetadata_job:
+    name: Update Rule Metadata
+    runs-on: ubuntu-latest-large
+    permissions:
+      pull-requests: write
+      contents: write
+      id-token: write
+
+    steps:
+
+      - name: Checkout Sources
+        uses: actions/checkout@v4
+
+      - name: Setup JFrog
+        uses: SonarSource/jfrog-setup-wrapper@v3
+        with:
+          artifactoryRoleSuffix: private-reader
+
+      - name: Setup Rule API
+        run: |
+          jfrog rt curl -sLf "sonarsource-private-releases/com/sonarsource/rule-api/rule-api/%5BRELEASE%5D/rule-api-%5BRELEASE%5D.jar" -o rule-api.jar
+          echo "Latest com.sonarsource.rule-api:rule-api release:"
+          jar xf rule-api.jar META-INF/MANIFEST.MF
+          grep 'Implementation-Version' META-INF/MANIFEST.MF
+        working-directory: /tmp
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Update Files
+        run: |
+          cd java-symbolic-execution
+          java -jar "/tmp/rule-api.jar" update
+
+      - name: Create PR
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "${GITHUB_ACTOR}"
+          git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+          git checkout -b "${{ env.PR_BRANCH_NAME }}"
+          git commit -m 'Update rule metadata' -a
+          git push --set-upstream origin "${{ env.PR_BRANCH_NAME }}"
+          gh pr create -B master --title 'Update rule metadata' --body ''
