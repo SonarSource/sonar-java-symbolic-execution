@@ -74,7 +74,7 @@
 
     <maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
 
-    <sonar.java.version>8.15.0.39210</sonar.java.version>
+    <sonar.java.version>8.15.0.39249</sonar.java.version>
     <sonar.version>25.1.0.102122</sonar.version>
     <!--
       sonar-plugin-api should be compatible with SQ peach. You can see which version SQ is using

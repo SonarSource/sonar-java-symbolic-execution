@@ -49,8 +49,8 @@
             <configuration>
               <rules>
                 <requireFilesSize>
-                  <maxsize>1000000</maxsize>
-                  <minsize>500000</minsize>
+                  <maxsize>1500000</maxsize>
+                  <minsize>900000</minsize>
                   <files>
                     <file>${project.build.directory}/${project.build.finalName}.jar</file>
                   </files>
@@ -154,6 +154,10 @@
     <dependency>
       <groupId>org.sonarsource.analyzer-commons</groupId>
       <artifactId>sonar-analyzer-commons</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
     </dependency>
     <dependency>
       <groupId>org.sonarsource.java</groupId>
