@@ -50,6 +50,7 @@
 
   <modules>
     <module>java-symbolic-execution</module>
+    <module>its</module>
   </modules>
 
   <scm>
