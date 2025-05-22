@@ -1,0 +1,4 @@
+[submodule "its/sources"]
+	path = its/sources
+	url = git@github.com:SonarSource/ruling_java.git
+	branch = se-engine
