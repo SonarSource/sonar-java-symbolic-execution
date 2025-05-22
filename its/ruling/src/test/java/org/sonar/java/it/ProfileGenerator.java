@@ -55,6 +55,11 @@ public class ProfileGenerator {
    */
   static void generate(OrchestratorRule orchestrator, @Nullable String qualityProfile, ImmutableMap<String, ImmutableMap<String, String>> rulesParameters,
     Set<String> excluded, Set<String> subsetOfEnabledRules, Set<String> activatedRuleKeys) {
+    generate(orchestrator, null, rulesParameters, excluded, subsetOfEnabledRules, activatedRuleKeys, List.of());
+  }
+
+  static void generate(OrchestratorRule orchestrator, @Nullable String qualityProfile, ImmutableMap<String, ImmutableMap<String, String>> rulesParameters,
+    Set<String> excluded, Set<String> subsetOfEnabledRules, Set<String> activatedRuleKeys, List<String> extraNonDefaultRules) {
     try {
       LOG.info("Generating profile containing all the rules");
       StringBuilder sb = new StringBuilder()
@@ -63,7 +68,9 @@ public class ProfileGenerator {
         .append("<language>").append(LANGUAGE).append("</language>")
         .append("<rules>");
 
-      for (String key : getRuleKeys(orchestrator, qualityProfile)) {
+      List<String> ruleKeys = getRuleKeys(orchestrator, qualityProfile);
+      ruleKeys.addAll(extraNonDefaultRules);
+      for (String key : ruleKeys) {
         if (excluded.contains(key) || (!subsetOfEnabledRules.isEmpty() && !subsetOfEnabledRules.contains(key))) {
           continue;
         }

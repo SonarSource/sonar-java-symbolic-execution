@@ -16,14 +16,12 @@
  */
 package org.sonar.java.it;
 
-import com.google.common.base.Splitter;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.sonar.orchestrator.build.Build;
 import com.sonar.orchestrator.build.BuildResult;
 import com.sonar.orchestrator.build.MavenBuild;
 import com.sonar.orchestrator.build.SonarScanner;
-import com.sonar.orchestrator.container.Edition;
 import com.sonar.orchestrator.container.Server;
 import com.sonar.orchestrator.junit4.OrchestratorRule;
 import com.sonar.orchestrator.junit4.OrchestratorRuleBuilder;
@@ -37,13 +35,11 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
-import org.apache.commons.lang3.StringUtils;
 import org.assertj.core.api.Fail;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -53,13 +49,9 @@ import org.junit.rules.TemporaryFolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.java.test.classpath.TestClasspathUtils;
-import org.sonarqube.ws.Qualityprofiles.SearchWsResponse.QualityProfile;
 import org.sonarqube.ws.client.HttpConnector;
 import org.sonarqube.ws.client.WsClient;
 import org.sonarqube.ws.client.WsClientFactories;
-import org.sonarqube.ws.client.qualityprofiles.ActivateRuleRequest;
-import org.sonarqube.ws.client.qualityprofiles.SearchRequest;
-import org.sonarqube.ws.client.rules.CreateRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -68,16 +60,9 @@ public class JavaRulingTest {
   private static final int LOGS_NUMBER_LINES = 200;
   private static final Logger LOG = LoggerFactory.getLogger(JavaRulingTest.class);
 
-  private static final String INCREMENTAL_ANALYSIS_KEY = "sonar.java.skipUnchanged";
-  private static final String SONAR_CACHING_ENABLED_KEY = "sonar.analysisCache.enabled";
-
-  // by default all rules are enabled, if you want to enable just a subset of rules you can specify the list of
-  // rule keys from the command line using "rules" property, i.e. mvn test -Drules=S100,S101
-  private static final ImmutableSet<String> SUBSET_OF_ENABLED_RULES = ImmutableSet.copyOf(
-      Splitter.on(',').trimResults().omitEmptyStrings().splitToList(
-          System.getProperty("rules", "")
-      )
-  );
+  private static final ImmutableSet<String> SUBSET_OF_ENABLED_RULES = ImmutableSet.of(
+    "S2095", "S2189", "S2222", "S2259", "S2583", "S2589", "S2637", "S2689", "S2755", "S3065",
+    "S3516", "S3518", "S3546", "S3655", "S3824", "S3958", "S3959", "S4165", "S4449", "S6373", "S6374", "S6376", "S6377");
 
   @ClassRule
   public static TemporaryFolder tmpDumpOldFolder = new TemporaryFolder();
@@ -92,77 +77,41 @@ public class JavaRulingTest {
       .useDefaultAdminCredentialsForBuilds(true)
       .setSonarVersion(System.getProperty("sonar.runtimeVersion", "LATEST_RELEASE"))
       .addPlugin(MavenLocation.of("org.sonarsource.java", "sonar-java-plugin", "8.15.0.39249"))
-//      .addPlugin(FileLocation.of(TestClasspathUtils.findModuleJarPath("../../sonar-java-plugin").toFile()))
       .addPlugin(FileLocation.of(TestClasspathUtils.findModuleJarPath("../../java-symbolic-execution/java-symbolic-execution-plugin").toFile()))
       .addPlugin(MavenLocation.of("org.sonarsource.sonar-lits-plugin", "sonar-lits-plugin", "0.11.0.2659"));
 
-    orchestratorBuilder.setEdition(Edition.COMMUNITY);
     return orchestratorBuilder.build();
-  }
-
-  @BeforeClass
-  public static void prepare_quality_profiles() throws Exception {
-    ImmutableMap<String, ImmutableMap<String, String>> rulesParameters = ImmutableMap.<String, ImmutableMap<String, String>>builder()
-      .put(
-        "S1120",
-        ImmutableMap.of("indentationLevel", "4"))
-      .put(
-        "S1451",
-        ImmutableMap.of(
-          "headerFormat",
-          """
-            
-            /*
-             * Copyright (c) 1998, 2006, Oracle and/or its affiliates. All rights reserved.
-             * ORACLE PROPRIETARY/CONFIDENTIAL. Use is subject to license terms."""))
-      .put("S5961", ImmutableMap.of("MaximumAssertionNumber", "50"))
-      .put("S6539", ImmutableMap.of("couplingThreshold", "20"))
-      .build();
-    ImmutableSet<String> disabledRules = ImmutableSet.of(
-      "S1874",
-      "CycleBetweenPackages",
-      // disable because it generates too many issues, performance reasons
-      "S1106"
-      );
-    Set<String> activatedRuleKeys = new HashSet<>();
-    ProfileGenerator.generate(ORCHESTRATOR, rulesParameters, disabledRules, SUBSET_OF_ENABLED_RULES, activatedRuleKeys);
-    instantiateTemplateRule("S2253", "stringToCharArray", "className=\"java.lang.String\";methodName=\"toCharArray\"", activatedRuleKeys);
-    instantiateTemplateRule("S4011", "longDate", "className=\"java.util.Date\";argumentTypes=\"long\"", activatedRuleKeys);
-    instantiateTemplateRule("S124", "commentRegexTest", "regularExpression=\"(?i).*TODO\\(user\\).*\";message=\"bad user\"", activatedRuleKeys);
-    instantiateTemplateRule("S3546", "InstancesOfNewControllerClosedWithDone",
-      "factoryMethod=\"org.sonar.api.server.ws.WebService$Context#createController\";closingMethod=\"org.sonar.api.server.ws.WebService$NewController#done\"", activatedRuleKeys);
-    instantiateTemplateRule("S3546", "JsonWriterNotClosed",
-      "factoryMethod=\"org.sonar.api.server.ws.Response#newJsonWriter\";closingMethod=\"org.sonar.api.utils.text.JsonWriter#close\"", activatedRuleKeys);
-
-    SUBSET_OF_ENABLED_RULES.stream()
-      .filter(ruleKey -> !activatedRuleKeys.contains(ruleKey))
-      .forEach(ruleKey -> Fail.fail("Specified rule does not exist: " + ruleKey));
-
-    prepareDumpOldFolder();
   }
 
   @AfterClass
   public static void afterAllAnalysis() throws IOException {
-    PerformanceStatistics.generate(Paths.get("target","performance"));
+    PerformanceStatistics.generate(Paths.get("target", "performance"));
   }
 
-  private static void prepareDumpOldFolder() throws Exception {
+  @BeforeClass
+  public static void prepare() throws Exception {
+    Set<String> result = new HashSet<>();
+    List<String> extraNonDefaultRules = List.of("S3546", "S6374");
+    ProfileGenerator.generate(ORCHESTRATOR, "Sonar Way", ImmutableMap.of(), new HashSet<>(), SUBSET_OF_ENABLED_RULES, result, extraNonDefaultRules);
+    assertThat(result).hasSize(23); // ALL symbolic-execution rules
+
     Path allRulesFolder = Paths.get("src/test/resources");
-    if (SUBSET_OF_ENABLED_RULES.isEmpty()) {
-      effectiveDumpOldFolder = allRulesFolder.toAbsolutePath();
-    } else {
-      effectiveDumpOldFolder = tmpDumpOldFolder.getRoot().toPath().toAbsolutePath();
-      Files.list(allRulesFolder)
-        .filter(p -> p.toFile().isDirectory())
-        .forEach(srcProjectDir -> copyDumpSubset(srcProjectDir, effectiveDumpOldFolder.resolve(srcProjectDir.getFileName())));
-    }
+    effectiveDumpOldFolder = tmpDumpOldFolder.getRoot().toPath().toAbsolutePath();
+    Files.list(allRulesFolder)
+      .filter(p -> p.toFile().isDirectory())
+      .forEach(srcProjectDir -> copyDumpSubset(srcProjectDir, effectiveDumpOldFolder.resolve(srcProjectDir.getFileName())));
+    System.out.println("!!!!! DUMP OLD FOLDER" + effectiveDumpOldFolder.toAbsolutePath());
+    Files.list(effectiveDumpOldFolder)
+      .filter(p -> p.toFile().isDirectory())
+      .map(Path::toFile)
+      .forEach(dir -> System.out.println(Arrays.toString(dir.list())));
   }
 
   private static void copyDumpSubset(Path srcProjectDir, Path dstProjectDir) {
     try {
       Files.createDirectory(dstProjectDir);
     } catch (IOException e) {
-      throw new IllegalStateException("Unable to create directory: " + dstProjectDir.toString());
+      throw new IllegalStateException("Unable to create directory: " + dstProjectDir);
     }
     SUBSET_OF_ENABLED_RULES.stream()
       .map(ruleKey -> srcProjectDir.resolve("java-" + ruleKey + ".json"))
@@ -181,7 +130,8 @@ public class JavaRulingTest {
   @Test
   public void guava() throws Exception {
     String projectName = "guava";
-    MavenBuild build = test_project("com.google.guava:guava", projectName);
+    String projectKey = "com.google.guava:guava";
+    MavenBuild build = test_project(projectKey, projectName);
     build
       // by default guava is compatible with java 6, however this is not supported with JDK 17
       .setProperty("java.version", "1.7")
@@ -190,6 +140,38 @@ public class JavaRulingTest {
       .setProperty("sonar.java.experimental.batchModeSizeInKB", "8192");
     executeBuildWithCommonProperties(build, projectName);
   }
+
+  @Test
+  public void eclipse_jetty() throws Exception {
+    List<String> dirs = Arrays.asList("jetty-http/", "jetty-io/", "jetty-jmx/", "jetty-server/", "jetty-slf4j-impl/", "jetty-util/", "jetty-util-ajax/", "jetty-xml/", "tests" +
+      "/jetty-http-tools/");
+
+    String mainBranchSourceCode = "eclipse-jetty";
+    String mainBinaries = dirs.stream().map(dir -> FileLocation.of("../sources/" + mainBranchSourceCode + "/" + dir + "target/classes"))
+      .map(JavaRulingTest::getFileLocationAbsolutePath)
+      .collect(Collectors.joining(","));
+
+    final var mainBranch = "eclipse-jetty-main";
+
+    MavenBuild branchBuild = test_project("org.eclipse.jetty:jetty-project", mainBranchSourceCode)
+      // re-define binaries from initial maven build
+      .setProperty("sonar.java.binaries", mainBinaries)
+      .setProperty("sonar.exclusions", "jetty-server/src/main/java/org/eclipse/jetty/server/HttpInput.java," +
+        "jetty-osgi/jetty-osgi-boot/src/main/java/org/eclipse/jetty/osgi/boot/internal/serverfactory/ServerInstanceWrapper.java")
+      .addArgument("-Dpmd.skip=true")
+      .addArgument("-Dcheckstyle.skip=true");
+
+    executeBuildWithCommonProperties(branchBuild, mainBranchSourceCode);
+  }
+
+  private static String getFileLocationAbsolutePath(FileLocation location) {
+    try {
+      return location.getFile().getCanonicalFile().getAbsolutePath();
+    } catch (IOException e) {
+      return "";
+    }
+  }
+
 
   @Test
   public void apache_commons_beanutils() throws Exception {
@@ -327,48 +309,9 @@ public class JavaRulingTest {
   }
 
   private static void assertNoDifferences(String projectName) throws IOException {
+
     String differences = new String(Files.readAllBytes(Paths.get(litsDifferencesPath(projectName))), StandardCharsets.UTF_8);
     assertThat(differences).isEmpty();
-  }
-
-  private static void instantiateTemplateRule(String ruleTemplateKey, String instantiationKey, String params, Set<String> activatedRuleKeys) {
-    if (!SUBSET_OF_ENABLED_RULES.isEmpty() && !SUBSET_OF_ENABLED_RULES.contains(instantiationKey)) {
-      return;
-    }
-    activatedRuleKeys.add(instantiationKey);
-    newAdminWsClient(ORCHESTRATOR)
-      .rules()
-      .create(new CreateRequest()
-      .setName(instantiationKey)
-      .setMarkdownDescription(instantiationKey)
-      .setSeverity("INFO")
-      .setStatus("READY")
-      .setTemplateKey("java:" + ruleTemplateKey)
-      .setCustomKey(instantiationKey)
-      .setPreventReactivation("true")
-      .setParams(Arrays.asList(("name=\"" + instantiationKey + "\";key=\"" + instantiationKey + "\";" +
-        "markdown_description=\"" + instantiationKey + "\";" + params).split(";", 0))));
-
-    String profileKey = newAdminWsClient(ORCHESTRATOR).qualityprofiles()
-      .search(new SearchRequest())
-      .getProfilesList().stream()
-      .filter(qualityProfile -> "rules".equals(qualityProfile.getName()))
-      .map(QualityProfile::getKey)
-      .findFirst()
-      .orElse(null);
-
-    if (StringUtils.isEmpty(profileKey)) {
-      LOG.error("Could not retrieve profile key : Template rule " + ruleTemplateKey + " has not been activated");
-    } else {
-      String ruleKey = "java:" + instantiationKey;
-      newAdminWsClient(ORCHESTRATOR).qualityprofiles()
-        .activateRule(new ActivateRuleRequest()
-          .setKey(profileKey)
-          .setRule(ruleKey)
-          .setSeverity("INFO")
-          .setParams(Collections.emptyList()));
-      LOG.info(String.format("Successfully activated template rule '%s'", ruleKey));
-    }
   }
 
   static WsClient newAdminWsClient(OrchestratorRule orchestrator) {
