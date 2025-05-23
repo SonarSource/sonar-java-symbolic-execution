@@ -37,6 +37,50 @@ To build the plugin and run its unit tests, execute this command from the projec
 
     mvn clean install
 
+
+#### Ruling Test
+
+The "Ruling Test" is an integration test suite that launches the analysis of a large code base, saves the issues created by the plugin in 
+report files, and then compares those results to the set of expected issues (stored as JSON files).
+
+To run the test, first make sure the submodules are checked out:
+
+    git submodule update --init --recursive
+
+Then, ensure that the `JAVA_HOME` environment variable is set for the ruling tests execution and that it points to your local JDK 17 installation.
+Failing to do so will produce inconsistencies with the expected results.
+
+From the `its/ruling` folder, launch the ruling tests:
+
+    mvn clean install -Pit-ruling
+    # Alternatively
+    JAVA_HOME=/my/local/java17/jdk/ mvn clean install -Pit-ruling
+
+This test gives you the opportunity to examine the issues created by each rule and make sure they are what you expect. 
+Any implemented rule is highly likely to raise issues on the multiple projects we use as ruling code base.
+
+* For a newly implemented rule, it means that a first build will most probably fail, caused by differences between expected results 
+(without any values for the new rule) and the new results. You can inspect these new issues by searching for files named after your rule 
+(`squid-SXXXX.json`) in the following folder:
+
+        /path/to/sonar-java-symbolic-execution/its/ruling/target/actual/...
+
+* For existing rules which are modified, you may expect some differences between "actual" (from new analysis) and expected results. 
+Review carefully the changes that are shown and update the expected resources accordingly.
+
+All the `json` files contain a list of lines, indexed by file, explaining where the issues raised by a specific rule are located. 
+If/When everything looks good to you, you can copy the file with the actual issues located at:
+
+    its/ruling/target/actual/
+
+Into the directory with the expected issues:
+
+    its/ruling/src/test/resources/
+
+For example using the command:
+
+    cp its/ruling/target/actual/* its/ruling/src/test/resources/
+
 ### License
 
 Copyright 2012-2025 SonarSource.
