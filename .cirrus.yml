@@ -17,6 +17,20 @@ container_definition: &CONTAINER_DEFINITION
   region: eu-central-1
   namespace: default
 
+orchestrator_cache_preparation_definition: &ORCHESTRATOR_CACHE_PREPARATION_DEFINITION
+  set_orchestrator_home_script: |
+    export TODAY=$(date '+%Y-%m-%d')
+    echo "TODAY=${TODAY}" >> $CIRRUS_ENV
+    echo "ORCHESTRATOR_HOME=${CIRRUS_WORKING_DIR}/orchestrator/${TODAY}" >> $CIRRUS_ENV
+  mkdir_orchestrator_home_script: |
+    echo "Create dir ${ORCHESTRATOR_HOME} if needed"
+    mkdir -p ${ORCHESTRATOR_HOME}
+
+orchestrator_cache_elements_definition: &ORCHESTRATOR_CACHE_ELEMENTS_DEFINITION
+  folder: ${ORCHESTRATOR_HOME}
+  fingerprint_script: echo ${TODAY}
+  reupload_on_changes: "true"
+
 only_sonarsource_qa: &ONLY_SONARSOURCE_QA
   only_if: ${CIRRUS_USER_COLLABORATOR} == 'true' && ${CIRRUS_TAG} == "" && (${CIRRUS_PR} != "" || ${CIRRUS_BRANCH} == "master" || ${CIRRUS_BRANCH} =~ "branch-.*" || ${CIRRUS_BRANCH} =~ "dogfood-on-.*")
 
@@ -41,9 +55,41 @@ build_task:
     - regular_mvn_build_deploy_analyze
   cleanup_before_cache_script: cleanup_maven_repository
 
+ruling_task:
+  depends_on:
+    - build
+  <<: *ONLY_SONARSOURCE_QA
+  eks_container:
+    <<: *CONTAINER_DEFINITION
+    image: ${CIRRUS_AWS_ACCOUNT}.dkr.ecr.eu-central-1.amazonaws.com/base:j17-latest
+    cpu: 14
+    memory: 8G
+  maven_cache:
+    folder: ${CIRRUS_WORKING_DIR}/.m2/repository
+  <<: *ORCHESTRATOR_CACHE_PREPARATION_DEFINITION
+  orchestrator_LATEST_RELEASE_cache:
+    <<: *ORCHESTRATOR_CACHE_ELEMENTS_DEFINITION
+  submodules_script:
+    - git submodule update --init --recursive
+  env:
+    MAVEN_OPTS: "-Xmx3g"
+    matrix:
+      - PROFILE: without-sonarqube-project
+      - PROFILE: only-sonarqube-project
+  ruling_script:
+    - source cirrus-env QA
+    - source set_maven_build_version $BUILD_NUMBER
+    - cd its/ruling
+    - mvn package --batch-mode "-Pit-ruling,$PROFILE" -Dsonar.runtimeVersion=LATEST_RELEASE -Dmaven.test.redirectTestOutputToFile=false -B -e -V -Dparallel=methods -DuseUnlimitedThreads=true
+  cleanup_before_cache_script: cleanup_maven_repository
+  on_failure:
+    actual_artifacts:
+      path: "${CIRRUS_WORKING_DIR}/its/ruling/target/actual/**/*"
+
 promote_task:
   depends_on:
     - build
+    - ruling
   <<: *ONLY_SONARSOURCE_QA
   eks_container:
     <<: *CONTAINER_DEFINITION
