@@ -100,11 +100,6 @@ public class JavaRulingTest {
     Files.list(allRulesFolder)
       .filter(p -> p.toFile().isDirectory())
       .forEach(srcProjectDir -> copyDumpSubset(srcProjectDir, effectiveDumpOldFolder.resolve(srcProjectDir.getFileName())));
-    System.out.println("!!!!! DUMP OLD FOLDER" + effectiveDumpOldFolder.toAbsolutePath());
-    Files.list(effectiveDumpOldFolder)
-      .filter(p -> p.toFile().isDirectory())
-      .map(Path::toFile)
-      .forEach(dir -> System.out.println(Arrays.toString(dir.list())));
   }
 
   private static void copyDumpSubset(Path srcProjectDir, Path dstProjectDir) {
