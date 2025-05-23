@@ -29,7 +29,6 @@ import com.sonar.orchestrator.locator.FileLocation;
 import com.sonar.orchestrator.locator.MavenLocation;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -92,7 +91,8 @@ public class JavaRulingTest {
   public static void prepare() throws Exception {
     Set<String> result = new HashSet<>();
     List<String> extraNonDefaultRules = List.of("S3546", "S6374");
-    ProfileGenerator.generate(ORCHESTRATOR, "Sonar Way", ImmutableMap.of(), new HashSet<>(), SUBSET_OF_ENABLED_RULES, result, extraNonDefaultRules);
+    ProfileGenerator.generate(ORCHESTRATOR, "Sonar Way", ImmutableMap.of(), new HashSet<>(), SUBSET_OF_ENABLED_RULES, result,
+      extraNonDefaultRules);
     assertThat(result).hasSize(23); // ALL symbolic-execution rules
 
     Path allRulesFolder = Paths.get("src/test/resources");
@@ -123,7 +123,7 @@ public class JavaRulingTest {
     try {
       Files.copy(source, targetDir.resolve(source.getFileName()), StandardCopyOption.REPLACE_EXISTING);
     } catch (IOException e) {
-      throw new IllegalStateException("Unable to copy file: " + source.toString());
+      throw new IllegalStateException("Unable to copy file: " + source);
     }
   }
 
@@ -143,15 +143,14 @@ public class JavaRulingTest {
 
   @Test
   public void eclipse_jetty() throws Exception {
-    List<String> dirs = Arrays.asList("jetty-http/", "jetty-io/", "jetty-jmx/", "jetty-server/", "jetty-slf4j-impl/", "jetty-util/", "jetty-util-ajax/", "jetty-xml/", "tests" +
+    List<String> dirs = Arrays.asList("jetty-http/", "jetty-io/", "jetty-jmx/", "jetty-server/", "jetty-slf4j-impl/", "jetty-util/",
+      "jetty-util-ajax/", "jetty-xml/", "tests" +
       "/jetty-http-tools/");
 
     String mainBranchSourceCode = "eclipse-jetty";
     String mainBinaries = dirs.stream().map(dir -> FileLocation.of("../sources/" + mainBranchSourceCode + "/" + dir + "target/classes"))
       .map(JavaRulingTest::getFileLocationAbsolutePath)
       .collect(Collectors.joining(","));
-
-    final var mainBranch = "eclipse-jetty-main";
 
     MavenBuild branchBuild = test_project("org.eclipse.jetty:jetty-project", mainBranchSourceCode)
       // re-define binaries from initial maven build
@@ -234,15 +233,6 @@ public class JavaRulingTest {
     return mavenBuild;
   }
 
-  private static MavenBuild test_existing_project(String projectKey, String projectName) throws IOException {
-    String pomLocation = "../sources/" + projectName + "/pom.xml";
-    File pomFile = FileLocation.of(pomLocation).getFile().getCanonicalFile();
-    //prepareProject(projectKey, projectName);
-    MavenBuild mavenBuild = MavenBuild.create().setPom(pomFile).setCleanPackageSonarGoals().addArgument("-DskipTests");
-    mavenBuild.setProperty("sonar.projectKey", projectKey);
-    return mavenBuild;
-  }
-
   private static void prepareProject(String projectKey, String projectName) {
     ORCHESTRATOR.getServer().provisionProject(projectKey, projectName);
     ORCHESTRATOR.getServer().associateProjectToQualityProfile(projectKey, "java", "rules");
@@ -299,9 +289,9 @@ public class JavaRulingTest {
     if (nbLines > LOGS_NUMBER_LINES) {
       logs = logs.subList(nbLines - LOGS_NUMBER_LINES, nbLines);
     }
-    LOG.error("=================================== START " + logFile.getName() + " ===================================");
-    LOG.error(System.lineSeparator() + logs.stream().collect(Collectors.joining(System.lineSeparator())));
-    LOG.error("===================================== END " + logFile.getName() + " ===================================");
+    LOG.error("=================================== START {} ===================================", logFile.getName());
+    LOG.error("{}{}", System.lineSeparator(), logs.stream().collect(Collectors.joining(System.lineSeparator())));
+    LOG.error("===================================== END {} ===================================", logFile.getName());
   }
 
   private static String litsDifferencesPath(String projectName) {
@@ -310,7 +300,7 @@ public class JavaRulingTest {
 
   private static void assertNoDifferences(String projectName) throws IOException {
 
-    String differences = new String(Files.readAllBytes(Paths.get(litsDifferencesPath(projectName))), StandardCharsets.UTF_8);
+    String differences = Files.readString(Paths.get(litsDifferencesPath(projectName)));
     assertThat(differences).isEmpty();
   }
 

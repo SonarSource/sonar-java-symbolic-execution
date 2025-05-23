@@ -45,20 +45,8 @@ public class ProfileGenerator {
 
   private static final Logger LOG = LoggerFactory.getLogger(ProfileGenerator.class);
 
-  static void generate(OrchestratorRule orchestrator, ImmutableMap<String, ImmutableMap<String, String>> rulesParameters,
-    Set<String> excluded, Set<String> subsetOfEnabledRules, Set<String> activatedRuleKeys) {
-    generate(orchestrator, null, rulesParameters, excluded, subsetOfEnabledRules, activatedRuleKeys);
-  }
-
-  /**
-   * @return the list of enabled rule keys for the given profile
-   */
-  static void generate(OrchestratorRule orchestrator, @Nullable String qualityProfile, ImmutableMap<String, ImmutableMap<String, String>> rulesParameters,
-    Set<String> excluded, Set<String> subsetOfEnabledRules, Set<String> activatedRuleKeys) {
-    generate(orchestrator, null, rulesParameters, excluded, subsetOfEnabledRules, activatedRuleKeys, List.of());
-  }
-
-  static void generate(OrchestratorRule orchestrator, @Nullable String qualityProfile, ImmutableMap<String, ImmutableMap<String, String>> rulesParameters,
+  static void generate(OrchestratorRule orchestrator, @Nullable String qualityProfile,
+    ImmutableMap<String, ImmutableMap<String, String>> rulesParameters,
     Set<String> excluded, Set<String> subsetOfEnabledRules, Set<String> activatedRuleKeys, List<String> extraNonDefaultRules) {
     try {
       LOG.info("Generating profile containing all the rules");
@@ -143,7 +131,8 @@ public class ProfileGenerator {
     if (qualityProfile == null || qualityProfile.isEmpty()) {
       return Optional.empty();
     }
-    org.sonarqube.ws.client.qualityprofiles.SearchRequest request = new org.sonarqube.ws.client.qualityprofiles.SearchRequest().setLanguage(LANGUAGE);
+    org.sonarqube.ws.client.qualityprofiles.SearchRequest request =
+      new org.sonarqube.ws.client.qualityprofiles.SearchRequest().setLanguage(LANGUAGE);
 
     return newAdminWsClient(orchestrator).qualityprofiles().search(request).getProfilesList().stream()
       .filter(p -> qualityProfile.equalsIgnoreCase(p.getName()))
