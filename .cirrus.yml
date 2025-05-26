@@ -71,7 +71,7 @@ ws_scan_task:
   whitesource_script:
     - source cirrus-env QA
     - source set_maven_build_version $BUILD_NUMBER
-    - mvn clean install --batch-mode -Dmaven.test.skip=true -pl '!java-symbolic-execution-checks-test-sources'
+    - mvn clean install --batch-mode -Dmaven.test.skip=true -pl '!java-symbolic-execution/java-symbolic-execution-checks-test-sources'
     - source ws_scan.sh
   allow_failures: "true"
   always:
