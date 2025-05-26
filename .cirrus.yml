@@ -75,12 +75,16 @@ ruling_task:
     MAVEN_OPTS: "-Xmx3g"
     matrix:
       - PROFILE: without-sonarqube-project
+        SONAR_JAVA_VERSION: LATEST_RELEASE
+      - PROFILE: without-sonarqube-project
+        SONAR_JAVA_VERSION: DEV
       - PROFILE: only-sonarqube-project
+        SONAR_JAVA_VERSION: DEV
   ruling_script:
     - source cirrus-env QA
     - source set_maven_build_version $BUILD_NUMBER
     - cd its/ruling
-    - mvn package --batch-mode "-Pit-ruling,$PROFILE" -Dsonar.runtimeVersion=LATEST_RELEASE -Dmaven.test.redirectTestOutputToFile=false -B -e -V -Dparallel=methods -DuseUnlimitedThreads=true
+    - mvn package --batch-mode "-Pit-ruling,$PROFILE" -Dsonar.java.version=$SONAR_JAVA_VERSION -Dsonar.runtimeVersion=LATEST_RELEASE -Dmaven.test.redirectTestOutputToFile=false -B -e -V -Dparallel=methods -DuseUnlimitedThreads=true
   cleanup_before_cache_script: cleanup_maven_repository
   on_failure:
     actual_artifacts:
