@@ -27,7 +27,7 @@ jobs:
           git config user.name "${GITHUB_ACTOR}"
           git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
           git checkout -b gh-action/next-iteration
-          mvn versions:set -DgenerateBackupPoms=false -DnewVersion="${{ inputs.nextVersion }}"
+          mvn versions:set --batch-mode -DgenerateBackupPoms=false -DnewVersion="${{ inputs.nextVersion }}"
           git commit -m 'Prepare next development iteration' -a
           git push --set-upstream origin gh-action/next-iteration
           gh pr create -B master --title 'Prepare next development iteration' --body ''
