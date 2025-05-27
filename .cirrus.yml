@@ -97,13 +97,21 @@ ruling_task:
   env:
     MAVEN_OPTS: "-Xmx3g"
     matrix:
+      # Supported values for JAVA_PLUGIN_VERSION:
+      # LATEST_RELEASE, LATEST_MASTER, LATEST_DOGFOOD, POM_PROPERTY or a fixed version like 8.15.0.39249
       - PROFILE: without-sonarqube-project
+        JAVA_PLUGIN_VERSION: LATEST_MASTER
+      - PROFILE: without-sonarqube-project
+        JAVA_PLUGIN_VERSION: POM_PROPERTY
       - PROFILE: only-sonarqube-project
+        JAVA_PLUGIN_VERSION: LATEST_MASTER
   ruling_script:
     - source cirrus-env QA
     - source set_maven_build_version $BUILD_NUMBER
+    - export SONAR_JAVA_VERSION="$(.cirrus/resolve-sonar-java-plugin-version.sh "${JAVA_PLUGIN_VERSION}")"
+    - echo "Using SONAR_JAVA_VERSION=${SONAR_JAVA_VERSION}"
     - cd its/ruling
-    - mvn package --batch-mode "-Pit-ruling,$PROFILE" -Dsonar.runtimeVersion=LATEST_RELEASE -Dmaven.test.redirectTestOutputToFile=false -B -e -V -Dparallel=methods -DuseUnlimitedThreads=true
+    - mvn package --batch-mode "-Pit-ruling,$PROFILE" -Dsonar.java.version="$SONAR_JAVA_VERSION" -Dsonar.runtimeVersion=LATEST_RELEASE -Dmaven.test.redirectTestOutputToFile=false -B -e -V -Dparallel=methods -DuseUnlimitedThreads=true
   cleanup_before_cache_script: cleanup_maven_repository
   on_failure:
     actual_artifacts:

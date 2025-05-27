@@ -75,6 +75,7 @@
 
     <maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
 
+    <!-- minimum supported sonar-java-plugin version used in the packaging / requirePlugins and the CI -->
     <sonar.java.version>8.15.0.39249</sonar.java.version>
     <sonar.version>25.1.0.102122</sonar.version>
     <!--
