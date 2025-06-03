@@ -96,6 +96,7 @@ ruling_task:
     - git submodule update --init --recursive
   env:
     MAVEN_OPTS: "-Xmx3g"
+    GITHUB_TOKEN: VAULT[development/github/token/licenses-ro token]
     matrix:
       # Supported values for JAVA_PLUGIN_VERSION:
       # LATEST_RELEASE, LATEST_MASTER, LATEST_DOGFOOD, POM_PROPERTY or a fixed version like 8.15.0.39249

@@ -22,6 +22,7 @@ import com.sonar.orchestrator.build.Build;
 import com.sonar.orchestrator.build.BuildResult;
 import com.sonar.orchestrator.build.MavenBuild;
 import com.sonar.orchestrator.build.SonarScanner;
+import com.sonar.orchestrator.container.Edition;
 import com.sonar.orchestrator.container.Server;
 import com.sonar.orchestrator.junit4.OrchestratorRule;
 import com.sonar.orchestrator.junit4.OrchestratorRuleBuilder;
@@ -73,6 +74,8 @@ public class JavaRulingTest {
 
   private static OrchestratorRule createOrchestrator() {
     OrchestratorRuleBuilder orchestratorBuilder = OrchestratorRule.builderEnv()
+      .setEdition(Edition.ENTERPRISE_LW)
+      .activateLicense()
       .useDefaultAdminCredentialsForBuilds(true)
       .setSonarVersion(System.getProperty("sonar.runtimeVersion", "LATEST_RELEASE"))
       .addPlugin(MavenLocation.of("org.sonarsource.java", "sonar-java-plugin", System.getProperty("sonar.java.version", "DEV")))
