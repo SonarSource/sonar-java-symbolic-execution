@@ -194,6 +194,7 @@ public class JavaRulingTest {
     String projectName = "jboss-ejb3-tutorial";
     prepareProject(projectName, projectName);
     SonarScanner build = SonarScanner.create(FileLocation.of("../sources/jboss-ejb3-tutorial").getFile())
+      .setProperty("sonar.scanner.skipJreProvisioning", "true")
       .setProperty("sonar.java.fileByFile", "true")
       .setProjectKey(projectName)
       .setProjectName(projectName)
@@ -224,6 +225,7 @@ public class JavaRulingTest {
     File pomFile = FileLocation.of(pomLocation).getFile().getCanonicalFile();
     prepareProject(projectKey, projectName);
     MavenBuild mavenBuild = MavenBuild.create().setPom(pomFile).setCleanPackageSonarGoals().addArgument("-DskipTests");
+    mavenBuild.setProperty("sonar.scanner.skipJreProvisioning", "true");
     mavenBuild.setProperty("sonar.projectKey", projectKey);
     return mavenBuild;
   }
