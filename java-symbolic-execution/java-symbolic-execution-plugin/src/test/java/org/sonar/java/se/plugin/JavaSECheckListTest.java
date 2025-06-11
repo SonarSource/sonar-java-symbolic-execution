@@ -23,8 +23,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 class JavaSECheckListTest {
 
   @Test
-  void getChecks() {
-    assertThat(JavaSECheckList.getChecks()).isNotNull().hasSize(23);
+  void getChecks_returns_the_list_of_checks_that_cannot_be_overridden_by_other_plugins() {
+    assertThat(JavaSECheckList.getChecks())
+      .hasSize(22)
+      .doesNotContainAnyElementsOf(JavaSECheckList.OVERRIDABLE_CHECKS);
+  }
+
+  @Test
+  void getStandaloneChecks_returns_the_full_list_of_checks() {
+    assertThat(JavaSECheckList.getStandaloneChecks())
+      .hasSize(23);
   }
 
 }

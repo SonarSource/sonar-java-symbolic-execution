@@ -67,6 +67,32 @@ class JavaSECheckRegistrarTest {
   }
 
   @Test
+  void is_only_in_standalone_mode_in_sqcb() {
+    var sonarQubeCloud = SonarRuntimeImpl.forSonarQube(
+      Version.parse("8.1"),
+      SonarQubeSide.SERVER,
+      SonarEdition.SONARCLOUD
+    );
+    assertThat(JavaSECheckRegistrar.isStandaloneSymbolicExecutionPlugin(sonarQubeCloud)).isFalse();
+    var sonarQubeCommunityBuild = SonarRuntimeImpl.forSonarQube(
+      Version.parse("25.1"),
+      SonarQubeSide.SERVER,
+      SonarEdition.COMMUNITY
+    );
+    assertThat(JavaSECheckRegistrar.isStandaloneSymbolicExecutionPlugin(sonarQubeCommunityBuild)).isTrue();
+    var sonarQubeServerDeveloper = SonarRuntimeImpl.forSonarQube(
+      Version.parse("2025.1"),
+      SonarQubeSide.SERVER,
+      SonarEdition.DEVELOPER
+    );
+    assertThat(JavaSECheckRegistrar.isStandaloneSymbolicExecutionPlugin(sonarQubeServerDeveloper)).isFalse();
+
+    var sonarQubeForIDE = SonarRuntimeImpl.forSonarLint(Version.parse("10.22.0.81232"));
+    assertThat(JavaSECheckRegistrar.isStandaloneSymbolicExecutionPlugin(sonarQubeForIDE)).isFalse();
+  }
+
+
+  @Test
   void rules_definition() {
     SonarRuntime sonarRuntime = SonarRuntimeImpl.forSonarQube(Version.create(10, 2), SonarQubeSide.SERVER, SonarEdition.ENTERPRISE);
     JavaSECheckRegistrar rulesDefinition = new JavaSECheckRegistrar(sonarRuntime);
@@ -85,7 +111,7 @@ class JavaSECheckRegistrarTest {
     assertThat(repository.name()).isEqualTo("Sonar");
     assertThat(repository.language()).isEqualTo("java");
     List<RulesDefinition.Rule> rules = repository.rules();
-    assertThat(rules).hasSize(23);
+    assertThat(rules).hasSize(22);
 
     var activeByDefault = rules.stream()
       .filter(k -> !rulesNotActiveByDefault.contains(k.key()))

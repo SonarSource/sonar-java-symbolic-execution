@@ -17,6 +17,8 @@
 package org.sonar.java.se.plugin;
 
 import java.util.List;
+import java.util.Set;
+import java.util.function.Predicate;
 import org.sonar.java.se.checks.AllowXMLInclusionCheck;
 import org.sonar.java.se.checks.BooleanGratuitousExpressionsCheck;
 import org.sonar.java.se.checks.ConditionalUnreachableCodeCheck;
@@ -43,12 +45,24 @@ import org.sonar.java.se.checks.XmlValidatedSignatureCheck;
 import org.sonar.java.se.checks.XxeProcessingCheck;
 
 public class JavaSECheckList {
+  /**
+   * A list of checks that can be overridden by other analyzers.
+   */
+  public static final Set<Class<? extends SECheck>> OVERRIDABLE_CHECKS = Set.of(
+    NullDereferenceCheck.class // S2259
+  );
 
   private JavaSECheckList(){
     // no need to instantiate
   }
 
   public static List<Class<? extends SECheck>> getChecks() {
+    return getStandaloneChecks().stream()
+      .filter(Predicate.not(OVERRIDABLE_CHECKS::contains))
+      .toList();
+  }
+
+  public static List<Class<? extends SECheck>> getStandaloneChecks() {
     return List.of(
       // SEChecks ordered by ExplodedGraphWalker need
       NullDereferenceCheck.class,

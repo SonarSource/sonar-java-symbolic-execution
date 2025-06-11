@@ -17,7 +17,10 @@
 package org.sonar.java.se.plugin;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
+import org.sonar.api.SonarEdition;
+import org.sonar.api.SonarProduct;
 import org.sonar.api.SonarRuntime;
 import org.sonar.api.batch.rule.CheckFactory;
 import org.sonar.api.batch.rule.Checks;
@@ -25,6 +28,7 @@ import org.sonar.api.ce.ComputeEngineSide;
 import org.sonar.api.scanner.ScannerSide;
 import org.sonar.api.server.ServerSide;
 import org.sonar.api.server.rule.RulesDefinition;
+import org.sonar.java.annotations.VisibleForTesting;
 import org.sonar.java.se.SymbolicExecutionVisitor;
 import org.sonar.java.se.checks.SECheck;
 import org.sonar.plugins.java.api.CheckRegistrar;
@@ -54,7 +58,7 @@ public class JavaSECheckRegistrar implements CheckRegistrar {
 
   @Override
   public void register(RegistrarContext registrarContext, CheckFactory checkFactory) {
-    Checks<JavaCheck> checks = checkFactory.<JavaCheck>create(REPOSITORY_KEY).addAnnotatedChecks(JavaSECheckList.getChecks());
+    Checks<JavaCheck> checks = checkFactory.<JavaCheck>create(REPOSITORY_KEY).addAnnotatedChecks(getChecks(runtime));
 
     var seChecks = checks.all().stream()
       .filter(SECheck.class::isInstance)
@@ -71,9 +75,24 @@ public class JavaSECheckRegistrar implements CheckRegistrar {
   public void customRulesDefinition(RulesDefinition.Context context, RulesDefinition.NewRepository javaRepository) {
     RuleMetadataLoader ruleMetadataLoader = new RuleMetadataLoader(RESOURCE_BASE_PATH, SONAR_WAY_PATH, runtime);
 
-    ruleMetadataLoader.addRulesByAnnotatedClass(javaRepository, new ArrayList<>(JavaSECheckList.getChecks()));
+    ruleMetadataLoader.addRulesByAnnotatedClass(javaRepository, new ArrayList<>(getChecks(runtime)));
 
     setTemplates(javaRepository);
+  }
+
+  @VisibleForTesting
+  static List<Class<? extends SECheck>> getChecks(SonarRuntime runtime) {
+    if (isStandaloneSymbolicExecutionPlugin(runtime)) {
+      return JavaSECheckList.getStandaloneChecks();
+    }
+    return JavaSECheckList.getChecks();
+  }
+
+  @VisibleForTesting
+  static boolean isStandaloneSymbolicExecutionPlugin(SonarRuntime runtime) {
+    return runtime != null &&
+      runtime.getProduct() != SonarProduct.SONARLINT &&
+      runtime.getEdition() == SonarEdition.COMMUNITY;
   }
 
   private static void setTemplates(RulesDefinition.NewRepository repository) {
