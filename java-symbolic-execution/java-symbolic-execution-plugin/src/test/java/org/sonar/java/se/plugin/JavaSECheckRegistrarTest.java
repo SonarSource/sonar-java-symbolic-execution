@@ -54,6 +54,23 @@ class JavaSECheckRegistrarTest {
     "S6374"
   );
 
+  private static final SonarRuntime SQC = SonarRuntimeImpl.forSonarQube(
+    Version.parse("8.1"),
+    SonarQubeSide.SERVER,
+    SonarEdition.SONARCLOUD
+  );
+  private static final SonarRuntime SQCB = SonarRuntimeImpl.forSonarQube(
+    Version.parse("25.1"),
+    SonarQubeSide.SERVER,
+    SonarEdition.COMMUNITY
+  );
+  private static final SonarRuntime SQS_DEVELOPER = SonarRuntimeImpl.forSonarQube(
+    Version.parse("2025.1"),
+    SonarQubeSide.SERVER,
+    SonarEdition.DEVELOPER
+  );
+  private static final SonarRuntime SQ_FOR_IDE = SonarRuntimeImpl.forSonarLint(Version.parse("10.22.0.81232"));
+
   @Test
   void register_rules() {
     SonarRuntime sonarqubeServerDeveloper = SonarRuntimeImpl.forSonarQube(
@@ -72,28 +89,21 @@ class JavaSECheckRegistrarTest {
   }
 
   @Test
-  void is_only_in_standalone_mode_in_sqcb() {
-    var sonarQubeCloud = SonarRuntimeImpl.forSonarQube(
-      Version.parse("8.1"),
-      SonarQubeSide.SERVER,
-      SonarEdition.SONARCLOUD
-    );
-    assertThat(JavaSECheckRegistrar.isStandaloneSymbolicExecutionPlugin(sonarQubeCloud)).isFalse();
-    var sonarQubeCommunityBuild = SonarRuntimeImpl.forSonarQube(
-      Version.parse("25.1"),
-      SonarQubeSide.SERVER,
-      SonarEdition.COMMUNITY
-    );
-    assertThat(JavaSECheckRegistrar.isStandaloneSymbolicExecutionPlugin(sonarQubeCommunityBuild)).isTrue();
-    var sonarQubeServerDeveloper = SonarRuntimeImpl.forSonarQube(
-      Version.parse("2025.1"),
-      SonarQubeSide.SERVER,
-      SonarEdition.DEVELOPER
-    );
-    assertThat(JavaSECheckRegistrar.isStandaloneSymbolicExecutionPlugin(sonarQubeServerDeveloper)).isFalse();
+  void getChecks_returns_the_expected_amount_of_checks_depending_on_the_runtime() {
+    assertThat(JavaSECheckRegistrar.getChecks(SQC)).hasSize(22);
+    assertThat(JavaSECheckRegistrar.getChecks(SQS_DEVELOPER)).hasSize(22);
+    assertThat(JavaSECheckRegistrar.getChecks(SQ_FOR_IDE)).hasSize(22);
+    assertThat(JavaSECheckRegistrar.getChecks(SQCB)).hasSize(23);
+  }
 
-    var sonarQubeForIDE = SonarRuntimeImpl.forSonarLint(Version.parse("10.22.0.81232"));
-    assertThat(JavaSECheckRegistrar.isStandaloneSymbolicExecutionPlugin(sonarQubeForIDE)).isFalse();
+  @Test
+  void is_only_in_standalone_mode_in_sqcb() {
+    assertThat(JavaSECheckRegistrar.isStandaloneSymbolicExecutionPlugin(SQCB)).isTrue();
+
+    assertThat(JavaSECheckRegistrar.isStandaloneSymbolicExecutionPlugin(SQS_DEVELOPER)).isFalse();
+    assertThat(JavaSECheckRegistrar.isStandaloneSymbolicExecutionPlugin(SQC)).isFalse();
+
+    assertThat(JavaSECheckRegistrar.isStandaloneSymbolicExecutionPlugin(SQ_FOR_IDE)).isFalse();
   }
 
 
