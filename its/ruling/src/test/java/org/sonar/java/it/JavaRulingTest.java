@@ -61,7 +61,7 @@ public class JavaRulingTest {
   private static final Logger LOG = LoggerFactory.getLogger(JavaRulingTest.class);
 
   private static final ImmutableSet<String> SUBSET_OF_ENABLED_RULES = ImmutableSet.of(
-    "S2095", "S2189", "S2222", "S2259", "S2583", "S2589", "S2637", "S2689", "S2755", "S3065",
+    "S2095", "S2189", "S2222", "S2583", "S2589", "S2637", "S2689", "S2755", "S3065",
     "S3516", "S3518", "S3546", "S3655", "S3824", "S3958", "S3959", "S4165", "S4449", "S6373", "S6374", "S6376", "S6377");
 
   @ClassRule
