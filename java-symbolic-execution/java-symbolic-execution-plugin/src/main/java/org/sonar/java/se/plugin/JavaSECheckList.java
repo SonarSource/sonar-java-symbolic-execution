@@ -46,9 +46,9 @@ import org.sonar.java.se.checks.XxeProcessingCheck;
 
 public class JavaSECheckList {
   /**
-   * A list of checks that can be overridden by other analyzers.
+   * A list of checks that are overridden by other analyzers.
    */
-  public static final Set<Class<? extends SECheck>> OVERRIDABLE_CHECKS = Set.of(
+  public static final Set<Class<? extends SECheck>> OVERRIDDEN_CHECKS = Set.of(
     NullDereferenceCheck.class // S2259
   );
 
@@ -57,12 +57,6 @@ public class JavaSECheckList {
   }
 
   public static List<Class<? extends SECheck>> getChecks() {
-    return getStandaloneChecks().stream()
-      .filter(Predicate.not(OVERRIDABLE_CHECKS::contains))
-      .toList();
-  }
-
-  public static List<Class<? extends SECheck>> getStandaloneChecks() {
     return List.of(
       // SEChecks ordered by ExplodedGraphWalker need
       NullDereferenceCheck.class,
@@ -91,6 +85,16 @@ public class JavaSECheckList {
       StreamNotConsumedCheck.class,
       ObjectOutputStreamCheck.class,
       MinMaxRangeCheck.class);
+  }
+
+  /**
+   * Compute a list of checks that are not overridden by other analyzers.
+   * @return the list of checks returned by {@link #getChecks()} minus the checks in {@link #OVERRIDDEN_CHECKS}.
+   */
+  public static List<Class<? extends SECheck>> getNonOverriddenChecks() {
+    return getChecks().stream()
+      .filter(Predicate.not(OVERRIDDEN_CHECKS::contains))
+      .toList();
   }
 
 }

@@ -81,15 +81,25 @@ public class JavaSECheckRegistrar implements CheckRegistrar {
   }
 
   @VisibleForTesting
+  /**
+   * Returns a list of checks based on whether the runtime might include other analyzers that provide alternative implementation of checks.
+   * @param runtime The analysis runtime
+   * @returns The full list of checks in SQCB, a reduced list of checks in other runtime.
+   */
   static List<Class<? extends SECheck>> getChecks(SonarRuntime runtime) {
-    if (isStandaloneSymbolicExecutionPlugin(runtime)) {
-      return JavaSECheckList.getStandaloneChecks();
+    if (isStandaloneSymbolicExecutionAnalyzer(runtime)) {
+      return JavaSECheckList.getChecks();
     }
-    return JavaSECheckList.getChecks();
+    return JavaSECheckList.getNonOverriddenChecks();
   }
 
   @VisibleForTesting
-  static boolean isStandaloneSymbolicExecutionPlugin(SonarRuntime runtime) {
+  /**
+   * Test if the analyzer is running in a context where another analyzer has overridden some of its checks.
+   * @param The analysis runtime
+   * @return true if not
+   */
+  static boolean isStandaloneSymbolicExecutionAnalyzer(SonarRuntime runtime) {
     return runtime.getProduct() != SonarProduct.SONARLINT &&
       runtime.getEdition() == SonarEdition.COMMUNITY;
   }

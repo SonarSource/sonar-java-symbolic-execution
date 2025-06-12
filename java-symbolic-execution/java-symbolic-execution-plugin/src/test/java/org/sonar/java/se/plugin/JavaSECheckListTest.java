@@ -24,14 +24,14 @@ class JavaSECheckListTest {
 
   @Test
   void getChecks_returns_the_list_of_checks_that_cannot_be_overridden_by_other_plugins() {
-    assertThat(JavaSECheckList.getChecks())
+    assertThat(JavaSECheckList.getNonOverriddenChecks())
       .hasSize(22)
-      .doesNotContainAnyElementsOf(JavaSECheckList.OVERRIDABLE_CHECKS);
+      .doesNotContainAnyElementsOf(JavaSECheckList.OVERRIDDEN_CHECKS);
   }
 
   @Test
   void getStandaloneChecks_returns_the_full_list_of_checks() {
-    assertThat(JavaSECheckList.getStandaloneChecks())
+    assertThat(JavaSECheckList.getChecks())
       .hasSize(23);
   }
 

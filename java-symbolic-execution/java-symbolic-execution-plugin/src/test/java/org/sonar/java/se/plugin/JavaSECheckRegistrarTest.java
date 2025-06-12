@@ -98,12 +98,12 @@ class JavaSECheckRegistrarTest {
 
   @Test
   void is_only_in_standalone_mode_in_sqcb() {
-    assertThat(JavaSECheckRegistrar.isStandaloneSymbolicExecutionPlugin(SQCB)).isTrue();
+    assertThat(JavaSECheckRegistrar.isStandaloneSymbolicExecutionAnalyzer(SQCB)).isTrue();
 
-    assertThat(JavaSECheckRegistrar.isStandaloneSymbolicExecutionPlugin(SQS_DEVELOPER)).isFalse();
-    assertThat(JavaSECheckRegistrar.isStandaloneSymbolicExecutionPlugin(SQC)).isFalse();
+    assertThat(JavaSECheckRegistrar.isStandaloneSymbolicExecutionAnalyzer(SQS_DEVELOPER)).isFalse();
+    assertThat(JavaSECheckRegistrar.isStandaloneSymbolicExecutionAnalyzer(SQC)).isFalse();
 
-    assertThat(JavaSECheckRegistrar.isStandaloneSymbolicExecutionPlugin(SQ_FOR_IDE)).isFalse();
+    assertThat(JavaSECheckRegistrar.isStandaloneSymbolicExecutionAnalyzer(SQ_FOR_IDE)).isFalse();
   }
 
 
@@ -158,7 +158,7 @@ class JavaSECheckRegistrarTest {
 
   private static String[] getRuleKeys() {
     var ruleKeys = new ArrayList<String>();
-    for (Class<? extends SECheck> check : JavaSECheckList.getChecks()) {
+    for (Class<? extends SECheck> check : JavaSECheckList.getNonOverriddenChecks()) {
       ruleKeys.add(check.getAnnotation(Rule.class).key());
     }
     return ruleKeys.toArray(new String[0]);
