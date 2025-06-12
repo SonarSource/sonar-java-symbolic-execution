@@ -90,8 +90,7 @@ public class JavaSECheckRegistrar implements CheckRegistrar {
 
   @VisibleForTesting
   static boolean isStandaloneSymbolicExecutionPlugin(SonarRuntime runtime) {
-    return runtime != null &&
-      runtime.getProduct() != SonarProduct.SONARLINT &&
+    return runtime.getProduct() != SonarProduct.SONARLINT &&
       runtime.getEdition() == SonarEdition.COMMUNITY;
   }
 

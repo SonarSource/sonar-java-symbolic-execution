@@ -56,7 +56,12 @@ class JavaSECheckRegistrarTest {
 
   @Test
   void register_rules() {
-    CheckRegistrar registrar = new JavaSECheckRegistrar(null);
+    SonarRuntime sonarqubeServerDeveloper = SonarRuntimeImpl.forSonarQube(
+      Version.parse("2025.1"),
+      SonarQubeSide.SERVER,
+      SonarEdition.DEVELOPER
+    );
+    CheckRegistrar registrar = new JavaSECheckRegistrar(sonarqubeServerDeveloper);
     TestCheckRegistrarContext context = new TestCheckRegistrarContext();
 
     CheckFactory checkFactory = new CheckFactory(activeRules);
