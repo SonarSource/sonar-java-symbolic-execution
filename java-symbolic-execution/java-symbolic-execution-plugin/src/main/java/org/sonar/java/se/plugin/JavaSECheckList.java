@@ -29,7 +29,6 @@ import org.sonar.java.se.checks.MapComputeIfAbsentOrPresentCheck;
 import org.sonar.java.se.checks.MinMaxRangeCheck;
 import org.sonar.java.se.checks.NoWayOutLoopCheck;
 import org.sonar.java.se.checks.NonNullSetToNullCheck;
-import org.sonar.java.se.checks.NullDereferenceCheck;
 import org.sonar.java.se.checks.ObjectOutputStreamCheck;
 import org.sonar.java.se.checks.OptionalGetBeforeIsPresentCheck;
 import org.sonar.java.se.checks.ParameterNullnessCheck;

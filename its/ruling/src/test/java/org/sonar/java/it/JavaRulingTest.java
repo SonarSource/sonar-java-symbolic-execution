@@ -96,7 +96,7 @@ public class JavaRulingTest {
     List<String> extraNonDefaultRules = List.of("S3546", "S6374");
     ProfileGenerator.generate(ORCHESTRATOR, "Sonar Way", ImmutableMap.of(), new HashSet<>(), SUBSET_OF_ENABLED_RULES, result,
       extraNonDefaultRules);
-    assertThat(result).hasSize(23); // ALL symbolic-execution rules
+    assertThat(result).hasSize(22); // ALL symbolic-execution rules
 
     Path allRulesFolder = Paths.get("src/test/resources");
     effectiveDumpOldFolder = tmpDumpOldFolder.getRoot().toPath().toAbsolutePath();
