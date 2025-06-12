@@ -17,6 +17,8 @@
 package org.sonar.java.se.plugin;
 
 import java.util.List;
+import java.util.Set;
+import java.util.function.Predicate;
 import org.sonar.java.se.checks.AllowXMLInclusionCheck;
 import org.sonar.java.se.checks.BooleanGratuitousExpressionsCheck;
 import org.sonar.java.se.checks.ConditionalUnreachableCodeCheck;
@@ -43,6 +45,12 @@ import org.sonar.java.se.checks.XmlValidatedSignatureCheck;
 import org.sonar.java.se.checks.XxeProcessingCheck;
 
 public class JavaSECheckList {
+  /**
+   * A list of checks that are overridden by other analyzers.
+   */
+  public static final Set<Class<? extends SECheck>> OVERRIDDEN_CHECKS = Set.of(
+    NullDereferenceCheck.class // S2259
+  );
 
   private JavaSECheckList(){
     // no need to instantiate
@@ -77,6 +85,16 @@ public class JavaSECheckList {
       StreamNotConsumedCheck.class,
       ObjectOutputStreamCheck.class,
       MinMaxRangeCheck.class);
+  }
+
+  /**
+   * Compute a list of checks that are not overridden by other analyzers.
+   * @return the list of checks returned by {@link #getChecks()} minus the checks in {@link #OVERRIDDEN_CHECKS}.
+   */
+  public static List<Class<? extends SECheck>> getNonOverriddenChecks() {
+    return getChecks().stream()
+      .filter(Predicate.not(OVERRIDDEN_CHECKS::contains))
+      .toList();
   }
 
 }

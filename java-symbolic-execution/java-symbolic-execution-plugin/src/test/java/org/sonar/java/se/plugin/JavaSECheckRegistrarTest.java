@@ -54,9 +54,31 @@ class JavaSECheckRegistrarTest {
     "S6374"
   );
 
+  private static final SonarRuntime SQC = SonarRuntimeImpl.forSonarQube(
+    Version.parse("8.1"),
+    SonarQubeSide.SERVER,
+    SonarEdition.SONARCLOUD
+  );
+  private static final SonarRuntime SQCB = SonarRuntimeImpl.forSonarQube(
+    Version.parse("25.1"),
+    SonarQubeSide.SERVER,
+    SonarEdition.COMMUNITY
+  );
+  private static final SonarRuntime SQS_DEVELOPER = SonarRuntimeImpl.forSonarQube(
+    Version.parse("2025.1"),
+    SonarQubeSide.SERVER,
+    SonarEdition.DEVELOPER
+  );
+  private static final SonarRuntime SQ_FOR_IDE = SonarRuntimeImpl.forSonarLint(Version.parse("10.22.0.81232"));
+
   @Test
   void register_rules() {
-    CheckRegistrar registrar = new JavaSECheckRegistrar(null);
+    SonarRuntime sonarqubeServerDeveloper = SonarRuntimeImpl.forSonarQube(
+      Version.parse("2025.1"),
+      SonarQubeSide.SERVER,
+      SonarEdition.DEVELOPER
+    );
+    CheckRegistrar registrar = new JavaSECheckRegistrar(sonarqubeServerDeveloper);
     TestCheckRegistrarContext context = new TestCheckRegistrarContext();
 
     CheckFactory checkFactory = new CheckFactory(activeRules);
@@ -65,6 +87,25 @@ class JavaSECheckRegistrarTest {
     assertThat(context.mainRuleKeys).map(RuleKey::toString).containsExactlyInAnyOrder(getRuleKeysWithRepo());
     assertThat(context.testRuleKeys).isEmpty();
   }
+
+  @Test
+  void getChecks_returns_the_expected_amount_of_checks_depending_on_the_runtime() {
+    assertThat(JavaSECheckRegistrar.getChecks(SQC)).hasSize(22);
+    assertThat(JavaSECheckRegistrar.getChecks(SQS_DEVELOPER)).hasSize(22);
+    assertThat(JavaSECheckRegistrar.getChecks(SQ_FOR_IDE)).hasSize(22);
+    assertThat(JavaSECheckRegistrar.getChecks(SQCB)).hasSize(23);
+  }
+
+  @Test
+  void is_only_in_standalone_mode_in_sqcb() {
+    assertThat(JavaSECheckRegistrar.isStandaloneSymbolicExecutionAnalyzer(SQCB)).isTrue();
+
+    assertThat(JavaSECheckRegistrar.isStandaloneSymbolicExecutionAnalyzer(SQS_DEVELOPER)).isFalse();
+    assertThat(JavaSECheckRegistrar.isStandaloneSymbolicExecutionAnalyzer(SQC)).isFalse();
+
+    assertThat(JavaSECheckRegistrar.isStandaloneSymbolicExecutionAnalyzer(SQ_FOR_IDE)).isFalse();
+  }
+
 
   @Test
   void rules_definition() {
@@ -85,7 +126,7 @@ class JavaSECheckRegistrarTest {
     assertThat(repository.name()).isEqualTo("Sonar");
     assertThat(repository.language()).isEqualTo("java");
     List<RulesDefinition.Rule> rules = repository.rules();
-    assertThat(rules).hasSize(23);
+    assertThat(rules).hasSize(22);
 
     var activeByDefault = rules.stream()
       .filter(k -> !rulesNotActiveByDefault.contains(k.key()))
@@ -117,7 +158,7 @@ class JavaSECheckRegistrarTest {
 
   private static String[] getRuleKeys() {
     var ruleKeys = new ArrayList<String>();
-    for (Class<? extends SECheck> check : JavaSECheckList.getChecks()) {
+    for (Class<? extends SECheck> check : JavaSECheckList.getNonOverriddenChecks()) {
       ruleKeys.add(check.getAnnotation(Rule.class).key());
     }
     return ruleKeys.toArray(new String[0]);

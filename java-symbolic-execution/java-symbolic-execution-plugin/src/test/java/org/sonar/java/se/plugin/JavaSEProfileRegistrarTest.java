@@ -28,7 +28,6 @@ class JavaSEProfileRegistrarTest {
     JavaSEProfileRegistrar registrar = new JavaSEProfileRegistrar();
     TestProfileRegistrarContext context = new TestProfileRegistrarContext();
     registrar.register(context);
-    assertThat(context.defaultQualityProfileRules).hasSize(21); // 2 are not in the default profile
+    assertThat(context.defaultQualityProfileRules).hasSize(20); // 3 are not in the default profile
   }
-
 }
