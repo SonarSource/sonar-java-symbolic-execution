@@ -26,8 +26,14 @@ public class JavaSEProfileRegistrar implements ProfileRegistrar {
     registrarContext.registerDefaultQualityProfileRules(RulesList.getSonarWayRuleKeys());
   }
 
-
-  String trigger_S2259(@Nullable Object parameter) {
+  public String triggerS2259(@Nullable Object parameter) {
     return parameter.toString();
+  }
+
+  public boolean triggerS6555(String givenName, String familyName) {
+    if (givenName != null && familyName != null) {
+      return givenName.isEmpty() && familyName.isEmpty();
+    }
+    return familyName.isEmpty(); // Noncompliant; familyName may be null
   }
 }
