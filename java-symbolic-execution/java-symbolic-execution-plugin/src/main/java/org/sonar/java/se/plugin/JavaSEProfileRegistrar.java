@@ -16,7 +16,6 @@
  */
 package org.sonar.java.se.plugin;
 
-import javax.annotation.Nullable;
 import org.sonar.plugins.java.api.ProfileRegistrar;
 
 public class JavaSEProfileRegistrar implements ProfileRegistrar {
@@ -24,16 +23,5 @@ public class JavaSEProfileRegistrar implements ProfileRegistrar {
   @Override
   public void register(RegistrarContext registrarContext) {
     registrarContext.registerDefaultQualityProfileRules(RulesList.getSonarWayRuleKeys());
-  }
-
-  public String triggerS2259(@Nullable Object parameter) {
-    return parameter.toString();
-  }
-
-  public boolean triggerS6555(String givenName, String familyName) {
-    if (givenName != null && familyName != null) {
-      return givenName.isEmpty() && familyName.isEmpty();
-    }
-    return familyName.isEmpty(); // Noncompliant; familyName may be null
   }
 }
