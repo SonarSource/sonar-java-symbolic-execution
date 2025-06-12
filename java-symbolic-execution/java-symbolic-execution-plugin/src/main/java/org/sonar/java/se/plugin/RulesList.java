@@ -29,7 +29,6 @@ public final class RulesList {
       "S2095",
       "S2189",
       "S2222",
-      "S2259",
       "S2583",
       "S2589",
       "S2637",

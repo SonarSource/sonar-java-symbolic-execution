@@ -51,7 +51,6 @@ public class JavaSECheckList {
   public static List<Class<? extends SECheck>> getChecks() {
     return List.of(
       // SEChecks ordered by ExplodedGraphWalker need
-      NullDereferenceCheck.class,
       DivisionByZeroCheck.class,
       UnclosedResourcesCheck.class,
       LocksNotUnlockedCheck.class,
