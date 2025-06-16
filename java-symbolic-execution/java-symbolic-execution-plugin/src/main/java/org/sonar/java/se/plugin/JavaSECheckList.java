@@ -29,7 +29,6 @@ import org.sonar.java.se.checks.MapComputeIfAbsentOrPresentCheck;
 import org.sonar.java.se.checks.MinMaxRangeCheck;
 import org.sonar.java.se.checks.NoWayOutLoopCheck;
 import org.sonar.java.se.checks.NonNullSetToNullCheck;
-import org.sonar.java.se.checks.NullDereferenceCheck;
 import org.sonar.java.se.checks.ObjectOutputStreamCheck;
 import org.sonar.java.se.checks.OptionalGetBeforeIsPresentCheck;
 import org.sonar.java.se.checks.ParameterNullnessCheck;
@@ -51,7 +50,6 @@ public class JavaSECheckList {
   public static List<Class<? extends SECheck>> getChecks() {
     return List.of(
       // SEChecks ordered by ExplodedGraphWalker need
-      NullDereferenceCheck.class,
       DivisionByZeroCheck.class,
       UnclosedResourcesCheck.class,
       LocksNotUnlockedCheck.class,
