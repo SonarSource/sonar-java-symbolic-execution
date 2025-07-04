@@ -44,10 +44,8 @@ class JavaSECheckRegistrarTest {
   private static final ActiveRules activeRules = activeRules(getRuleKeysWithRepo());
 
   private static final List<String> rulesNotActiveByDefault = List.of(
-    "S2259",
     "S2583",
     "S2589",
-    "S3518",
     "S3546",
     "S3655",
     "S3959",
@@ -85,7 +83,7 @@ class JavaSECheckRegistrarTest {
     assertThat(repository.name()).isEqualTo("Sonar");
     assertThat(repository.language()).isEqualTo("java");
     List<RulesDefinition.Rule> rules = repository.rules();
-    assertThat(rules).hasSize(22);
+    assertThat(rules).hasSize(21);
 
     var activeByDefault = rules.stream()
       .filter(k -> !rulesNotActiveByDefault.contains(k.key()))

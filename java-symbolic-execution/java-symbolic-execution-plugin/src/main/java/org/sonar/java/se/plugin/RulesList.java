@@ -36,7 +36,6 @@ public final class RulesList {
       "S2755",
       "S3065",
       "S3516",
-      "S3518",
       "S3655",
       "S3824",
       "S3958",
