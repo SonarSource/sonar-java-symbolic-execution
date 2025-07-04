@@ -22,7 +22,6 @@ import org.sonar.java.se.checks.BooleanGratuitousExpressionsCheck;
 import org.sonar.java.se.checks.ConditionalUnreachableCodeCheck;
 import org.sonar.java.se.checks.CustomUnclosedResourcesCheck;
 import org.sonar.java.se.checks.DenialOfServiceXMLCheck;
-import org.sonar.java.se.checks.DivisionByZeroCheck;
 import org.sonar.java.se.checks.InvariantReturnCheck;
 import org.sonar.java.se.checks.LocksNotUnlockedCheck;
 import org.sonar.java.se.checks.MapComputeIfAbsentOrPresentCheck;
@@ -50,7 +49,6 @@ public class JavaSECheckList {
   public static List<Class<? extends SECheck>> getChecks() {
     return List.of(
       // SEChecks ordered by ExplodedGraphWalker need
-      DivisionByZeroCheck.class,
       UnclosedResourcesCheck.class,
       LocksNotUnlockedCheck.class,
       NonNullSetToNullCheck.class,
