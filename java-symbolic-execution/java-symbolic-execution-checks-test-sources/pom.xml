@@ -6,11 +6,11 @@
 
   <parent>
     <groupId>org.sonarsource.java</groupId>
-    <artifactId>java-se</artifactId>
+    <artifactId>java-se-cb</artifactId>
     <version>8.16.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>java-symbolic-execution-checks-test-sources</artifactId>
+  <artifactId>java-symbolic-execution-checks-test-sources-cb</artifactId>
 
   <name>SonarQube Java :: Symbolic Execution Checks Test Sources</name>
 
