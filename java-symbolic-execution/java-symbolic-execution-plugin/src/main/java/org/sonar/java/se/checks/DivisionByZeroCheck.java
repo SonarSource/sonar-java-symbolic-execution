@@ -395,28 +395,27 @@ public class DivisionByZeroCheck extends SECheck {
       }
       Type type = identifier.symbolType();
       if (type.isPrimitive() || type.isPrimitiveWrapper()) {
-        ((Symbol.VariableSymbol) symbol).constantValue()
-          .filter(Number.class::isInstance)
-          .map(Number.class::cast)
-          .ifPresent(num -> {
-            if (isZero(num, symbol.type().fullyQualifiedName())) {
-              addZeroConstraint(sv, ZeroConstraint.ZERO);
-            } else {
-              addZeroConstraint(sv, ZeroConstraint.NON_ZERO);
-            }
-          });
+        Object constantValue = ((Symbol.VariableSymbol) symbol).constantValue().orElse(null);
+        if (constantValue instanceof Character ch) {
+          constantValue = (int) ch.charValue();
+        }
+        if (constantValue instanceof Number num) {
+          if (isZero(num, symbol.type().fullyQualifiedName())) {
+            addZeroConstraint(sv, ZeroConstraint.ZERO);
+          } else {
+            addZeroConstraint(sv, ZeroConstraint.NON_ZERO);
+          }
+        }
       }
     }
 
     private static boolean isZero(Number number, String type) {
       switch (type) {
-        case "char":
-          return number.intValue() == 0;
         case "byte":
           return number.byteValue() == 0;
         case "short":
           return number.shortValue() == 0;
-        case "int":
+        case "int", "char":
           return number.intValue() == 0;
         case "long":
           return number.longValue() == 0L;

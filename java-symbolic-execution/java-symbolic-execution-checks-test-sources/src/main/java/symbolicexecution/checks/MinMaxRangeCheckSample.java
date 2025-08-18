@@ -51,14 +51,14 @@ class MinMaxRangeCheckSample {
     double upper = 18.37;
     double lower = -4.96;
     double result = Math.min(lower, num);
-    return Math.max(result, upper); // Compliant - FN
+    return Math.max(result, upper); // Noncompliant
   }
 
   public double doRangeCheckNOK8(float num) {
     float upper = 18.37f;
     float lower = -4.96f;
     float result = Math.min(lower, num);
-    return Math.max(result, upper); // Compliant - FN
+    return Math.max(result, upper); // Noncompliant
   }
 
   public double doRangeCheckNOK9(long num) {
@@ -98,11 +98,11 @@ class MinMaxRangeCheckSample {
     return Math.max(LOWER_INT, result);
   }
 
-  public int doRangeCheckOK6(int num) { // do not handle arithmetic
+  public int doRangeCheckOK6(int num) {
     int upper = 1837 + 14;
     int lower = -496 * 42;
     int result = Math.min(lower, num);
-    return Math.max(result, upper);
+    return Math.max(result, upper); // Noncompliant
   }
 
   public float doRangeCheckIntFloatNOK(int num) {

@@ -102,16 +102,21 @@ class SELiteralUtilsTest {
   @Test
   void test_int_and_long_value() {
     Integer[] expectedIntegerValues = {42, -7, 3, null, null, 0xff, 0b0100, 5678, 0xFF, 0b1100110, 0xff000000};
-    Long[] expectedLongValues = {42L, 42L, -7L, -7L, +3L, +3L, null, null, 0xFFL, null, null, null,
-      Long.MAX_VALUE, Long.MAX_VALUE, 0b11010010_01101001_10010100_10010010L, 10010L, 0xFFL, 0b1100110L};
+    Long[] expectedLongValues = {42L, 42L, -7L, -7L, +3L, +3L, null, null, 0xFFL, -1L, -2L, -9223372036854775808L,
+      Long.MAX_VALUE, Long.MAX_VALUE, (long) 0b11010010_01101001_10010100_10010010, 10010L, 0xFFL, 0b1100110L};
     int i = 0;
     int j = 0;
 
     for (VariableTree variableTree : variables) {
-      if (variableTree.simpleName().name().startsWith("x")) {
-        assertThat(SELiteralUtils.intLiteralValue(variableTree.initializer())).isEqualTo(expectedIntegerValues[i++]);
-      } else if (variableTree.simpleName().name().startsWith("y")) {
-        assertThat(SELiteralUtils.longLiteralValue(variableTree.initializer())).isEqualTo(expectedLongValues[j++]);
+      String variableName = variableTree.simpleName().name();
+      if (variableName.startsWith("x")) {
+        assertThat(variableTree.initializer().asConstant().orElse(null))
+          .describedAs(variableName)
+          .isEqualTo(expectedIntegerValues[i++]);
+      } else if (variableName.startsWith("y")) {
+        assertThat(variableTree.initializer().asConstant().map(y -> ((Number) y).longValue()).orElse(null))
+          .describedAs(variableName)
+          .isEqualTo(expectedLongValues[j++]);
       }
     }
   }
@@ -122,41 +127,20 @@ class SELiteralUtilsTest {
   @Test
   void testLargeBinary() {
     // 32 bit masks
-    assertThat(SELiteralUtils.intLiteralValue(getIntLiteral("0b1111_1111_1111_1111_0000_0000_0000_0000"))).isEqualTo(0b1111_1111_1111_1111_0000_0000_0000_0000);
-    assertThat(SELiteralUtils.intLiteralValue(getIntLiteral("0b0111_1111_1111_1111_0000_0000_0000_0000"))).isEqualTo(0b0111_1111_1111_1111_0000_0000_0000_0000);
+    assertThat(getIntLiteral("0b1111_1111_1111_1111_0000_0000_0000_0000").asConstant().orElse(null)).isEqualTo(0b1111_1111_1111_1111_0000_0000_0000_0000);
+    assertThat(getIntLiteral("0b0111_1111_1111_1111_0000_0000_0000_0000").asConstant().orElse(null)).isEqualTo(0b0111_1111_1111_1111_0000_0000_0000_0000);
 
     // 32 bits numbers padded with zeros
-    assertThat(SELiteralUtils.intLiteralValue(getIntLiteral("0b0000_1111_1111_1111_1111_0000_0000_0000_0000"))).isEqualTo(0b0000_1111_1111_1111_1111_0000_0000_0000_0000);
-    assertThat(SELiteralUtils.intLiteralValue(getIntLiteral("0x00FFF0000"))).isEqualTo(0x00FFF0000);
+    assertThat(getIntLiteral("0b0000_1111_1111_1111_1111_0000_0000_0000_0000").asConstant().orElse(null)).isEqualTo(0b0000_1111_1111_1111_1111_0000_0000_0000_0000);
+    assertThat(getIntLiteral("0x00FFF0000").asConstant().orElse(null)).isEqualTo(0x00FFF0000);
 
     // hexa
-    assertThat(SELiteralUtils.intLiteralValue(getIntLiteral("0xFFFF0000"))).isEqualTo(0xFFFF0000);
-    assertThat(SELiteralUtils.intLiteralValue(getIntLiteral("0x7FFF0000"))).isEqualTo(0x7FFF0000);
+    assertThat(getIntLiteral("0xFFFF0000").asConstant().orElse(null)).isEqualTo(0xFFFF0000);
+    assertThat(getIntLiteral("0x7FFF0000").asConstant().orElse(null)).isEqualTo(0x7FFF0000);
   }
 
   private ExpressionTree getIntLiteral(String intLiteral) {
     return ((BinaryExpressionTree) getReturnExpression("int foo() { return " + intLiteral + " & 42; }")).leftOperand();
-  }
-
-  @Test
-  void testTrimLongSuffix() {
-    assertThat(SELiteralUtils.trimLongSuffix("")).isEmpty();
-    String longValue = "12345";
-    assertThat(SELiteralUtils.trimLongSuffix(longValue)).isEqualTo(longValue);
-    assertThat(SELiteralUtils.trimLongSuffix(longValue + "l")).isEqualTo(longValue);
-    assertThat(SELiteralUtils.trimLongSuffix(longValue + "L")).isEqualTo(longValue);
-  }
-
-  @Test
-  void testTrimQuotes() {
-    assertThat(SELiteralUtils.trimQuotes("\"test\"")).isEqualTo("test");
-    assertThat(SELiteralUtils.trimQuotes("\"\"\"test\"\"\"")).isEqualTo("test");
-  }
-
-  @Test
-  void testIsTextBlock() {
-    assertThat(SELiteralUtils.isTextBlock("\"test\"")).isFalse();
-    assertThat(SELiteralUtils.isTextBlock("\"\"\"test\"\"\"")).isTrue();
   }
 
   @Test
@@ -195,62 +179,6 @@ class SELiteralUtilsTest {
     assertThat(SELiteralUtils.isFalse(falseTree)).isTrue();
   }
 
-  @Test
-  void getAsStringValue_for_string() {
-
-    LiteralTree intLiteral = getLiteral("123");
-    assertThat(SELiteralUtils.getAsStringValue(intLiteral)).isEqualTo("123");
-
-    LiteralTree stringLiteral = getLiteral("\"ABC\"");
-    assertThat(SELiteralUtils.getAsStringValue(stringLiteral)).isEqualTo("ABC");
-
-    LiteralTree textBlock = getLiteral("\"\"\"\nABC\"\"\"");
-    assertThat(SELiteralUtils.getAsStringValue(textBlock)).isEqualTo("ABC");
-
-    LiteralTree multilineString = getLiteral("\"ABC\\nABC\"");
-    assertThat(SELiteralUtils.getAsStringValue(multilineString)).isEqualTo("ABC\\nABC");
-
-    LiteralTree multilineTB = getLiteral("\"\"\"\n      ABC\n      ABC\"\"\"");
-    assertThat(SELiteralUtils.getAsStringValue(multilineTB)).isEqualTo("ABC\nABC");
-
-    LiteralTree multilineIndentInTB = getLiteral("\"\"\"\n      ABC\n    ABC\"\"\"");
-    assertThat(SELiteralUtils.getAsStringValue(multilineIndentInTB)).isEqualTo("  ABC\nABC");
-
-    LiteralTree textBlockWithTab = getLiteral("\"\"\"\n      \tABC\"\"\"");
-    assertThat(SELiteralUtils.getAsStringValue(textBlockWithTab)).isEqualTo("ABC");
-
-    LiteralTree textBlockWithEmptyLines = getLiteral("\"\"\"\n\n\n      \tABC\"\"\"");
-    assertThat(SELiteralUtils.getAsStringValue(textBlockWithEmptyLines)).isEqualTo("\n\nABC");
-
-    LiteralTree textBlockWithNewLines = getLiteral("\"\"\"\n\n\n      \tABC\\n\"\"\"");
-    assertThat(SELiteralUtils.getAsStringValue(textBlockWithNewLines)).isEqualTo("\n\nABC\\n");
-
-    LiteralTree textBlockWithTrailingSpaces = getLiteral("\"\"\"\n\n\n      \tABC                  \"\"\"");
-    assertThat(SELiteralUtils.getAsStringValue(textBlockWithTrailingSpaces)).isEqualTo("\n\nABC                  ");
-
-    LiteralTree textBlockWithTrailingAndLeadingSpaces = getLiteral("\"\"\"\n\n\n      \tABC   \n       ABC     ABC                  \"\"\"");
-    assertThat(SELiteralUtils.getAsStringValue(textBlockWithTrailingAndLeadingSpaces)).isEqualTo("\n\nABC\nABC     ABC                  ");
-
-    LiteralTree textBlockWithQuotesOnNewLine = getLiteral("\"\"\"\n     ABC\n     ABC\n  \"\"\"");
-    assertThat(SELiteralUtils.getAsStringValue(textBlockWithQuotesOnNewLine)).isEqualTo("   ABC\n   ABC\n");
-  }
-
-  @Test
-  void indentationOfTextBlock() {
-    String[] noIndentation = {"\"\"\"", "abc", "\"\"\""};
-    assertThat(SELiteralUtils.indentationOfTextBlock(noIndentation)).isZero();
-    String[] lastLineNotIndented = {"\"\"\"", "    abc", "\"\"\""};
-    assertThat(SELiteralUtils.indentationOfTextBlock(lastLineNotIndented)).isZero();
-    String[] indented = {"\"\"\"", "    abc", "    \"\"\""};
-    assertThat(SELiteralUtils.indentationOfTextBlock(indented)).isEqualTo(4);
-    String[] tabsAndFormFeeds = {"\"\"\"", "\t\tabc", "\f\f\"\"\""};
-    assertThat(SELiteralUtils.indentationOfTextBlock(tabsAndFormFeeds)).isEqualTo(2);
-    String[] withEmptyLine = {"\"\"\"", "    abc", "", "    \"\"\""};
-    assertThat(SELiteralUtils.indentationOfTextBlock(withEmptyLine)).isEqualTo(4);
-    String[] withIndentedEmptyLine = {"\"\"\"", "    abc", " \t\f", "    \"\"\""};
-    assertThat(SELiteralUtils.indentationOfTextBlock(withIndentedEmptyLine)).isEqualTo(4);
-  }
-
   private ExpressionTree getFirstExpression(String code) {
     ClassTree firstType = getClassTree(code);
     StatementTree firstStatement = ((MethodTree) firstType.members().get(0)).block().body().get(0);
@@ -266,11 +194,6 @@ class SELiteralUtilsTest {
   private ClassTree getClassTree(String code) {
     CompilationUnitTree compilationUnitTree = JParserTestUtils.parse("class A { " + code + "}");
     return (ClassTree) compilationUnitTree.types().get(0);
-  }
-
-  private LiteralTree getLiteral(String code) {
-    ClassTree classTree = getClassTree("Object o = " + code + ";");
-    return (LiteralTree) ((VariableTree) classTree.members().get(0)).initializer();
   }
 
 }

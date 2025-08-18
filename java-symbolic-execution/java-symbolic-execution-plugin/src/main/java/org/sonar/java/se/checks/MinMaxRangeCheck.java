@@ -23,7 +23,6 @@ import java.util.Set;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
 import org.sonar.check.Rule;
-import org.sonar.java.model.SELiteralUtils;
 import org.sonar.java.se.CheckerContext;
 import org.sonar.java.se.Flow;
 import org.sonar.java.se.ProgramState;
@@ -32,14 +31,9 @@ import org.sonar.java.se.constraint.ConstraintsByDomain;
 import org.sonar.java.se.symbolicvalues.SymbolicValue;
 import org.sonar.plugins.java.api.JavaFileScannerContext;
 import org.sonar.plugins.java.api.semantic.MethodMatchers;
-import org.sonar.plugins.java.api.semantic.Symbol;
-import org.sonar.plugins.java.api.semantic.Type;
 import org.sonar.plugins.java.api.tree.ExpressionTree;
-import org.sonar.plugins.java.api.tree.IdentifierTree;
-import org.sonar.plugins.java.api.tree.MemberSelectExpressionTree;
 import org.sonar.plugins.java.api.tree.MethodInvocationTree;
 import org.sonar.plugins.java.api.tree.Tree;
-import org.sonar.plugins.java.api.tree.UnaryExpressionTree;
 
 import static org.sonar.plugins.java.api.semantic.MethodMatchers.ANY;
 
@@ -138,45 +132,20 @@ public class MinMaxRangeCheck extends SECheck {
 
   @Override
   public ProgramState checkPostStatement(CheckerContext context, Tree syntaxNode) {
-    // TODO handle float and double
-    switch (syntaxNode.kind()) {
-      case INT_LITERAL:
-        return handleNumericalLiteral(context, SELiteralUtils.intLiteralValue((ExpressionTree) syntaxNode));
-      case LONG_LITERAL:
-        return handleNumericalLiteral(context, SELiteralUtils.longLiteralValue((ExpressionTree) syntaxNode));
-      case UNARY_MINUS,
-        UNARY_PLUS:
-        return handleNumericalLiteral(context, (UnaryExpressionTree) syntaxNode);
-      case IDENTIFIER:
-        return handleNumericalConstant(context, (IdentifierTree) syntaxNode);
-      case MEMBER_SELECT:
-        return handleNumericalConstant(context, ((MemberSelectExpressionTree) syntaxNode).identifier());
-      case METHOD_INVOCATION:
-        return handleMinMaxInvocation(context, (MethodInvocationTree) syntaxNode);
-      default:
-        return context.getState();
+    if (syntaxNode instanceof ExpressionTree expressionTree) {
+      Object constant = expressionTree.asConstant().orElse(null);
+      if (constant instanceof Character ch) {
+        constant = (int) ch;
+      }
+      if (constant instanceof Number number) {
+        return handleNumericalLiteral(context, number);
+      }
     }
-  }
-
-  private static ProgramState handleNumericalConstant(CheckerContext context, IdentifierTree syntaxNode) {
-    ProgramState programState = context.getState();
-    Symbol identifier = syntaxNode.symbol();
-    if (!isNumericalConstant(identifier)) {
-      return programState;
+    if (syntaxNode instanceof MethodInvocationTree methodInvocation) {
+      return handleMinMaxInvocation(context, methodInvocation);
+    } else {
+      return context.getState();
     }
-    SymbolicValue constant = programState.getValue(identifier);
-    if (constant == null) {
-      return programState;
-    }
-    NumericalConstraint numericalConstraint = programState.getConstraint(constant, NumericalConstraint.class);
-    if (numericalConstraint == null) {
-      return ((Symbol.VariableSymbol) identifier).constantValue()
-        .filter(Number.class::isInstance)
-        .map(Number.class::cast)
-        .map(value -> programState.addConstraint(constant, new NumericalConstraint(value)))
-        .orElse(programState);
-    }
-    return programState;
   }
 
   private ProgramState handleMinMaxInvocation(CheckerContext context, MethodInvocationTree syntaxNode) {
@@ -241,43 +210,6 @@ public class MinMaxRangeCheck extends SECheck {
       return programState;
     }
     return programState.addConstraint(programState.peekValue(), new NumericalConstraint(value));
-  }
-
-  private static ProgramState handleNumericalLiteral(CheckerContext context, UnaryExpressionTree syntaxNode) {
-    ProgramState previousPS = context.getNode().programState;
-    NumericalConstraint knownNumericalConstraint = previousPS.getConstraint(previousPS.peekValue(), NumericalConstraint.class);
-
-    ProgramState programState = context.getState();
-    if (knownNumericalConstraint == null) {
-      return programState;
-    }
-    if (syntaxNode.is(Tree.Kind.UNARY_PLUS)) {
-      return programState.addConstraint(programState.peekValue(), knownNumericalConstraint);
-    }
-    Number value = knownNumericalConstraint.value;
-    if (value instanceof Integer) {
-      value = -1 * value.intValue();
-    } else if (value instanceof Long) {
-      value = -1L * value.longValue();
-    } else if (value instanceof Float) {
-      value = -1.0f * value.floatValue();
-    } else {
-      value = -1.0 * value.doubleValue();
-    }
-    return programState.addConstraint(programState.peekValue(), new NumericalConstraint(value));
-  }
-
-  private static boolean isNumericalConstant(@Nullable Symbol symbol) {
-    return symbol != null && isConstant(symbol) && isNumericalPrimitive(symbol);
-  }
-
-  private static boolean isNumericalPrimitive(Symbol symbol) {
-    Type type = symbol.type();
-    return type.isPrimitive() && type.isNumerical();
-  }
-
-  private static boolean isConstant(Symbol symbol) {
-    return symbol.isVariableSymbol() && symbol.isStatic() && symbol.isFinal();
   }
 
 }

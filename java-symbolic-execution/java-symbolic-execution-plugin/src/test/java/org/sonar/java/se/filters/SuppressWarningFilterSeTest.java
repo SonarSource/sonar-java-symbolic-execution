@@ -109,7 +109,12 @@ public class SuppressWarningFilterSeTest {
     projectClasspath.add(new File("target/test-classes"));
 
     InputFile inputFile = TestUtils.inputFile(TEST_SOURCES_PATH + filename);
-    VisitorsBridgeForTests visitorsBridge = new VisitorsBridgeForTests(visitors, projectClasspath, sonarComponents(inputFile), new JavaVersionImpl());
+    VisitorsBridgeForTests visitorsBridge = new VisitorsBridgeForTests.Builder(visitors)
+      .enableSemanticWithProjectClasspath(projectClasspath)
+      .withSonarComponents(sonarComponents(inputFile))
+      .withJavaVersion(new JavaVersionImpl())
+      .build();
+
     JavaAstScanner.scanSingleFileForTests(inputFile, visitorsBridge);
     JavaFileScannerContextForTests testJavaFileScannerContext = visitorsBridge.lastCreatedTestContext();
 

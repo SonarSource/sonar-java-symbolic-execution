@@ -107,8 +107,8 @@ class RelationalSymbolicValueTest {
     List<ProgramState.SymbolicValueSymbol> computedFromSymbols = Arrays.stream(computedFrom).map(sv -> new ProgramState.SymbolicValueSymbol(sv, null))
       .toList();
     return (RelationalSymbolicValue) constraintManager
-      .createBinarySymbolicValue(new BinaryExpressionTreeImpl(kind, mock(ExpressionTree.class), mock(InternalSyntaxToken.class), mock(ExpressionTree.class)),
-        computedFromSymbols);
+      .createBinarySymbolicValue(new BinaryExpressionTreeImpl(kind, mock(ExpressionTree.class),
+          mock(InternalSyntaxToken.class), mock(ExpressionTree.class), null), computedFromSymbols);
   }
 
   @Test

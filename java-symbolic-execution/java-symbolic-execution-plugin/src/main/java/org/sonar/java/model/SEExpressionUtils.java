@@ -17,25 +17,15 @@
 package org.sonar.java.model;
 
 import java.util.Optional;
-import java.util.function.BiFunction;
-import javax.annotation.CheckForNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.sonar.plugins.java.api.semantic.Symbol;
 import org.sonar.plugins.java.api.tree.AssignmentExpressionTree;
-import org.sonar.plugins.java.api.tree.BinaryExpressionTree;
 import org.sonar.plugins.java.api.tree.ExpressionTree;
 import org.sonar.plugins.java.api.tree.IdentifierTree;
-import org.sonar.plugins.java.api.tree.LiteralTree;
 import org.sonar.plugins.java.api.tree.MemberSelectExpressionTree;
 import org.sonar.plugins.java.api.tree.MethodInvocationTree;
 import org.sonar.plugins.java.api.tree.ParenthesizedTree;
 import org.sonar.plugins.java.api.tree.Tree;
-import org.sonar.plugins.java.api.tree.UnaryExpressionTree;
 
 public final class SEExpressionUtils {
-
-  private static final Logger LOG = LoggerFactory.getLogger(SEExpressionUtils.class);
 
   private SEExpressionUtils() {
   }
@@ -125,71 +115,6 @@ public final class SEExpressionUtils {
     return skipParentheses(tree).is(Tree.Kind.NULL_LITERAL);
   }
 
-  @CheckForNull
-  public static Object resolveAsConstant(ExpressionTree tree) {
-    ExpressionTree expression = tree;
-    while (expression.is(Tree.Kind.PARENTHESIZED_EXPRESSION)) {
-      expression = ((ParenthesizedTree) expression).expression();
-    }
-    if (expression.is(Tree.Kind.MEMBER_SELECT)) {
-      expression = ((MemberSelectExpressionTree) expression).identifier();
-    }
-    if (expression.is(Tree.Kind.IDENTIFIER)) {
-      return resolveIdentifier((IdentifierTree) expression);
-    }
-    if (expression.is(Tree.Kind.BOOLEAN_LITERAL)) {
-      return Boolean.parseBoolean(((LiteralTree) expression).value());
-    }
-    if (expression.is(Tree.Kind.STRING_LITERAL, Tree.Kind.TEXT_BLOCK)) {
-      return SELiteralUtils.getAsStringValue((LiteralTree) expression);
-    }
-    if (expression instanceof UnaryExpressionTree unaryExpressionTree) {
-      return resolveUnaryExpression(unaryExpressionTree);
-    }
-    if (expression.is(Tree.Kind.INT_LITERAL)) {
-      return SELiteralUtils.intLiteralValue(expression);
-    }
-    if (expression.is(Tree.Kind.LONG_LITERAL)) {
-      return SELiteralUtils.longLiteralValue(expression);
-    }
-    if (expression.is(Tree.Kind.PLUS)) {
-      return resolvePlus((BinaryExpressionTree) expression);
-    }
-    if (expression.is(Tree.Kind.OR)) {
-      return resolveOr((BinaryExpressionTree) expression);
-    }
-    if (expression.is(Tree.Kind.MINUS)) {
-      return resolveArithmeticOperation((BinaryExpressionTree) expression, (a, b) -> a - b, (a, b) -> a - b);
-    }
-    if (expression.is(Tree.Kind.MULTIPLY)) {
-      return resolveArithmeticOperation((BinaryExpressionTree) expression, (a, b) -> a * b, (a, b) -> a * b);
-    }
-    if (expression.is(Tree.Kind.DIVIDE)) {
-      return resolveArithmeticOperation((BinaryExpressionTree) expression, (a, b) -> a / b, (a, b) -> a / b);
-    }
-    if (expression.is(Tree.Kind.REMAINDER)) {
-      return resolveArithmeticOperation((BinaryExpressionTree) expression, (a, b) -> a % b, (a, b) -> a % b);
-    }
-    return null;
-  }
-
-  @CheckForNull
-  private static Object resolveIdentifier(IdentifierTree tree) {
-    Symbol symbol = tree.symbol();
-    if (!symbol.isVariableSymbol()) {
-      return null;
-    }
-    Symbol owner = symbol.owner();
-    if (owner.isTypeSymbol() && owner.type().is("java.lang.Boolean")) {
-      if ("TRUE".equals(symbol.name())) {
-        return Boolean.TRUE;
-      } else if ("FALSE".equals(symbol.name())) {
-        return Boolean.FALSE;
-      }
-    }
-    return ((Symbol.VariableSymbol) symbol).constantValue().orElse(null);
-  }
-
   public static IdentifierTree extractIdentifier(AssignmentExpressionTree tree) {
     Optional<IdentifierTree> identifier = extractIdentifier(tree.variable());
 
@@ -210,87 +135,6 @@ public final class SEExpressionUtils {
   public static boolean isThis(ExpressionTree expression) {
     ExpressionTree newExpression = SEExpressionUtils.skipParentheses(expression);
     return newExpression.is(Tree.Kind.IDENTIFIER) && "this".equals(((IdentifierTree) newExpression).name());
-  }
-
-  @CheckForNull
-  private static Object resolveArithmeticOperation(Object left, Object right, BiFunction<Long, Long, Object> longOperation, BiFunction<Integer, Integer, Object> intOperation) {
-    try {
-      if (left instanceof Integer leftInt && right instanceof Integer rightInt) {
-        return intOperation.apply(leftInt, rightInt);
-      } else if ((left instanceof Long || right instanceof Long) && (left instanceof Integer || right instanceof Integer)) {
-        return longOperation.apply(((Number) left).longValue(), ((Number) right).longValue());
-      }
-    } catch (ArithmeticException e) {
-      LOG.debug("Arithmetic exception while resolving arithmetic operation value", e);
-    }
-    return null;
-  }
-
-  @CheckForNull
-  private static Object resolveUnaryExpression(UnaryExpressionTree unaryExpression) {
-    Object value = resolveAsConstant(unaryExpression.expression());
-    if (unaryExpression.is(Tree.Kind.UNARY_PLUS)) {
-      return value;
-    } else if (unaryExpression.is(Tree.Kind.UNARY_MINUS)) {
-      if (value instanceof Long longValue) {
-        return -longValue;
-      } else if (value instanceof Integer intValue) {
-        return -intValue;
-      }
-    } else if (unaryExpression.is(Tree.Kind.BITWISE_COMPLEMENT)) {
-      if (value instanceof Long longValue) {
-        return ~longValue;
-      } else if (value instanceof Integer intValue) {
-        return ~intValue;
-      }
-    } else if (unaryExpression.is(Tree.Kind.LOGICAL_COMPLEMENT) && value instanceof Boolean bool) {
-      return !bool;
-    }
-    return null;
-  }
-
-  @CheckForNull
-  private static Object resolvePlus(BinaryExpressionTree binaryExpression) {
-    Object left = resolveAsConstant(binaryExpression.leftOperand());
-    Object right = resolveAsConstant(binaryExpression.rightOperand());
-    if (left == null || right == null) {
-      return null;
-    } else if (left instanceof String leftString) {
-      return leftString + right;
-    } else if (right instanceof String rightString) {
-      return left + rightString;
-    }
-    return resolveArithmeticOperation(left, right, Long::sum, Integer::sum);
-  }
-
-  @CheckForNull
-  private static Object resolveArithmeticOperation(BinaryExpressionTree binaryExpression,
-                                                   BiFunction<Long, Long, Object> longOperation,
-                                                   BiFunction<Integer, Integer, Object> intOperation) {
-    Object left = resolveAsConstant(binaryExpression.leftOperand());
-    Object right = resolveAsConstant(binaryExpression.rightOperand());
-    if (left == null || right == null) {
-      return null;
-    }
-    return resolveArithmeticOperation(left, right, longOperation, intOperation);
-  }
-
-  @CheckForNull
-  private static Object resolveOr(BinaryExpressionTree binaryExpression) {
-    Object left = resolveAsConstant(binaryExpression.leftOperand());
-    Object right = resolveAsConstant(binaryExpression.rightOperand());
-    if (left == null || right == null) {
-      return null;
-    } else if (left instanceof Long leftLong && right instanceof Long rightLong) {
-      return leftLong | rightLong;
-    } else if (left instanceof Long leftLong && right instanceof Integer rightInt) {
-      return leftLong | rightInt;
-    } else if (left instanceof Integer leftInt && right instanceof Long rightLong) {
-      return leftInt | rightLong;
-    } else if (left instanceof Integer leftInt && right instanceof Integer rightInt) {
-      return leftInt | rightInt;
-    }
-    return null;
   }
 
 }
