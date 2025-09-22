@@ -55,6 +55,36 @@ build_task:
     - regular_mvn_build_deploy_analyze
   cleanup_before_cache_script: cleanup_maven_repository
 
+sonar_shadow_scan_and_issue_replication_task:
+  depends_on:
+    - build
+  # Only run when triggered by the cirrus-ci cron job named "nightly"
+  only_if: $CIRRUS_CRON == "nightly"
+  eks_container:
+    <<: *CONTAINER_DEFINITION
+    cpu: 4
+    memory: 4G
+  env:
+    SONAR_PROJECT_KEY: "org.sonarsource.java:sonar-java-symbolic-execution"
+    SHADOW_ORGANIZATION: "sonarsource"
+    SHADOW_PROJECT_KEY: "SonarSource_sonar-java-symbolic-execution"
+    # to replicate issue states from next
+    SONAR_TOKEN: VAULT[development/kv/data/next data.token]
+    SONAR_HOST_URL: https://next.sonarqube.com/sonarqube
+    matrix:
+      - name: "sonarcloud.io"
+        SHADOW_SONAR_TOKEN: VAULT[development/kv/data/sonarcloud data.token]
+        SHADOW_SONAR_HOST_URL: "https://sonarcloud.io"
+      - name: "sonarqube.us"
+        SHADOW_SONAR_TOKEN: VAULT[development/kv/data/sonarqube-us data.token]
+        SHADOW_SONAR_HOST_URL: "https://sonarqube.us"
+  maven_cache:
+    folder: ${CIRRUS_WORKING_DIR}/.m2/repository
+  build_and_shadow_scan_script:
+    - source cirrus-env BUILD
+    - ./shadow-scan-and-issue-replication.sh
+  cleanup_before_cache_script: cleanup_maven_repository
+
 ws_scan_task:
   <<: *ONLY_SONARSOURCE_QA
   eks_container:
@@ -121,6 +151,7 @@ ruling_task:
 promote_task:
   depends_on:
     - build
+    - sonar_shadow_scan_and_issue_replication
     - ws_scan
     - ruling
   <<: *ONLY_SONARSOURCE_QA
