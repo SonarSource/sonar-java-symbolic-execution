@@ -115,7 +115,7 @@ ruling_task:
   ruling_script:
     - source cirrus-env QA
     - source set_maven_build_version $BUILD_NUMBER
-    - export SONAR_JAVA_VERSION="$(.cirrus/resolve-sonar-java-plugin-version.sh "${JAVA_PLUGIN_VERSION}")"
+    - export SONAR_JAVA_VERSION="$(.github/scripts/resolve-sonar-java-plugin-version.sh "${JAVA_PLUGIN_VERSION}")"
     - echo "Using SONAR_JAVA_VERSION=${SONAR_JAVA_VERSION}"
     - cd its/ruling
     - mvn package --batch-mode "-Pit-ruling,$PROFILE" -Dsonar.java.version="$SONAR_JAVA_VERSION" -Dsonar.runtimeVersion=LATEST_RELEASE -Dmaven.test.redirectTestOutputToFile=false -B -e -V -Dparallel=methods -DuseUnlimitedThreads=true
