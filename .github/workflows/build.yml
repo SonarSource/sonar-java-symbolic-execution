@@ -22,14 +22,15 @@ jobs:
       id-token: write
       contents: write
     outputs:
-      build-number: ${{ steps.build-maven.outputs.BUILD_NUMBER }}
+      build-number: ${{ steps.build.outputs.BUILD_NUMBER }}
+      deployed: ${{ steps.build.outputs.deployed }}
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
       - uses: jdx/mise-action@d6e32c1796099e0f1f3ac741c220a8b7eae9e5dd # v3.2.0
         with:
           version: 2025.7.12
       - uses: SonarSource/ci-github-actions/build-maven@v1
-        id: build-maven
+        id: build
         with:
           deploy-pull-request: true
           artifactory-reader-role: private-reader    # Override default public-reader
@@ -37,8 +38,8 @@ jobs:
 
   qa:
     needs: [build]
+    if: ${{ needs.build.outputs.deployed }}
     runs-on: github-ubuntu-latest-l
-    if: github.event_name != 'pull_request' || (github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]')
     permissions:
       id-token: write
     strategy:
@@ -49,6 +50,8 @@ jobs:
           - { name: "for SonarQube Project Only", profile: "only-sonarqube-project", java_plugin_version: "LATEST_MASTER" }
           - { name: "with Prod SonarJava Plugin", profile: "without-sonarqube-project", java_plugin_version: "POM_PROPERTY" }
     name: "QA Tests ${{ matrix.item.name }}"
+    env:
+      BUILD_NUMBER: ${{ needs.build.outputs.build-number }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
@@ -101,17 +104,15 @@ jobs:
 
   promote:
     name: Promote
-    needs: [build, qa]
+    if: ${{ needs.build.outputs.deployed }}
+    needs:
+      - build
+      - qa
     runs-on: github-ubuntu-latest-s
-    if: github.event_name != 'pull_request' || (github.event.pull_request.head.repo.full_name == github.repository && github.actor != 'dependabot[bot]')
     permissions:
       id-token: write
+    env:
+      BUILD_NUMBER: ${{ needs.build.outputs.build-number }}
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - uses: jdx/mise-action@d6e32c1796099e0f1f3ac741c220a8b7eae9e5dd # v3.2.0
-        with:
-          cache_save: false
-          version: 2025.7.12
       - name: Promote artifacts
         uses: SonarSource/ci-github-actions/promote@v1
