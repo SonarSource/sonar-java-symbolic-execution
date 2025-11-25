@@ -14,23 +14,26 @@
  * You should have received a copy of the Sonar Source-Available License
  * along with this program; if not, see https://sonarsource.com/license/ssal/
  */
-package org.sonar.java.se.checks;
+package org.sonar.java.cfg;
 
-import org.junit.jupiter.api.Test;
-import org.sonar.java.se.SECheckVerifier;
-import org.sonar.java.se.utils.SETestUtils;
+import java.util.Map;
+import javax.annotation.Nullable;
 
-import static org.sonar.java.checks.verifier.TestUtils.mainCodeSourcesPath;
-
-class RedundantAssignmentsCheckTest {
-
-  @Test
-  void test() {
-    SECheckVerifier.newVerifier()
-      .onFile(mainCodeSourcesPath("symbolicexecution/checks/RedundantAssignmentsCheckSample.java"))
-      .withCheck(new RedundantAssignmentsCheck())
-      .withClassPath(SETestUtils.CLASS_PATH)
-      .verifyIssues();
+public class CfgUtilsTest {
+  void foo(@Nullable Map<String, String> map) {
+    map.size(); // "A "NullPointerException" could be thrown; "map" is nullable here.
   }
 
+  int divide(int num) {
+    int dem = 0;
+    if ((num % 2) == 0) {
+      dem = 1;
+    }
+    return num / dem;
+  }
+
+  void testFoo() {
+    foo(null);
+    divide(10);
+  }
 }
