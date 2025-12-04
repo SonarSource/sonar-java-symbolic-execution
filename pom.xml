@@ -96,6 +96,7 @@
 
     <!-- Overrides parent pom to use a more recent version of jacoco -->
     <version.jacoco.plugin>0.8.13</version.jacoco.plugin>
+    <sonar.sca.exclusions>**/java-symbolic-execution-checks-test-sources/**</sonar.sca.exclusions>
   </properties>
 
   <distributionManagement>
