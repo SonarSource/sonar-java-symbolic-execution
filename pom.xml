@@ -72,6 +72,7 @@
     <license.title>SonarQube Java</license.title>
 
     <jdk.min.version>17</jdk.min.version>
+    <sonar.sca.exclusions>its/sources/**,java-symbolic-execution/java-symbolic-execution-checks-test-sources/**</sonar.sca.exclusions>
 
     <maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
 
