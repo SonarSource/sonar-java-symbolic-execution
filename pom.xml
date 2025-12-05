@@ -10,7 +10,7 @@
 
   <groupId>org.sonarsource.java</groupId>
   <artifactId>sonar-java-symbolic-execution</artifactId>
-  <version>8.16.2-SNAPSHOT</version>
+  <version>8.16.3-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>SonarQube Java :: Symbolic Execution</name>
   <description>Symbolic execution analyzer for Java</description>
