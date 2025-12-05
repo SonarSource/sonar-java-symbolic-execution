@@ -1,0 +1,118 @@
+name: Build
+on:
+  push:
+    branches:
+      - master
+      - branch-*
+      - dogfood-*
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: "30 1 * * *" # Run daily at 1:30 AM UTC
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build
+    runs-on: github-ubuntu-latest-s
+    permissions:
+      id-token: write
+      contents: write
+    outputs:
+      build-number: ${{ steps.build-step.outputs.BUILD_NUMBER }}
+      deployed: ${{ steps.build-step.outputs.deployed }}
+    steps:
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+      - uses: jdx/mise-action@d6e32c1796099e0f1f3ac741c220a8b7eae9e5dd # v3.2.0
+        with:
+          version: 2025.7.12
+      - uses: SonarSource/ci-github-actions/build-maven@v1
+        id: build-step
+        with:
+          deploy-pull-request: true
+          artifactory-reader-role: private-reader    # Override default public-reader
+          artifactory-deployer-role: qa-deployer     # Override default public-deployer
+
+  qa:
+    needs: [build]
+    if: ${{ needs.build.outputs.deployed }}
+    runs-on: github-ubuntu-latest-l
+    permissions:
+      id-token: write
+    strategy:
+      fail-fast: false
+      matrix:
+        item:
+          - { name: "with Lastest SonarJava Plugin", profile: "without-sonarqube-project", java_plugin_version: "LATEST_MASTER" }
+          - { name: "for SonarQube Project Only", profile: "only-sonarqube-project", java_plugin_version: "LATEST_MASTER" }
+          - { name: "with Prod SonarJava Plugin", profile: "without-sonarqube-project", java_plugin_version: "POM_PROPERTY" }
+    name: "QA Tests ${{ matrix.item.name }}"
+    env:
+      BUILD_NUMBER: ${{ needs.build.outputs.build-number }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+        with:
+          submodules: recursive
+      - uses: jdx/mise-action@d6e32c1796099e0f1f3ac741c220a8b7eae9e5dd # v3.2.0
+        with:
+          working-directory: its/ruling
+          version: 2025.7.12
+      - name: Get GitHub Token for QA Licenses
+        id: secrets
+        uses: SonarSource/vault-action-wrapper@v3
+        with:
+          secrets: |
+            development/github/token/licenses-ro token | GITHUB_TOKEN;
+      - name: Configure Maven
+        id: configure-maven
+        uses: SonarSource/ci-github-actions/config-maven@v1
+        with:
+          artifactory-reader-role: private-reader    # Override default public-reader
+      - name: Get Sonar Java plugin version
+        id: resolve-sonar-java-plugin-version
+        run: |
+          VERSION=$(.github/scripts/resolve-sonar-java-plugin-version.sh "${{ matrix.item.java_plugin_version }}")
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+      - name: Run QA Tests
+        working-directory: its/ruling
+        env:
+          GITHUB_TOKEN: ${{ fromJSON(steps.secrets.outputs.vault).GITHUB_TOKEN }}
+          BUILD_NUMBER: ${{ needs.build.outputs.build-number }}
+          MAVEN_OPTS: "-Xmx3g"
+          SONAR_JAVA_VERSION: ${{ steps.resolve-sonar-java-plugin-version.outputs.version }}
+        run: |
+          mvn package --batch-mode \
+            "-Pit-ruling,${{ matrix.item.profile }}" \
+            "-Dsonar.java.version=${SONAR_JAVA_VERSION}" \
+            "-Dorchestrator.artifactory.accessToken=${ARTIFACTORY_ACCESS_TOKEN}" \
+            "-Dsonar.runtimeVersion=LATEST_RELEASE" \
+            "-Dmaven.test.redirectTestOutputToFile=false" \
+            "-DbuildNumber=${BUILD_NUMBER}" \
+            -B -e -V \
+            "-Dparallel=methods" \
+            "-DuseUnlimitedThreads=true"
+      - name: Upload ruling artifacts on failure
+        if: failure()
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.5.0
+        with:
+          name: ruling-actual-${{ matrix.item.profile }}-${{ matrix.item.java_plugin_version }}
+          path: its/ruling/target/actual/**/*
+
+  promote:
+    name: Promote
+    if: ${{ needs.build.outputs.deployed }}
+    needs:
+      - build
+      - qa
+    runs-on: github-ubuntu-latest-s
+    permissions:
+      id-token: write
+    env:
+      BUILD_NUMBER: ${{ needs.build.outputs.build-number }}
+    steps:
+      - name: Promote artifacts
+        uses: SonarSource/ci-github-actions/promote@v1

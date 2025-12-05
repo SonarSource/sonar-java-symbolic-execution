@@ -5,12 +5,12 @@
   <parent>
     <groupId>org.sonarsource.parent</groupId>
     <artifactId>parent</artifactId>
-    <version>85.0.0.3035</version>
+    <version>86.0.0.3040</version>
   </parent>
 
   <groupId>org.sonarsource.java</groupId>
   <artifactId>sonar-java-symbolic-execution</artifactId>
-  <version>8.16.2-SNAPSHOT</version>
+  <version>8.16.3-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>SonarQube Java :: Symbolic Execution</name>
   <description>Symbolic execution analyzer for Java</description>
@@ -64,14 +64,15 @@
     <url>https://jira.sonarsource.com/browse/JAVASE</url>
   </issueManagement>
   <ciManagement>
-    <system>Cirrus CI</system>
-    <url>https://cirrus-ci.com/github/SonarSource/sonar-java-symbolic-execution</url>
+    <system>GitHub Actions</system>
+    <url>https://github.com/SonarSource/sonar-java-symbolic-execution/actions/workflows/build.yml</url>
   </ciManagement>
 
   <properties>
     <license.title>SonarQube Java</license.title>
 
     <jdk.min.version>17</jdk.min.version>
+    <sonar.sca.exclusions>its/sources/**,java-symbolic-execution/java-symbolic-execution-checks-test-sources/**</sonar.sca.exclusions>
 
     <maven.test.redirectTestOutputToFile>true</maven.test.redirectTestOutputToFile>
 
