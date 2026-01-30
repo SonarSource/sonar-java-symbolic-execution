@@ -131,8 +131,8 @@ public class JavaRulingTest {
     String projectKey = "com.google.guava:guava";
     MavenBuild build = test_project(projectKey, projectName);
     build
-      // by default guava is compatible with java 6, however this is not supported with JDK 17
-      .setProperty("java.version", "1.7")
+      // by default guava is compatible with java 6, however this is not supported with JDK 23
+      .setProperty("java.version", "1.8")
       .setProperty("maven.javadoc.skip", "true")
       // use batch
       .setProperty("sonar.java.experimental.batchModeSizeInKB", "8192");
@@ -175,7 +175,7 @@ public class JavaRulingTest {
     String projectName = "commons-beanutils";
     MavenBuild build = test_project("commons-beanutils:commons-beanutils", projectName);
     build
-      // by default it can not be built with jdk 17 without changing some plugin versions
+      // by default it can not be built with recent JDK versions without changing some plugin versions
       .setProperty("maven-bundle-plugin.version", "5.1.4")
       // use batch
       .setProperty("sonar.java.experimental.batchModeSizeInKB", "8192");
