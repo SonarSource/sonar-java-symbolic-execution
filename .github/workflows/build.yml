@@ -37,7 +37,7 @@ jobs:
           artifactory-deployer-role: qa-deployer     # Override default public-deployer
 
   qa:
-    needs: [build]
+    needs: [ build ]
     if: ${{ needs.build.outputs.deployed }}
     runs-on: github-ubuntu-latest-l
     permissions:
@@ -49,7 +49,7 @@ jobs:
           - { name: "with Lastest SonarJava Plugin", profile: "without-sonarqube-project", java_plugin_version: "LATEST_MASTER" }
           - { name: "for SonarQube Project Only", profile: "only-sonarqube-project", java_plugin_version: "LATEST_MASTER" }
           - { name: "with Prod SonarJava Plugin", profile: "without-sonarqube-project", java_plugin_version: "POM_PROPERTY" }
-          - { name: "for Guava Project Only", profile: "only-guava-project", java_plugin_version: "LATEST_MASTER", java_version: "17" }
+          - { name: "for Guava Project Only", profile: "only-guava-project", java_plugin_version: "LATEST_MASTER", java_version: "17", sonar-runtime: "LATEST_RELEASE[2025.4]" }
     name: "QA Tests ${{ matrix.item.name }}"
     env:
       BUILD_NUMBER: ${{ needs.build.outputs.build-number }}
@@ -90,12 +90,13 @@ jobs:
           BUILD_NUMBER: ${{ needs.build.outputs.build-number }}
           MAVEN_OPTS: "-Xmx3g"
           SONAR_JAVA_VERSION: ${{ steps.resolve-sonar-java-plugin-version.outputs.version }}
+          SONAR_RUNTIME: ${{ matrix.item.sonar-runtime || 'LATEST_RELEASE' }}
         run: |
           mvn package --batch-mode \
             "-Pit-ruling,${{ matrix.item.profile }}" \
             "-Dsonar.java.version=${SONAR_JAVA_VERSION}" \
             "-Dorchestrator.artifactory.accessToken=${ARTIFACTORY_ACCESS_TOKEN}" \
-            "-Dsonar.runtimeVersion=LATEST_RELEASE" \
+            "-Dsonar.runtimeVersion=${{ env.SONAR_RUNTIME }}" \
             "-Dmaven.test.redirectTestOutputToFile=false" \
             "-DbuildNumber=${BUILD_NUMBER}" \
             -B -e -V \
