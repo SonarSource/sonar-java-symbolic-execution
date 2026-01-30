@@ -49,6 +49,7 @@ jobs:
           - { name: "with Lastest SonarJava Plugin", profile: "without-sonarqube-project", java_plugin_version: "LATEST_MASTER" }
           - { name: "for SonarQube Project Only", profile: "only-sonarqube-project", java_plugin_version: "LATEST_MASTER" }
           - { name: "with Prod SonarJava Plugin", profile: "without-sonarqube-project", java_plugin_version: "POM_PROPERTY" }
+          - { name: "for Guava Project Only", profile: "only-guava-project", java_plugin_version: "LATEST_MASTER", java_version: "17" }
     name: "QA Tests ${{ matrix.item.name }}"
     env:
       BUILD_NUMBER: ${{ needs.build.outputs.build-number }}
@@ -57,6 +58,11 @@ jobs:
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
           submodules: recursive
+      - name: Override Java version for specific profiles
+        if: ${{ matrix.item.java_version }}
+        run: |
+          echo "[tools]" > its/ruling/mise.toml
+          echo "java = \"${{ matrix.item.java_version }}\"" >> its/ruling/mise.toml
       - uses: jdx/mise-action@d6e32c1796099e0f1f3ac741c220a8b7eae9e5dd # v3.2.0
         with:
           working-directory: its/ruling
