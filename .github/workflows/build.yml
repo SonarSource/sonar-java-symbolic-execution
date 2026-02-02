@@ -37,7 +37,7 @@ jobs:
           artifactory-deployer-role: qa-deployer     # Override default public-deployer
 
   qa:
-    needs: [ build ]
+    needs: [build]
     if: ${{ needs.build.outputs.deployed }}
     runs-on: github-ubuntu-latest-l
     permissions:
@@ -48,8 +48,8 @@ jobs:
         item:
           - { name: "with Lastest SonarJava Plugin", profile: "without-sonarqube-project", java_plugin_version: "LATEST_MASTER" }
           - { name: "for SonarQube Project Only", profile: "only-sonarqube-project", java_plugin_version: "LATEST_MASTER" }
-          - { name: "with Prod SonarJava Plugin", profile: "without-sonarqube-project", java_plugin_version: "POM_PROPERTY" }
           - { name: "for Guava Project Only", profile: "only-guava-project", java_plugin_version: "LATEST_MASTER", java_version: "17", sonar-runtime: "LATEST_RELEASE[2025.4]" }
+          - { name: "with Prod SonarJava Plugin", profile: "without-sonarqube-project", java_plugin_version: "POM_PROPERTY" }
     name: "QA Tests ${{ matrix.item.name }}"
     env:
       BUILD_NUMBER: ${{ needs.build.outputs.build-number }}
@@ -60,9 +60,9 @@ jobs:
           submodules: recursive
       - name: Override Java version for specific profiles
         if: ${{ matrix.item.java_version }}
-        run: |
-          echo "[tools]" > its/ruling/mise.toml
-          echo "java = \"${{ matrix.item.java_version }}\"" >> its/ruling/mise.toml
+        env:
+          JAVA_VERSION: ${{ matrix.item.java_version || '21' }}
+        run: mise use "java@${{ env.JAVA_VERSION }}"
       - uses: jdx/mise-action@d6e32c1796099e0f1f3ac741c220a8b7eae9e5dd # v3.2.0
         with:
           working-directory: its/ruling
