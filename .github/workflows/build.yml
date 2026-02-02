@@ -63,7 +63,12 @@ jobs:
           working-directory: its/ruling
           version: 2025.7.12
       - name: Override Java version for specific profiles
-        run: mise use "java@${{ matrix.item.java_version || '21' }}"
+        if: ${{ matrix.item.java_version }}
+        run: |
+          # Moves into the target directory and sets the Java version via mise
+          # This automatically creates/updates the mise.toml file
+          cd its/ruling
+          mise use java@${{ matrix.item.java_version }}
       - name: Get GitHub Token for QA Licenses
         id: secrets
         uses: SonarSource/vault-action-wrapper@v3
