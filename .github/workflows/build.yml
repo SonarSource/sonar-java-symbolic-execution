@@ -65,8 +65,10 @@ jobs:
       - name: Override Java version for specific profiles
         if: ${{ matrix.item.java_version }}
         run: |
-          # Moves into the target directory and sets the Java version via mise
-          # This automatically creates/updates the mise.toml file
+          # We must 'cd' into the target directory because mise 'use' commands are 
+          # scoped to the current working directory. Changing directories ensures 
+          # the java version is pinned specifically for the 'its/ruling' path 
+          # by creating/updating a local .mise.toml file there.
           cd its/ruling
           mise use java@${{ matrix.item.java_version }}
       - name: Get GitHub Token for QA Licenses
