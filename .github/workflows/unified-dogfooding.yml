@@ -1,6 +1,5 @@
 name: unified-dogfooding.yml
 on:
-  pull_request:
   schedule:
     - cron: '0 3 * * *' # Run the workflow every day at 03:00 UTC
   workflow_dispatch:
