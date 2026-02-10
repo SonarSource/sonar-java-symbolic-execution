@@ -48,6 +48,7 @@ jobs:
         item:
           - { name: "with Lastest SonarJava Plugin", profile: "without-sonarqube-project", java_plugin_version: "LATEST_MASTER" }
           - { name: "for SonarQube Project Only", profile: "only-sonarqube-project", java_plugin_version: "LATEST_MASTER" }
+          - { name: "for Guava Project Only", profile: "only-guava-project", java_plugin_version: "LATEST_MASTER", java_version: "17", sonar-runtime: "LATEST_RELEASE[2025.4]" }
           - { name: "with Prod SonarJava Plugin", profile: "without-sonarqube-project", java_plugin_version: "POM_PROPERTY" }
     name: "QA Tests ${{ matrix.item.name }}"
     env:
@@ -61,6 +62,15 @@ jobs:
         with:
           working-directory: its/ruling
           version: 2025.7.12
+      - name: Override Java version for specific profiles
+        if: ${{ matrix.item.java_version }}
+        run: |
+          # We must 'cd' into the target directory because mise 'use' commands are 
+          # scoped to the current working directory. Changing directories ensures 
+          # the java version is pinned specifically for the 'its/ruling' path 
+          # by creating/updating a local .mise.toml file there.
+          cd its/ruling
+          mise use java@${{ matrix.item.java_version }}
       - name: Get GitHub Token for QA Licenses
         id: secrets
         uses: SonarSource/vault-action-wrapper@v3
@@ -84,12 +94,13 @@ jobs:
           BUILD_NUMBER: ${{ needs.build.outputs.build-number }}
           MAVEN_OPTS: "-Xmx3g"
           SONAR_JAVA_VERSION: ${{ steps.resolve-sonar-java-plugin-version.outputs.version }}
+          SONAR_RUNTIME: ${{ matrix.item.sonar-runtime || 'LATEST_RELEASE' }}
         run: |
           mvn package --batch-mode \
             "-Pit-ruling,${{ matrix.item.profile }}" \
             "-Dsonar.java.version=${SONAR_JAVA_VERSION}" \
             "-Dorchestrator.artifactory.accessToken=${ARTIFACTORY_ACCESS_TOKEN}" \
-            "-Dsonar.runtimeVersion=LATEST_RELEASE" \
+            "-Dsonar.runtimeVersion=${{ env.SONAR_RUNTIME }}" \
             "-Dmaven.test.redirectTestOutputToFile=false" \
             "-DbuildNumber=${BUILD_NUMBER}" \
             -B -e -V \
