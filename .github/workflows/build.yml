@@ -65,10 +65,6 @@ jobs:
       - uses: jdx/mise-action@d6e32c1796099e0f1f3ac741c220a8b7eae9e5dd # v3.2.0
         with:
           version: 2025.7.12
-      - name: Override Java version for specific profiles
-        if: ${{ matrix.item.java_version }}
-        run: |
-          mise use java@21
       - name: Get GitHub Token for QA Licenses
         id: secrets
         uses: SonarSource/vault-action-wrapper@v3
