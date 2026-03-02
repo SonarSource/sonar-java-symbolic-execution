@@ -31,7 +31,7 @@ To submit a contribution, create a pull request for this repository. Please make
 
 ### Build the Project and Run Unit Tests
 
-Requirements: Java 17
+Requirements: Java 21
 
 To build the plugin and run its unit tests, execute this command from the project's root directory:
 
@@ -47,7 +47,7 @@ To run the test, first make sure the submodules are checked out:
 
     git submodule update --init --recursive
 
-Then, ensure that the `JAVA_HOME` environment variable is set for the ruling tests execution and that it points to your local JDK 17 installation.
+Then, ensure that the `JAVA_HOME` environment variable is set for the ruling tests execution and that it points to your local JDK 21 installation.
 Failing to do so will produce inconsistencies with the expected results.
 
 From the `its/ruling` folder, launch the ruling tests:
