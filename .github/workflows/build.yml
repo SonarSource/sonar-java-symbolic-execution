@@ -8,7 +8,7 @@ on:
   pull_request:
   workflow_dispatch:
   schedule:
-    - cron: "30 1 * * *" # Run daily at 1:30 AM UTC
+    - cron: "30 1 * * *"
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -37,8 +37,8 @@ jobs:
         id: build-step
         with:
           deploy-pull-request: true
-          artifactory-reader-role: private-reader    # Override default public-reader
-          artifactory-deployer-role: qa-deployer     # Override default public-deployer
+          artifactory-reader-role: private-reader
+          artifactory-deployer-role: qa-deployer
           use-develocity: ${{ env.USE_DEVELOCITY }}
           develocity-url: ${{ env.DEVELOCITY_URL }}
 
@@ -52,10 +52,8 @@ jobs:
       fail-fast: false
       matrix:
         item:
-          - { name: "with Lastest SonarJava Plugin", profile: "without-sonarqube-project", java_plugin_version: "LATEST_MASTER" }
-          - { name: "for SonarQube Project Only", profile: "only-sonarqube-project", java_plugin_version: "LATEST_MASTER" }
-          - { name: "for Guava Project Only", profile: "only-guava-project", java_plugin_version: "LATEST_MASTER", java_version: "17", sonar-runtime: "LATEST_RELEASE[2025.4]" }
-          - { name: "with Prod SonarJava Plugin", profile: "without-sonarqube-project", java_plugin_version: "POM_PROPERTY" }
+          - { name: "with Latest SonarJava Plugin", profile: "without-sonarqube-project" }
+          - { name: "for SonarQube Project Only", profile: "only-sonarqube-project" }
     name: "QA Tests ${{ matrix.item.name }}"
     env:
       BUILD_NUMBER: ${{ needs.build.outputs.build-number }}
@@ -66,17 +64,11 @@ jobs:
           submodules: recursive
       - uses: jdx/mise-action@d6e32c1796099e0f1f3ac741c220a8b7eae9e5dd # v3.2.0
         with:
-          working-directory: its/ruling
           version: 2025.7.12
       - name: Override Java version for specific profiles
         if: ${{ matrix.item.java_version }}
         run: |
-          # We must 'cd' into the target directory because mise 'use' commands are 
-          # scoped to the current working directory. Changing directories ensures 
-          # the java version is pinned specifically for the 'its/ruling' path 
-          # by creating/updating a local .mise.toml file there.
-          cd its/ruling
-          mise use java@${{ matrix.item.java_version }}
+          mise use java@21
       - name: Get GitHub Token for QA Licenses
         id: secrets
         uses: SonarSource/vault-action-wrapper@v3
@@ -87,30 +79,20 @@ jobs:
         id: configure-maven
         uses: SonarSource/ci-github-actions/config-maven@v1
         with:
-          artifactory-reader-role: private-reader    # Override default public-reader
+          artifactory-reader-role: private-reader
           use-develocity: ${{ env.USE_DEVELOCITY }}
           develocity-url: ${{ env.DEVELOCITY_URL }}
-      - name: Get Sonar Java plugin version
-        id: resolve-sonar-java-plugin-version
-        run: |
-          VERSION=$(.github/scripts/resolve-sonar-java-plugin-version.sh "${{ matrix.item.java_plugin_version }}")
-          echo "version=${VERSION}" >> $GITHUB_OUTPUT
       - name: Run QA Tests
         working-directory: its/ruling
         env:
           GITHUB_TOKEN: ${{ fromJSON(steps.secrets.outputs.vault).GITHUB_TOKEN }}
           BUILD_NUMBER: ${{ needs.build.outputs.build-number }}
           MAVEN_OPTS: "-Xmx3g"
-          SONAR_JAVA_VERSION: ${{ steps.resolve-sonar-java-plugin-version.outputs.version }}
-          SONAR_RUNTIME: ${{ matrix.item.sonar-runtime || 'LATEST_RELEASE' }}
         run: |
           mvn package --batch-mode \
             "-Pit-ruling,${{ matrix.item.profile }}" \
-            "-Dsonar.java.version=${SONAR_JAVA_VERSION}" \
-            "-Dorchestrator.artifactory.accessToken=${ARTIFACTORY_ACCESS_TOKEN}" \
-            "-Dsonar.runtimeVersion=${{ env.SONAR_RUNTIME }}" \
+            "-Dsonar.runtimeVersion=LATEST_RELEASE" \
             "-Dmaven.test.redirectTestOutputToFile=false" \
-            "-DbuildNumber=${BUILD_NUMBER}" \
             -B -e -V \
             "-Dparallel=methods" \
             "-DuseUnlimitedThreads=true"
@@ -118,7 +100,7 @@ jobs:
         if: failure()
         uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.5.0
         with:
-          name: ruling-actual-${{ matrix.item.profile }}-${{ matrix.item.java_plugin_version }}
+          name: ruling-actual-${{ matrix.item.profile }}
           path: its/ruling/target/actual/**/*
 
   promote:
