@@ -1,0 +1,11 @@
+{
+"com.google.guava:guava:src/com/google/common/collect/StandardTable.java": [
+131
+],
+"com.google.guava:guava:src/com/google/common/eventbus/SubscriberRegistry.java": [
+198
+],
+"com.google.guava:guava:src/com/google/common/reflect/ClassPath.java": [
+395
+]
+}
