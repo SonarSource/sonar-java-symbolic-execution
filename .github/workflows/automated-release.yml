@@ -40,6 +40,10 @@ on:
         description: "Integrate into SQS"
         type: boolean
         default: true
+      bump-version:
+        description: "Create PR to bump the next iteration version"
+        type: boolean
+        default: true
 
 jobs:
   release:
@@ -55,6 +59,7 @@ jobs:
       project-name: "SonarJava Symbolic Execution"
       plugin-name: "java-symbolic-execution"
       jira-project-key: "JAVASE"
+      runner-environment: "github-ubuntu-latest-s"
       rule-props-changed: ${{ github.event.inputs.rule-props-changed }}
       short-description: ${{ github.event.inputs.short-description }}
       new-version: ${{ github.event.inputs.new-version }}
@@ -69,5 +74,6 @@ jobs:
       verbose: ${{ github.event.inputs.verbose == 'true' }}
       use-jira-sandbox: ${{ github.event.inputs.dry-run == 'true' }}
       is-draft-release: ${{ github.event.inputs.dry-run == 'true' }}
-      bump-version: true
+      bump-version: ${{ github.event.inputs.bump-version == 'true' }}
       bump-version-normalize: true
+      bump-version-tool: maven
