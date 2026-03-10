@@ -77,4 +77,6 @@ jobs:
       bump-version: ${{ github.event.inputs.bump-version == 'true' }}
       bump-version-normalize: true
       # ${VERSION} is provided inside the action.
-      bump-version-script: mvn versions:set --batch-mode -DgenerateBackupPoms=false -DnewVersion="${VERSION}"
+      bump-version-script: |
+        echo "Bumping version to ${VERSION} and making sure multiple commands work"
+        mvn versions:set --batch-mode -DgenerateBackupPoms=false -DnewVersion="${VERSION}"
