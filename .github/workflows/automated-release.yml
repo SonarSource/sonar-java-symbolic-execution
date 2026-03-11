@@ -48,7 +48,7 @@ on:
 jobs:
   release:
     name: Release
-    uses: SonarSource/release-github-actions/.github/workflows/automated-release.yml@9b321c6d450221dde053574d55e721f52ddfe261
+    uses: SonarSource/release-github-actions/.github/workflows/automated-release.yml@tt/bump-version-command
     permissions:
       statuses: read
       id-token: write
@@ -76,3 +76,4 @@ jobs:
       is-draft-release: ${{ github.event.inputs.dry-run == 'true' }}
       bump-version: ${{ github.event.inputs.bump-version == 'true' }}
       bump-version-normalize: true
+      bump-version-tool: maven
