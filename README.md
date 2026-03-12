@@ -35,8 +35,16 @@ Requirements: Java 21
 
 To build the plugin and run its unit tests, execute this command from the project's root directory:
 
-    mvn clean install
+```sh
+mvn clean install -DskipLicenseValidation
+```
 
+### Update licenses:
+When dependencies change, update the committed license files using the `updateLicenses` profile:
+```sh
+mvn clean package -PupdateLicenses
+```
+This regenerates licenses in `java-symbolic-execution/java-symbolic-execution-plugin/src/main/resources/licenses/` based on current project dependencies.
 
 #### Ruling Test
 
