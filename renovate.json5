@@ -4,7 +4,7 @@
   packageRules: [
     {
       matchPackageNames: [
-        "org.sonarsource.java:its:"
+        "org.sonarsource.java:its"
       ],
       enabled: false,
     },
