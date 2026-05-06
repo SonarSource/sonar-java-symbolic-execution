@@ -21,8 +21,7 @@
   "scope": "Main",
   "securityStandards": {
     "CWE": [
-      611,
-      827
+      776
     ],
     "OWASP": [
       "A4"
@@ -34,17 +33,10 @@
       "M4",
       "M8"
     ],
-    "PCI DSS 3.2": [
-      "6.5.1"
-    ],
-    "PCI DSS 4.0": [
-      "6.2.4"
-    ],
-    "ASVS 4.0": [
-      "5.5.2"
-    ],
     "STIG ASD_V5R3": [
-      "V-222608"
+      "V-222593",
+      "V-222608",
+      "V-222667"
     ]
   },
   "quickfix": "infeasible"
