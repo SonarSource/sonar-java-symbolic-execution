@@ -4,7 +4,7 @@ Contributions are welcome!
 
 **Before spending lots of time on something, ask for feedback on your idea first.**
 Reach out to the [SonarQube Community Forum](https://community.sonarsource.com/) to ask if we would be interested in your contribution.
-Please search issues on our [Jira](http://jira.sonarsource.com/browse/JAVASE).
+Please search issues on our [Jira](https://jira.sonarsource.com/browse/JAVASE).
  
 To avoid frustration, please discuss before submitting any contributions.
 
