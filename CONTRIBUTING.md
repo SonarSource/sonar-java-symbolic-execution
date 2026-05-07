@@ -18,7 +18,7 @@ This means that your commits should be atomic and have a single purpose. Formatt
 ### Test, test, and test
 
 Coding is the easy part. If you want your contribution to be accepted, demonstrate it solves an issue by providing the unit test it solves (that would have failed before).
-Your contribution should also not make the [integration tests](#ITs) fail.
+Your contribution should also not make the integration tests fail.
   
 ### Integration tests (ITs)
 
