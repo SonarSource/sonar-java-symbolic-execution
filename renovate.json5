@@ -1,6 +1,10 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   extends: [ "github>SonarSource/renovate-config:quality-jvm-squad"],
+  ignorePaths: [
+    "java-symbolic-execution/java-symbolic-execution-checks-test-sources/**",
+    "its/sources/**",
+  ],
   packageRules: [
     {
       matchPackageNames: [
