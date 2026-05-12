@@ -79,12 +79,14 @@ public class SECheckVerifier implements CheckVerifier {
 
   @Override
   public CheckVerifier addJarsToClasspath(String... jarsToAdd) {
-    throw new UnsupportedOperationException("Not implemented!");
+    checkVerifier.addJarsToClasspath(jarsToAdd);
+    return this;
   }
 
   @Override
   public CheckVerifier removeJarsFromClasspath(String... jarsToRemove) {
-    throw new UnsupportedOperationException("Not implemented!");
+    checkVerifier.removeJarsFromClasspath(jarsToRemove);
+    return this;
   }
 
   @Override
