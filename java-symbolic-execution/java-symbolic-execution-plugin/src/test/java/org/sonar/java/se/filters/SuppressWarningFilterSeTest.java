@@ -109,12 +109,15 @@ public class SuppressWarningFilterSeTest {
     projectClasspath.add(new File("target/test-classes"));
 
     InputFile inputFile = TestUtils.inputFile(TEST_SOURCES_PATH + filename);
-    VisitorsBridgeForTests visitorsBridge = new VisitorsBridgeForTests(visitors, projectClasspath, sonarComponents(inputFile), new JavaVersionImpl());
+    VisitorsBridgeForTests.Builder visitorsBridgeBuilder = new VisitorsBridgeForTests.Builder(visitors).withSonarComponents(sonarComponents(inputFile));
+    VisitorsBridgeForTests visitorsBridge = visitorsBridgeBuilder.build();
     JavaAstScanner.scanSingleFileForTests(inputFile, visitorsBridge);
-    JavaFileScannerContextForTests testJavaFileScannerContext = visitorsBridge.lastCreatedTestContext();
 
+    Set<AnalyzerMessage> issues = new HashSet<>();
+    for (var testJavaFileScannerContext : visitorsBridge.testContexts()) {
+      issues.addAll(testJavaFileScannerContext.getIssues());
+    }
     Map<Integer, Set<String>> issuesByLines = new HashMap<>();
-    Set<AnalyzerMessage> issues = testJavaFileScannerContext.getIssues();
 
     if (issueCollector.acceptedIssuesLines.size() > 0 && issues.isEmpty()) {
       Fail.fail("Expected some issues to be raised, but 0 issues were found");
