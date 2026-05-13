@@ -55,6 +55,8 @@ import org.sonar.java.model.VisitorsBridge;
 import org.sonar.java.se.checks.SECheck;
 import org.sonar.java.se.utils.JParserTestUtils;
 import org.sonar.java.se.utils.SETestUtils;
+import org.sonar.java.telemetry.NoOpTelemetry;
+import org.sonar.java.telemetry.TelemetryKey;
 import org.sonar.plugins.java.api.JavaCheck;
 import org.sonar.plugins.java.api.JavaFileScannerContext;
 import org.sonar.plugins.java.api.cfg.ControlFlowGraph;
@@ -125,7 +127,7 @@ class JavaFrontendIntegrationTest {
   void JavaAstScanner_should_swallow_log_and_report_checks_exceptions_for_symbolic_execution() {
     VisitorsBridge visitorsBridge = visitorsBridgeWithSymbolicExecution(new SE3_ThrowingNPEInit());
 
-    JavaAstScanner scanner = new JavaAstScanner(sonarComponents);
+    JavaAstScanner scanner = new JavaAstScanner(sonarComponents, new NoOpTelemetry(), TelemetryKey.JAVA_ANALYSIS_MAIN);
     scanner.setVisitorBridge(visitorsBridge);
 
     scanner.scan(Collections.singletonList(inputFile));

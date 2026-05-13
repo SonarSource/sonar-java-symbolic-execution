@@ -34,15 +34,15 @@ import org.sonar.java.se.checks.SECheck;
 import org.sonar.plugins.java.api.JavaFileScanner;
 
 public class SECheckVerifier implements CheckVerifier {
-  
+
   private final InternalCheckVerifier checkVerifier;
-  
+
   public static SECheckVerifier newVerifier() {
     return new SECheckVerifier();
   }
 
   private SECheckVerifier() {
-    checkVerifier = (InternalCheckVerifier) CheckVerifier.newInternalVerifier();
+    checkVerifier = InternalCheckVerifier.newInstance();
   }
 
   @Override
@@ -78,10 +78,22 @@ public class SECheckVerifier implements CheckVerifier {
   }
 
   @Override
+  public CheckVerifier addJarsToClasspath(String... jarsToAdd) {
+    checkVerifier.addJarsToClasspath(jarsToAdd);
+    return this;
+  }
+
+  @Override
+  public CheckVerifier removeJarsFromClasspath(String... jarsToRemove) {
+    checkVerifier.removeJarsFromClasspath(jarsToRemove);
+    return this;
+  }
+
+  @Override
   public CheckVerifier withJavaVersion(int javaVersionAsInt) {
     return withJavaVersion(javaVersionAsInt, false);
   }
-  
+
   @Override
   public CheckVerifier withJavaVersion(int javaVersionAsInt, boolean enablePreviewFeatures) {
     checkVerifier.withJavaVersion(javaVersionAsInt, enablePreviewFeatures);
