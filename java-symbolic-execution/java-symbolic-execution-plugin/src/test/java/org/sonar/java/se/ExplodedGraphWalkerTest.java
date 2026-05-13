@@ -168,7 +168,7 @@ class ExplodedGraphWalkerTest {
       .onFile(TestUtils.nonCompilingTestSourcesPath("symbolicexecution/engine/SwitchWithPatterns.java"))
       .withChecks(seChecks())
       .withClassPath(SETestUtils.CLASS_PATH)
-      .withJavaVersion(25, true)
+      .withJavaVersion(21)
       .verifyNoIssues();
   }
 
