@@ -21,7 +21,7 @@ env:
 jobs:
   build:
     name: Build
-    runs-on: github-ubuntu-latest-s
+    runs-on: warp-custom-ubuntu-24-04
     permissions:
       id-token: write
       contents: write
@@ -45,7 +45,7 @@ jobs:
   qa:
     needs: [build]
     if: ${{ needs.build.outputs.deployed }}
-    runs-on: github-ubuntu-latest-l
+    runs-on: warp-custom-ubuntu-24-04
     permissions:
       id-token: write
     strategy:
@@ -105,7 +105,7 @@ jobs:
     needs:
       - build
       - qa
-    runs-on: github-ubuntu-latest-s
+    runs-on: warp-custom-ubuntu-24-04
     permissions:
       id-token: write
     env:
