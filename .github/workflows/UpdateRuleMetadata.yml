@@ -4,7 +4,7 @@ on: workflow_dispatch
 
 jobs:
   rule-metadata-update:
-    runs-on: github-ubuntu-latest-s
+    runs-on: warp-custom-ubuntu-24-04
     permissions:
       id-token: write
       contents: write
