@@ -25,7 +25,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import org.assertj.core.api.Fail;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
@@ -65,6 +64,8 @@ import org.sonar.plugins.java.api.tree.Tree;
 import org.sonarsource.analyzer.commons.collections.SetUtils;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class JavaFrontendIntegrationTest {
 
@@ -145,16 +146,13 @@ class JavaFrontendIntegrationTest {
 
     VisitorsBridge visitorsBridge = visitorsBridgeWithSymbolicExecution(new SE1_ThrowingNPEPreStatement(), new SE2_ThrowingNPEPostStatement());
 
-    try {
-      visitorsBridge.visitFile(tree, false);
-      Fail.fail("scanning of file should have raise an exception");
-    } catch (AnalysisException e) {
-      assertThat(e.getMessage()).contains("Failing check");
-      assertThat(e.getCause()).isInstanceOf(CheckFailureException.class);
-      assertThat(e.getCause().getCause()).isSameAs(NPE);
-    } catch (Exception e) {
-      Fail.fail("Should have been an AnalysisException");
-    }
+    assertThatThrownBy(() -> visitorsBridge.visitFile(tree, false))
+      .isInstanceOf(AnalysisException.class)
+      .hasMessageContaining("Failing check")
+      .cause()
+      .isInstanceOf(CheckFailureException.class)
+      .cause()
+      .isSameAs(NPE);
     assertThat(logTester.logs(Level.ERROR)).hasSize(1);
     assertThat(logTester.logs(Level.ERROR).get(0)).startsWith("Unable to run check class org.sonar.java.se.SymbolicExecutionVisitor");
   }
@@ -168,11 +166,7 @@ class JavaFrontendIntegrationTest {
 
     VisitorsBridge visitorsBridge = visitorsBridgeWithSymbolicExecution(new SE1_ThrowingNPEPreStatement(), new SE2_ThrowingNPEPostStatement());
 
-    try {
-      visitorsBridge.visitFile(tree, false);
-    } catch (Exception e) {
-      Fail.fail("Exception should be swallowed when property is not set");
-    }
+    assertThatCode(() -> visitorsBridge.visitFile(tree, false)).doesNotThrowAnyException();
     assertThat(logTester.logs(Level.ERROR)).hasSize(1);
     assertThat(logTester.logs(Level.ERROR).get(0)).startsWith("Unable to run check class org.sonar.java.se.SymbolicExecutionVisitor");
   }

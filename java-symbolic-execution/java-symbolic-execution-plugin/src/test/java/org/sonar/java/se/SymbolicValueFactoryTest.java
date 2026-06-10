@@ -27,7 +27,7 @@ import org.sonar.plugins.java.api.tree.SyntaxTrivia;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class SymbolicValueFactoryTest {
 
@@ -55,12 +55,8 @@ class SymbolicValueFactoryTest {
     assertThat(symbolicValue.references(symbolicValue)).isFalse();
     manager.setValueFactory(new TestSymbolicValueFactory());
     SymbolicValueFactory newFactory = new TestSymbolicValueFactory();
-    try {
-      manager.setValueFactory(newFactory);
-      fail("Should not have been able to add a second factory to the contraints manager");
-    } catch (IllegalStateException e) {
-      assertThat(e.getMessage()).as("Exception message").isEqualTo("The symbolic value factory has already been defined by another checker!");
-    }
+    IllegalStateException e = assertThrows(IllegalStateException.class, () -> manager.setValueFactory(newFactory));
+    assertThat(e.getMessage()).as("Exception message").isEqualTo("The symbolic value factory has already been defined by another checker!");
     symbolicValue = manager.createSymbolicValue(tree);
     assertThat(symbolicValue.getClass()).as("Created with first factory").isSameAs(TestSymbolicValue.class);
     symbolicValue = manager.createSymbolicValue(tree);

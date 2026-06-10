@@ -59,7 +59,7 @@ import org.sonarsource.analyzer.commons.collections.PCollections;
 import org.sonarsource.analyzer.commons.collections.PMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.fail;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.sonar.java.se.utils.SETestUtils.createSymbolicExecutionVisitor;
@@ -122,12 +122,9 @@ class MethodYieldTest {
     MethodYield methodYield = new HappyPathYield(null, mockMethodBehavior(1, false));
     List<Integer> parameters = Collections.emptyList();
     List<Class<? extends Constraint>> domains = Collections.singletonList(ObjectConstraint.class);
-    try {
-      methodYield.flow(parameters, domains, FlowComputation.MAX_REPORTED_FLOWS);
-      fail("calling flow with empty list should have failed");
-    } catch (IllegalArgumentException iae) {
-      assertThat(iae).hasMessage("computing flow on empty symbolic value list should never happen");
-    }
+    assertThatThrownBy(() -> methodYield.flow(parameters, domains, FlowComputation.MAX_REPORTED_FLOWS))
+      .isInstanceOf(IllegalArgumentException.class)
+      .hasMessage("computing flow on empty symbolic value list should never happen");
   }
 
   private static ExplodedGraph.Node mockNode() {

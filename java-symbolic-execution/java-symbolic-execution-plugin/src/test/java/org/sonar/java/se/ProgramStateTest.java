@@ -18,7 +18,6 @@ package org.sonar.java.se;
 
 import java.util.List;
 import java.util.Set;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.sonarsource.analyzer.commons.collections.SetUtils;
 import org.sonar.java.se.ProgramState.Pop;
@@ -59,12 +58,8 @@ class ProgramStateTest {
     state = state.stackValue(sv2);
     List<SymbolicValue> values = state.peekValues(2);
     assertThat(values).hasSize(2).containsSequence(sv2, sv1);
-    try {
-      state.peekValues(3);
-      Assertions.fail("Able to retrieve more values than there are actually on the stack!");
-    } catch (IllegalStateException e) {
-      // Expected behavior
-    }
+    ProgramState finalState = state;
+    assertThatThrownBy(() -> finalState.peekValues(3)).isInstanceOf(IllegalStateException.class);
     Pop unstack = state.unstackValue(1);
     state = unstack.state;
     values = unstack.values;
