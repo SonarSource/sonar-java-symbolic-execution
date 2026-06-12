@@ -65,8 +65,8 @@ import org.sonar.plugins.java.api.tree.MethodTree;
 import org.sonar.plugins.java.api.tree.Tree;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Assertions.fail;
 import static org.sonar.java.se.utils.SETestUtils.createSymbolicExecutionVisitor;
 
 class ExplodedGraphWalkerTest {
@@ -296,11 +296,9 @@ class ExplodedGraphWalkerTest {
       .withCheck(new SymbolicExecutionVisitor(Collections.emptyList()) {
         @Override
         public void visitMethod(MethodTree methodTree) {
-          try {
-            new ExplodedGraphWalker(this.behaviorCache, context).visitMethod(methodTree, methodBehaviorForSymbol(methodTree.symbol()));
-          } catch (ExplodedGraphWalker.MaximumStepsReachedException exception) {
-            fail("loop execution should be limited");
-          }
+          assertThatCode(() ->
+            new ExplodedGraphWalker(this.behaviorCache, context).visitMethod(methodTree, methodBehaviorForSymbol(methodTree.symbol()))
+          ).doesNotThrowAnyException();
           }
         })
       .withClassPath(SETestUtils.CLASS_PATH)
@@ -316,12 +314,9 @@ class ExplodedGraphWalkerTest {
         public void visitMethod(MethodTree methodTree) {
           ExplodedGraphWalker explodedGraphWalker = new ExplodedGraphWalker(this.behaviorCache, context);
           MethodBehavior methodBehavior = methodBehaviorForSymbol(methodTree.symbol());
-          try {
-            explodedGraphWalker.visitMethod(methodTree, methodBehavior);
-            fail("Too many starting states were generated!!");
-          } catch (ExplodedGraphWalker.MaximumStartingStatesException exception) {
-            assertThat(exception.getMessage()).startsWith("reached maximum number of 1024 starting states for method");
-          }
+          assertThatThrownBy(() -> explodedGraphWalker.visitMethod(methodTree, methodBehavior))
+            .isInstanceOf(ExplodedGraphWalker.MaximumStartingStatesException.class)
+            .hasMessageStartingWith("reached maximum number of 1024 starting states for method");
         }
       })
       .withClassPath(SETestUtils.CLASS_PATH)
@@ -337,11 +332,8 @@ class ExplodedGraphWalkerTest {
         public void visitMethod(MethodTree methodTree) {
           ExplodedGraphWalker explodedGraphWalker = new ExplodedGraphWalker(this.behaviorCache, context);
           MethodBehavior methodBehavior = methodBehaviorForSymbol(methodTree.symbol());
-          try {
-            explodedGraphWalker.visitMethod(methodTree, methodBehavior);
-          } catch (ExplodedGraphWalker.MaximumStartingStatesException exception) {
-            fail("Should have been able to generate 1024 states!");
-          }
+          assertThatCode(() -> explodedGraphWalker.visitMethod(methodTree, methodBehavior))
+            .doesNotThrowAnyException();
         }
       })
       .withClassPath(SETestUtils.CLASS_PATH)
@@ -357,12 +349,9 @@ class ExplodedGraphWalkerTest {
         public void visitMethod(MethodTree methodTree) {
           ExplodedGraphWalker explodedGraphWalker = new ExplodedGraphWalker(this.behaviorCache, context);
           MethodBehavior methodBehavior = methodBehaviorForSymbol(methodTree.symbol());
-          try {
-            explodedGraphWalker.visitMethod(methodTree, methodBehavior);
-            fail("Too many states were processed !");
-          } catch (ExplodedGraphWalker.MaximumStepsReachedException exception) {
-            assertThat(exception.getMessage()).startsWith("reached limit of 16000 steps for method");
-          }
+          assertThatThrownBy(() -> explodedGraphWalker.visitMethod(methodTree, methodBehavior))
+            .isInstanceOf(ExplodedGraphWalker.MaximumStepsReachedException.class)
+            .hasMessageStartingWith("reached limit of 16000 steps for method");
           }
         })
       .withClassPath(SETestUtils.CLASS_PATH)
@@ -387,12 +376,9 @@ class ExplodedGraphWalkerTest {
         public void visitMethod(MethodTree methodTree) {
           ExplodedGraphWalker explodedGraphWalker = new ExplodedGraphWalker(this.behaviorCache, context);
           MethodBehavior methodBehavior = methodBehaviorForSymbol(methodTree.symbol());
-          try {
-            explodedGraphWalker.visitMethod(methodTree, methodBehavior);
-            fail("Too many states were processed !");
-          } catch (ExplodedGraphWalker.MaximumStepsReachedException exception) {
-            assertThat(exception.getMessage()).startsWith("reached maximum number of 10000 branched states");
-          }
+          assertThatThrownBy(() -> explodedGraphWalker.visitMethod(methodTree, methodBehavior))
+            .isInstanceOf(ExplodedGraphWalker.MaximumStepsReachedException.class)
+            .hasMessageStartingWith("reached maximum number of 10000 branched states");
           }
         })
       .withClassPath(SETestUtils.CLASS_PATH)
