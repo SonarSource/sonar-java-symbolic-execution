@@ -18,7 +18,6 @@ package org.sonar.java.se.filters;
 
 import com.sonar.sslr.api.RecognitionException;
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -60,6 +59,7 @@ import org.sonar.plugins.java.api.tree.SyntaxTrivia;
 import org.sonar.plugins.java.api.tree.Tree;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -159,11 +159,8 @@ public class SuppressWarningFilterSeTest {
   private static Set<SECheck> instantiateRules(Set<Class<? extends JavaCheck>> filteredRules) {
     Set<SECheck> rules = new HashSet<>();
     for (Class<? extends JavaCheck> rule : filteredRules) {
-      try {
-        rules.add((SECheck) rule.getConstructor().newInstance());
-      } catch (InstantiationException | IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-        Fail.fail("Unable to instantiate rule " + rule.getCanonicalName());
-      }
+      rules.add(assertDoesNotThrow(() -> (SECheck) rule.getConstructor().newInstance(),
+        "Unable to instantiate rule " + rule.getCanonicalName()));
     }
     return rules;
   }
