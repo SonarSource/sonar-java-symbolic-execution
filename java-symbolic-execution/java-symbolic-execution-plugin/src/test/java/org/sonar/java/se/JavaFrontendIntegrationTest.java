@@ -28,7 +28,10 @@ import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
-import org.mockito.Mockito;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.when;
 import org.slf4j.event.Level;
 import org.sonar.api.batch.fs.InputFile;
 import org.sonar.api.batch.rule.ActiveRules;
@@ -85,12 +88,12 @@ class JavaFrontendIntegrationTest {
     context.setRuntime(SonarRuntimeImpl.forSonarLint(Version.create(7, 9)));
 
     sonarComponents = new SonarComponents(
-      Mockito.mock(FileLinesContextFactory.class),
+      mock(FileLinesContextFactory.class),
       context.fileSystem(),
-      Mockito.mock(ClasspathForMain.class),
-      Mockito.mock(ClasspathForTest.class),
-      Mockito.mock(CheckFactory.class),
-      Mockito.mock(ActiveRules.class));
+      mock(ClasspathForMain.class),
+      mock(ClasspathForTest.class),
+      mock(CheckFactory.class),
+      mock(ActiveRules.class));
     sonarComponents.setSensorContext(context);
 
     inputFile = SETestUtils.inputFile("src/test/files/se/SimpleClass.java");
@@ -108,8 +111,8 @@ class JavaFrontendIntegrationTest {
     Set<List<JavaFileScannerContext.Location>> flows = SetUtils.immutableSetOf(flow1, flow2);
 
     // spy getRuleKey call, to avoid mocking CheckFactory and Checks
-    sonarComponents = Mockito.spy(sonarComponents);
-    Mockito.when(sonarComponents.getRuleKey(Mockito.any())).thenReturn(Optional.of(RuleKey.of("repository", "rule")));
+    sonarComponents = spy(sonarComponents);
+    when(sonarComponents.getRuleKey(any())).thenReturn(Optional.of(RuleKey.of("repository", "rule")));
 
     JavaFileScannerContext scannerContext = new DefaultJavaFileScannerContext(tree, inputFile, tree.sema, sonarComponents, null, true, false);
     scannerContext.reportIssueWithFlow(new SE0_DoesNothing(), tree, "msg", flows, null);
