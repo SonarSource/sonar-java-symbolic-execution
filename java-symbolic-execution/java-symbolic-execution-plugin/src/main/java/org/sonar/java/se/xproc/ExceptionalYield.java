@@ -47,8 +47,12 @@ public class ExceptionalYield extends MethodYield {
   @Override
   public Stream<ProgramState> statesAfterInvocation(List<SymbolicValue> invocationArguments, List<Type> invocationTypes, ProgramState programState,
     Supplier<SymbolicValue> svSupplier) {
+    SymbolicValue sv = svSupplier.get();
+    if (!(sv instanceof SymbolicValue.ExceptionalSymbolicValue)) {
+      return Stream.empty();
+    }
     return parametersAfterInvocation(invocationArguments, invocationTypes, programState)
-      .map(s -> s.stackValue(svSupplier.get()))
+      .map(s -> s.stackValue(sv))
       .distinct();
   }
 
