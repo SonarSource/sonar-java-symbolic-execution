@@ -41,6 +41,7 @@ class PreconditionsTest {
   }
 
   @Test
+  @SuppressWarnings("javabugs:S6416") // intentionally verifying that checkState(false, ...) throws
   void checkStateWithMessage() {
     assertThrows(IllegalStateException.class, () -> Preconditions.checkState(false, "message"), "message");
     assertDoesNotThrow(() -> Preconditions.checkArgument(true));
