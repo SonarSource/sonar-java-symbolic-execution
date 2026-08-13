@@ -23,6 +23,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import org.sonar.java.Preconditions;
 import org.sonar.java.se.ExplodedGraph;
 import org.sonar.java.se.Flow;
 import org.sonar.java.se.FlowComputation;
@@ -57,7 +58,9 @@ public class ExceptionalYieldChecker {
   }
 
   private void reportIssue(ExplodedGraph.Node node, ExceptionalCheckBasedYield exceptionalYield, SECheck check) {
-    MethodInvocationTree mit = (MethodInvocationTree) node.programPoint.syntaxTree();
+    Tree syntaxTree = node.programPoint.syntaxTree();
+    Preconditions.checkState(syntaxTree != null && syntaxTree.is(Tree.Kind.METHOD_INVOCATION), "Yield on a program point that is not a method invocation");
+    MethodInvocationTree mit = (MethodInvocationTree) syntaxTree;
     ExpressionTree methodSelect = mit.methodSelect();
     String methodName = mit.methodSymbol().name();
 
