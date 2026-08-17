@@ -254,7 +254,7 @@ public class NonNullSetToNullCheck extends SECheck {
     private void checkNullArgument(Tree syntaxTree, Symbol.MethodSymbol symbol, int param, SymbolicValue argumentValue, int index) {
       ObjectConstraint constraint = programState.getConstraint(argumentValue, ObjectConstraint.class);
       if (constraint != null && constraint.isNull()) {
-        Optional<String> nonNullAnnotation = getNonnullAnnotationAsString(symbol.declarationParameters().get(param), VARIABLE);
+        Optional<String> nonNullAnnotation = getNonnullAnnotationAsString(declaredParameter(symbol, param), VARIABLE);
         if (nonNullAnnotation.isPresent()) {
           String message = "Parameter {0} to this {1} is marked \"{2}\" but null could be passed.";
           reportIssue(syntaxTree, message, index + 1, ("<init>".equals(symbol.name()) ? "constructor" : "call"), nonNullAnnotation.get());
@@ -305,6 +305,24 @@ public class NonNullSetToNullCheck extends SECheck {
         reportIssue(tree, "This method''s return value is marked \"{0}\" but null is returned.", nonNullAnnotation);
       }
     }
+  }
+
+  /**
+   * The parameters of the symbol of a call site carry the substituted parameter types. When a type argument is inferred, ECJ can
+   * propagate a TYPE_USE nullability annotation onto them: {@code Optional.ofNullable(x).map(A::nonNullGetter).orElse(null)} makes
+   * the substituted signature of {@code orElse} be {@code @NonNull String orElse(@NonNull String)}. Such an annotation is not part
+   * of the contract of the called method, so nullability is read from the parameters of its declaration instead.
+   */
+  private static Symbol declaredParameter(Symbol.MethodSymbol symbol, int index) {
+    Symbol parameter = symbol.declarationParameters().get(index);
+    Symbol owner = parameter.owner();
+    if (owner != null && owner.isMethodSymbol()) {
+      List<Symbol> declarationParameters = ((Symbol.MethodSymbol) owner).declarationParameters();
+      if (index < declarationParameters.size()) {
+        return declarationParameters.get(index);
+      }
+    }
+    return parameter;
   }
 
   private static Optional<String> getNonnullAnnotationAsString(Symbol symbol) {
