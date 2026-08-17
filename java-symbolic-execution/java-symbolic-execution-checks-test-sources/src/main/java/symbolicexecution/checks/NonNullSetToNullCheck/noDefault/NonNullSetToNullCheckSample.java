@@ -610,3 +610,27 @@ class JakartaJpaMappedSuperClass {
   }
 }
 
+
+// ============ Nullability inferred from a generic type argument ============
+class InferredTypeArgumentNullability {
+
+  static class Value {
+    @org.eclipse.jdt.annotation.NonNull
+    String get() {
+      return "";
+    }
+  }
+
+  String mapOrElseNull(Value value) {
+    // ECJ infers "@NonNull String" as type argument of Optional#map, making the substituted signature of
+    // "orElse" be "@NonNull String orElse(@NonNull String)". The annotation does not come from the declaration of orElse.
+    return java.util.Optional.ofNullable(value).map(Value::get).orElse(null); // Compliant
+  }
+
+  <T> void genericNonNullParameter(@Nonnull T value) {
+  }
+
+  void callGenericNonNullParameter() {
+    genericNonNullParameter(null); // Noncompliant {{Parameter 1 to this call is marked "@Nonnull" but null could be passed.}}
+  }
+}
