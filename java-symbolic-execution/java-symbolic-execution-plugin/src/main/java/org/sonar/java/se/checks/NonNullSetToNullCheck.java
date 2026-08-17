@@ -313,14 +313,12 @@ public class NonNullSetToNullCheck extends SECheck {
    * the substituted signature of {@code orElse} be {@code @NonNull String orElse(@NonNull String)}. Such an annotation is not part
    * of the contract of the called method, so nullability is read from the parameters of its declaration instead.
    */
-  private static Symbol declaredParameter(Symbol.MethodSymbol symbol, int index) {
+  // VisibleForTesting
+  static Symbol declaredParameter(Symbol.MethodSymbol symbol, int index) {
     Symbol parameter = symbol.declarationParameters().get(index);
-    Symbol owner = parameter.owner();
-    if (owner != null && owner.isMethodSymbol()) {
-      List<Symbol> declarationParameters = ((Symbol.MethodSymbol) owner).declarationParameters();
-      if (index < declarationParameters.size()) {
-        return declarationParameters.get(index);
-      }
+    // The owner of a parameter is the declaration of the method, whose parameters carry the declared, non-substituted types.
+    if (parameter.owner() instanceof Symbol.MethodSymbol declaration) {
+      return declaration.declarationParameters().get(index);
     }
     return parameter;
   }
