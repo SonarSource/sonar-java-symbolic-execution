@@ -53,7 +53,7 @@ public class StreamNotConsumedCheck extends SECheck {
       Flow flow = flows.iterator().next();
       var elements = flow.elements();
       JavaFileScannerContext.Location location = elements.get(elements.size() - 1);
-      reportIssue(location.syntaxNode, "Refactor the code so this stream pipeline is used.");
+      reportIssue(location.syntaxNode, "Ensure this stream pipeline is always consumed by a terminal operation.");
     });
   }
 }
