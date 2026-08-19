@@ -3,9 +3,18 @@
 other than a stream. Intermediate operations are lazy, meaning they aren’t actually executed until and unless a terminal stream operation is performed
 on their results. Consequently, if the result of an intermediate stream operation is not fed to a terminal operation, it serves no purpose, which is
 almost certainly an error.</p>
+<p>This rule raises an issue when the result of an intermediate stream operation is not consumed by a terminal operation on all execution paths.
+Exception-handling paths are exempt.</p>
 <h3>Noncompliant code example</h3>
 <pre>
 widgets.stream().filter(b -&gt; b.getColor() == RED); // Noncompliant
+</pre>
+<pre>
+Stream&lt;Widget&gt; pipeline = widgets.stream().filter(b -&gt; b.getColor() == RED); // Noncompliant; not consumed when widgets is empty
+if (!widgets.isEmpty()) {
+  logger.info("Processing widgets");
+  pipeline.forEach(w -&gt; logger.info("Widget: {}", w));
+}
 </pre>
 <h3>Compliant solution</h3>
 <pre>
@@ -17,6 +26,14 @@ Stream&lt;Widget&gt; pipeline = widgets.stream()
                                  .filter(b -&gt; b.getColor() == GREEN)
                                  .mapToInt(b -&gt; b.getWeight());
 sum = pipeline.sum();
+</pre>
+<p>Reorder the code so that the stream is consumed on all paths:</p>
+<pre>
+if (!widgets.isEmpty()) {
+  logger.info("Processing widgets");
+  Stream&lt;Widget&gt; pipeline = widgets.stream().filter(b -&gt; b.getColor() == RED); // Compliant; always consumed
+  pipeline.forEach(w -&gt; logger.info("Widget: {}", w));
+}
 </pre>
 <h2>Resources</h2>
 <ul>
