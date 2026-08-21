@@ -28,7 +28,7 @@ class JavaSEProfileRegistrarTest {
     JavaSEProfileRegistrar registrar = new JavaSEProfileRegistrar();
     TestProfileRegistrarContext context = new TestProfileRegistrarContext();
     registrar.register(context);
-    assertThat(context.defaultQualityProfileRules).hasSize(17);
+    assertThat(context.rulesByQualityProfile.get("Sonar way")).hasSize(17);
   }
 
 }

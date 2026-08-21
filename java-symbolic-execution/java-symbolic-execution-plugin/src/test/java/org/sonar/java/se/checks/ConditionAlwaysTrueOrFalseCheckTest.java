@@ -56,6 +56,15 @@ class ConditionAlwaysTrueOrFalseCheckTest {
   }
 
   @Test
+  void test_Jakarta() {
+    SECheckVerifier.newVerifier()
+            .onFile(mainCodeSourcesPath("symbolicexecution/checks/ConditionAlwaysTrueOrFalseJakarta.java"))
+            .withChecks(new ConditionalUnreachableCodeCheck(), new BooleanGratuitousExpressionsCheck())
+            .withClassPath(SETestUtils.CLASS_PATH)
+            .verifyNoIssues();
+  }
+
+  @Test
   void test_unreachable_vs_gratuitous() {
     SECheckVerifier.newVerifier()
       .onFile(mainCodeSourcesPath("symbolicexecution/checks/UnreachableOrGratuitous.java"))
