@@ -29,7 +29,6 @@ import org.sonar.java.se.checks.MinMaxRangeCheck;
 import org.sonar.java.se.checks.NoWayOutLoopCheck;
 import org.sonar.java.se.checks.NonNullSetToNullCheck;
 import org.sonar.java.se.checks.ObjectOutputStreamCheck;
-import org.sonar.java.se.checks.OptionalGetBeforeIsPresentCheck;
 import org.sonar.java.se.checks.ParameterNullnessCheck;
 import org.sonar.java.se.checks.RedundantAssignmentsCheck;
 import org.sonar.java.se.checks.SECheck;
@@ -52,7 +51,6 @@ public class JavaSECheckList {
       LocksNotUnlockedCheck.class,
       NonNullSetToNullCheck.class,
       NoWayOutLoopCheck.class,
-      OptionalGetBeforeIsPresentCheck.class,
       RedundantAssignmentsCheck.class,
       XxeProcessingCheck.class,
       // SEChecks Depending on XxeProcessingCheck
