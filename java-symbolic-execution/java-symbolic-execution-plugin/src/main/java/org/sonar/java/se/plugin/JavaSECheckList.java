@@ -33,7 +33,6 @@ import org.sonar.java.se.checks.OptionalGetBeforeIsPresentCheck;
 import org.sonar.java.se.checks.ParameterNullnessCheck;
 import org.sonar.java.se.checks.RedundantAssignmentsCheck;
 import org.sonar.java.se.checks.SECheck;
-import org.sonar.java.se.checks.StreamConsumedCheck;
 import org.sonar.java.se.checks.StreamNotConsumedCheck;
 import org.sonar.java.se.checks.UnclosedResourcesCheck;
 import org.sonar.java.se.checks.XmlParserLoadsExternalSchemasCheck;
@@ -54,7 +53,6 @@ public class JavaSECheckList {
       NonNullSetToNullCheck.class,
       NoWayOutLoopCheck.class,
       OptionalGetBeforeIsPresentCheck.class,
-      StreamConsumedCheck.class,
       RedundantAssignmentsCheck.class,
       XxeProcessingCheck.class,
       // SEChecks Depending on XxeProcessingCheck
