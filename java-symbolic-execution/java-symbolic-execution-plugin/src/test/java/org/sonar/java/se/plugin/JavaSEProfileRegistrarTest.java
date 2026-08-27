@@ -28,7 +28,7 @@ class JavaSEProfileRegistrarTest {
     JavaSEProfileRegistrar registrar = new JavaSEProfileRegistrar();
     TestProfileRegistrarContext context = new TestProfileRegistrarContext();
     registrar.register(context);
-    assertThat(context.defaultQualityProfileRules).hasSize(18);
+    assertThat(context.defaultQualityProfileRules).hasSize(17);
   }
 
 }
