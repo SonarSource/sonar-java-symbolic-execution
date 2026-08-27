@@ -24,7 +24,7 @@ class JavaSECheckListTest {
 
   @Test
   void getChecks() {
-    assertThat(JavaSECheckList.getChecks()).isNotNull().hasSize(21);
+    assertThat(JavaSECheckList.getChecks()).isNotNull().hasSize(20);
   }
 
 }
