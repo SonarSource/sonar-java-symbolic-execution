@@ -62,7 +62,7 @@ From the `its/ruling` folder, launch the ruling tests:
 
     mvn clean install -Pit-ruling
     # Alternatively
-    JAVA_HOME=/my/local/java17/jdk/ mvn clean install -Pit-ruling
+    JAVA_HOME=/my/local/java21/jdk/ mvn clean install -Pit-ruling
 
 This test gives you the opportunity to examine the issues created by each rule and make sure they are what you expect. 
 Any implemented rule is highly likely to raise issues on the multiple projects we use as ruling code base.
