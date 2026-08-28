@@ -85,6 +85,7 @@
       at SonarSource/sonarqube/gradle.properties
      -->
     <sonar.plugin.api.version>13.11.0.4459</sonar.plugin.api.version>
+    <sonar.scanner.version>13.9.0.4593</sonar.scanner.version>
     <analyzer.commons.version>2.17.0.3322</analyzer.commons.version>
     <orchestrator.version>5.6.2.2625</orchestrator.version>
     <sslr.version>1.24.0.633</sslr.version>
@@ -125,6 +126,18 @@
         <groupId>org.sonarsource.sonarqube</groupId>
         <artifactId>sonar-plugin-api-impl</artifactId>
         <version>${sonar.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.sonarsource.scanner.engine</groupId>
+        <artifactId>plugin-api-scanner-impl</artifactId>
+        <version>${sonar.scanner.version}</version>
+        <scope>test</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.sonarsource.scanner.engine</groupId>
+        <artifactId>sensor-test-fixtures</artifactId>
+        <version>${sonar.scanner.version}</version>
         <scope>test</scope>
       </dependency>
       <dependency>

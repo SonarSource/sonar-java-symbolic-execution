@@ -26,8 +26,6 @@ import org.sonar.api.SonarQubeSide;
 import org.sonar.api.SonarRuntime;
 import org.sonar.api.batch.rule.ActiveRules;
 import org.sonar.api.batch.rule.CheckFactory;
-import org.sonar.api.batch.rule.internal.ActiveRulesBuilder;
-import org.sonar.api.batch.rule.internal.NewActiveRule;
 import org.sonar.api.internal.SonarRuntimeImpl;
 import org.sonar.api.rule.RuleKey;
 import org.sonar.api.server.rule.RulesDefinition;
@@ -36,6 +34,8 @@ import org.sonar.check.Rule;
 import org.sonar.java.checks.verifier.TestCheckRegistrarContext;
 import org.sonar.java.se.checks.SECheck;
 import org.sonar.plugins.java.api.CheckRegistrar;
+import org.sonar.scanner.plugin.api.impl.rule.ActiveRulesBuilder;
+import org.sonar.scanner.plugin.api.impl.rule.NewActiveRule;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
