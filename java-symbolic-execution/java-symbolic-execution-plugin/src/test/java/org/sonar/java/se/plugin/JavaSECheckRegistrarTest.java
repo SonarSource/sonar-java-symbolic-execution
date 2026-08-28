@@ -47,7 +47,6 @@ class JavaSECheckRegistrarTest {
     "S2583",
     "S2589",
     "S3546",
-    "S3655",
     "S6374"
   );
 
@@ -82,7 +81,7 @@ class JavaSECheckRegistrarTest {
     assertThat(repository.name()).isEqualTo("Sonar");
     assertThat(repository.language()).isEqualTo("java");
     List<RulesDefinition.Rule> rules = repository.rules();
-    assertThat(rules).hasSize(20);
+    assertThat(rules).hasSize(19);
 
     var activeByDefault = rules.stream()
       .filter(k -> !rulesNotActiveByDefault.contains(k.key()))
