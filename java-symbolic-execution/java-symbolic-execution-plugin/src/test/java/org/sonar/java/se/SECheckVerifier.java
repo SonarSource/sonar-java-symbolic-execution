@@ -164,4 +164,9 @@ public class SECheckVerifier implements CheckVerifier {
   public void verifyNoIssues() {
     checkVerifier.verifyNoIssues();
   }
+
+  @Override
+  public void verifyAnalysisSucceeds() {
+    checkVerifier.verifyAnalysisSucceeds();
+  }
 }
