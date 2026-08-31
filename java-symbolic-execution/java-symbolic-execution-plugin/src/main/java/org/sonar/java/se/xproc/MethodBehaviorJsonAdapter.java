@@ -165,13 +165,14 @@ public class MethodBehaviorJsonAdapter implements JsonSerializer<MethodBehavior>
       jsonParameterConstraints.add(toJson(methodYield.parametersConstraints.get(i)));
     }
     jsonMethodYield.add(JSON_PARAMETERS_CONSTRAINTS, jsonParameterConstraints);
-    if (methodYield instanceof HappyPathYield happyPathYield) {
-      jsonMethodYield.addProperty(JSON_RESULT_INDEX, happyPathYield.resultIndex());
-      jsonMethodYield.add(JSON_RESULT_CONSTRAINTS, toJson(happyPathYield.resultConstraint()));
-    } else if (methodYield instanceof ExceptionalYield exceptionalYield) {
-      jsonMethodYield.addProperty(JSON_THROWN_EXCEPTION, exceptionalYield.getExceptionType());
-    } else {
-      throw new IllegalStateException("Hardcoded yields should only be HappyPathYield or ExceptionalYield.");
+    switch (methodYield) {
+      case HappyPathYield happyPathYield -> {
+        jsonMethodYield.addProperty(JSON_RESULT_INDEX, happyPathYield.resultIndex());
+        jsonMethodYield.add(JSON_RESULT_CONSTRAINTS, toJson(happyPathYield.resultConstraint()));
+      }
+      case ExceptionalYield exceptionalYield ->
+        jsonMethodYield.addProperty(JSON_THROWN_EXCEPTION, exceptionalYield.getExceptionType());
+      default -> throw new IllegalStateException("Hardcoded yields should only be HappyPathYield or ExceptionalYield.");
     }
     return jsonMethodYield;
   }
