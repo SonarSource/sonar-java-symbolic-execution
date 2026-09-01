@@ -20,6 +20,7 @@ package org.sonar.java.se.plugin;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.sonar.api.SonarEdition;
 import org.sonar.api.SonarQubeSide;
@@ -34,6 +35,7 @@ import org.sonar.check.Rule;
 import org.sonar.java.checks.verifier.TestCheckRegistrarContext;
 import org.sonar.java.se.checks.SECheck;
 import org.sonar.plugins.java.api.CheckRegistrar;
+import org.sonar.plugins.javasymbolicexecution.api.JavaRuleReplacements;
 import org.sonar.scanner.plugin.api.impl.rule.ActiveRulesBuilder;
 import org.sonar.scanner.plugin.api.impl.rule.NewActiveRule;
 
@@ -63,6 +65,19 @@ class JavaSECheckRegistrarTest {
   }
 
   @Test
+  void register_rules_excludes_replaced_rules() {
+    JavaRuleReplacements replacements = () -> Set.of(RuleKey.of("java", "S2259"), RuleKey.of("java", "S3518"));
+    CheckRegistrar registrar = new JavaSECheckRegistrar(null, new JavaRuleReplacements[] {replacements});
+    TestCheckRegistrarContext context = new TestCheckRegistrarContext();
+
+    registrar.register(context, new CheckFactory(activeRules));
+
+    assertThat(context.mainRuleKeys).map(RuleKey::toString)
+      .doesNotContain("java:S2259", "java:S3518")
+      .hasSize(21);
+  }
+
+  @Test
   void rules_definition() {
     SonarRuntime sonarRuntime = SonarRuntimeImpl.forSonarQube(Version.create(10, 2), SonarQubeSide.SERVER, SonarEdition.ENTERPRISE);
     JavaSECheckRegistrar rulesDefinition = new JavaSECheckRegistrar(sonarRuntime);
@@ -81,7 +96,7 @@ class JavaSECheckRegistrarTest {
     assertThat(repository.name()).isEqualTo("Sonar");
     assertThat(repository.language()).isEqualTo("java");
     List<RulesDefinition.Rule> rules = repository.rules();
-    assertThat(rules).hasSize(19);
+    assertThat(rules).hasSize(23);
 
     var activeByDefault = rules.stream()
       .filter(k -> !rulesNotActiveByDefault.contains(k.key()))
@@ -90,6 +105,23 @@ class JavaSECheckRegistrarTest {
 
     assertThat(Arrays.asList(getRuleKeys())).containsExactlyInAnyOrderElementsOf(allRules);
     assertThat(activeByDefault).isNotEmpty().allMatch(RulesDefinition.Rule::activatedByDefault);
+  }
+
+  @Test
+  void rules_definition_excludes_replaced_rules() {
+    SonarRuntime sonarRuntime = SonarRuntimeImpl.forSonarQube(Version.create(10, 2), SonarQubeSide.SERVER, SonarEdition.ENTERPRISE);
+    JavaRuleReplacements replacements = () -> Set.of(RuleKey.of("java", "S3655"), RuleKey.of("java", "S3959"));
+    JavaSECheckRegistrar rulesDefinition = new JavaSECheckRegistrar(sonarRuntime, new JavaRuleReplacements[] {replacements});
+    RulesDefinition.Context context = new RulesDefinition.Context();
+    RulesDefinition.NewRepository javaRepo = context.createRepository("java", "java").setName("SonarAnalyzer");
+
+    rulesDefinition.customRulesDefinition(context, javaRepo);
+    javaRepo.done();
+
+    assertThat(context.repository("java").rules())
+      .extracting(RulesDefinition.Rule::key)
+      .doesNotContain("S3655", "S3959")
+      .hasSize(21);
   }
 
   private static ActiveRules activeRules(String... repositoryAndKeys) {

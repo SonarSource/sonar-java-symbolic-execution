@@ -14,30 +14,17 @@
  * You should have received a copy of the Sonar Source-Available License
  * along with this program; if not, see https://sonarsource.com/license/ssal/
  */
-package org.sonar.java.se.plugin;
+package org.sonar.plugins.javasymbolicexecution.api;
 
 import java.util.Set;
-import org.junit.jupiter.api.Test;
 import org.sonar.api.rule.RuleKey;
-import org.sonar.java.se.checks.NullDereferenceCheck;
-import org.sonar.plugins.javasymbolicexecution.api.JavaRuleReplacements;
 
-import static org.assertj.core.api.Assertions.assertThat;
+/**
+ * Declares Java rules that are replaced by rules provided by another plugin.
+ * Implementations must be registered as plugin extensions.
+ */
+@FunctionalInterface
+public interface JavaRuleReplacements {
 
-class JavaSECheckListTest {
-
-  @Test
-  void getChecks() {
-    assertThat(JavaSECheckList.getChecks()).isNotNull().hasSize(23);
-  }
-
-  @Test
-  void getChecks_excludes_replaced_rules() {
-    JavaRuleReplacements replacements = () -> Set.of(RuleKey.of("java", "S2259"));
-
-    assertThat(JavaSECheckList.getChecks(new RuleReplacementFilter(replacements)))
-      .doesNotContain(NullDereferenceCheck.class)
-      .hasSize(22);
-  }
-
+  Set<RuleKey> replacedRuleKeys();
 }

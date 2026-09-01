@@ -17,21 +17,26 @@
 package org.sonar.java.se.plugin;
 
 import java.util.List;
+import org.sonar.check.Rule;
 import org.sonar.java.se.checks.AllowXMLInclusionCheck;
 import org.sonar.java.se.checks.BooleanGratuitousExpressionsCheck;
 import org.sonar.java.se.checks.ConditionalUnreachableCodeCheck;
 import org.sonar.java.se.checks.CustomUnclosedResourcesCheck;
 import org.sonar.java.se.checks.DenialOfServiceXMLCheck;
+import org.sonar.java.se.checks.DivisionByZeroCheck;
 import org.sonar.java.se.checks.InvariantReturnCheck;
 import org.sonar.java.se.checks.LocksNotUnlockedCheck;
 import org.sonar.java.se.checks.MapComputeIfAbsentOrPresentCheck;
 import org.sonar.java.se.checks.MinMaxRangeCheck;
 import org.sonar.java.se.checks.NoWayOutLoopCheck;
 import org.sonar.java.se.checks.NonNullSetToNullCheck;
+import org.sonar.java.se.checks.NullDereferenceCheck;
 import org.sonar.java.se.checks.ObjectOutputStreamCheck;
+import org.sonar.java.se.checks.OptionalGetBeforeIsPresentCheck;
 import org.sonar.java.se.checks.ParameterNullnessCheck;
 import org.sonar.java.se.checks.RedundantAssignmentsCheck;
 import org.sonar.java.se.checks.SECheck;
+import org.sonar.java.se.checks.StreamConsumedCheck;
 import org.sonar.java.se.checks.StreamNotConsumedCheck;
 import org.sonar.java.se.checks.UnclosedResourcesCheck;
 import org.sonar.java.se.checks.XmlParserLoadsExternalSchemasCheck;
@@ -45,12 +50,20 @@ public class JavaSECheckList {
   }
 
   public static List<Class<? extends SECheck>> getChecks() {
+    return getChecks(new RuleReplacementFilter());
+  }
+
+  static List<Class<? extends SECheck>> getChecks(RuleReplacementFilter replacementFilter) {
     return List.of(
       // SEChecks ordered by ExplodedGraphWalker need
+      NullDereferenceCheck.class,
+      DivisionByZeroCheck.class,
       UnclosedResourcesCheck.class,
       LocksNotUnlockedCheck.class,
       NonNullSetToNullCheck.class,
       NoWayOutLoopCheck.class,
+      OptionalGetBeforeIsPresentCheck.class,
+      StreamConsumedCheck.class,
       RedundantAssignmentsCheck.class,
       XxeProcessingCheck.class,
       // SEChecks Depending on XxeProcessingCheck
@@ -68,7 +81,9 @@ public class JavaSECheckList {
       InvariantReturnCheck.class,
       StreamNotConsumedCheck.class,
       ObjectOutputStreamCheck.class,
-      MinMaxRangeCheck.class);
+      MinMaxRangeCheck.class).stream()
+      .filter(check -> replacementFilter.keeps(check.getAnnotation(Rule.class).key()))
+      .toList();
   }
 
 }

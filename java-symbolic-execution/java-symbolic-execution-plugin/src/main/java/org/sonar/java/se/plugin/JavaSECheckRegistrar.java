@@ -17,6 +17,7 @@
 package org.sonar.java.se.plugin;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 import org.sonar.api.SonarRuntime;
 import org.sonar.api.batch.rule.CheckFactory;
@@ -29,6 +30,7 @@ import org.sonar.java.se.SymbolicExecutionVisitor;
 import org.sonar.java.se.checks.SECheck;
 import org.sonar.plugins.java.api.CheckRegistrar;
 import org.sonar.plugins.java.api.JavaCheck;
+import org.sonar.plugins.javasymbolicexecution.api.JavaRuleReplacements;
 import org.sonarsource.analyzer.commons.RuleMetadataLoader;
 
 @ServerSide
@@ -42,9 +44,15 @@ public class JavaSECheckRegistrar implements CheckRegistrar {
 
   private static final Set<String> RULE_TEMPLATES_KEY = Set.of("S3546");
   private final SonarRuntime runtime;
+  private final List<Class<? extends SECheck>> checks;
 
   public JavaSECheckRegistrar(SonarRuntime runtime) {
+    this(runtime, new JavaRuleReplacements[0]);
+  }
+
+  public JavaSECheckRegistrar(SonarRuntime runtime, JavaRuleReplacements[] replacements) {
     this.runtime = runtime;
+    this.checks = JavaSECheckList.getChecks(new RuleReplacementFilter(replacements));
   }
 
   @Override
@@ -54,7 +62,7 @@ public class JavaSECheckRegistrar implements CheckRegistrar {
 
   @Override
   public void register(RegistrarContext registrarContext, CheckFactory checkFactory) {
-    Checks<JavaCheck> checks = checkFactory.<JavaCheck>create(REPOSITORY_KEY).addAnnotatedChecks(JavaSECheckList.getChecks());
+    Checks<JavaCheck> checks = checkFactory.<JavaCheck>create(REPOSITORY_KEY).addAnnotatedChecks(this.checks);
 
     var seChecks = checks.all().stream()
       .filter(SECheck.class::isInstance)
@@ -71,7 +79,7 @@ public class JavaSECheckRegistrar implements CheckRegistrar {
   public void customRulesDefinition(RulesDefinition.Context context, RulesDefinition.NewRepository javaRepository) {
     RuleMetadataLoader ruleMetadataLoader = new RuleMetadataLoader(RESOURCE_BASE_PATH, SONAR_WAY_PATH, runtime);
 
-    ruleMetadataLoader.addRulesByAnnotatedClass(javaRepository, new ArrayList<>(JavaSECheckList.getChecks()));
+    ruleMetadataLoader.addRulesByAnnotatedClass(javaRepository, new ArrayList<>(checks));
 
     setTemplates(javaRepository);
   }

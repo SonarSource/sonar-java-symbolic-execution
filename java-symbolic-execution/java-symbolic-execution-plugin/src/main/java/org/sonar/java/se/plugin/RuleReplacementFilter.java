@@ -16,28 +16,23 @@
  */
 package org.sonar.java.se.plugin;
 
+import java.util.Arrays;
 import java.util.Set;
-import org.junit.jupiter.api.Test;
+import java.util.stream.Collectors;
 import org.sonar.api.rule.RuleKey;
-import org.sonar.java.se.checks.NullDereferenceCheck;
 import org.sonar.plugins.javasymbolicexecution.api.JavaRuleReplacements;
 
-import static org.assertj.core.api.Assertions.assertThat;
+final class RuleReplacementFilter {
 
-class JavaSECheckListTest {
+  private final Set<RuleKey> replacedRuleKeys;
 
-  @Test
-  void getChecks() {
-    assertThat(JavaSECheckList.getChecks()).isNotNull().hasSize(23);
+  RuleReplacementFilter(JavaRuleReplacements... replacements) {
+    this.replacedRuleKeys = Arrays.stream(replacements)
+      .flatMap(replacement -> replacement.replacedRuleKeys().stream())
+      .collect(Collectors.toUnmodifiableSet());
   }
 
-  @Test
-  void getChecks_excludes_replaced_rules() {
-    JavaRuleReplacements replacements = () -> Set.of(RuleKey.of("java", "S2259"));
-
-    assertThat(JavaSECheckList.getChecks(new RuleReplacementFilter(replacements)))
-      .doesNotContain(NullDereferenceCheck.class)
-      .hasSize(22);
+  boolean keeps(String ruleKey) {
+    return !replacedRuleKeys.contains(RuleKey.of(JavaSECheckRegistrar.REPOSITORY_KEY, ruleKey));
   }
-
 }

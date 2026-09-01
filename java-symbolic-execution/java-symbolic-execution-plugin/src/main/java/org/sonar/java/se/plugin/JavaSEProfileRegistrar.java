@@ -17,11 +17,22 @@
 package org.sonar.java.se.plugin;
 
 import org.sonar.plugins.java.api.ProfileRegistrar;
+import org.sonar.plugins.javasymbolicexecution.api.JavaRuleReplacements;
 
 public class JavaSEProfileRegistrar implements ProfileRegistrar {
 
+  private final RuleReplacementFilter replacementFilter;
+
+  public JavaSEProfileRegistrar() {
+    this(new JavaRuleReplacements[0]);
+  }
+
+  public JavaSEProfileRegistrar(JavaRuleReplacements[] replacements) {
+    this.replacementFilter = new RuleReplacementFilter(replacements);
+  }
+
   @Override
   public void register(RegistrarContext registrarContext) {
-    registrarContext.registerDefaultQualityProfileRules(RulesList.getSonarWayRuleKeys());
+    registrarContext.registerDefaultQualityProfileRules(RulesList.getSonarWayRuleKeys(replacementFilter));
   }
 }

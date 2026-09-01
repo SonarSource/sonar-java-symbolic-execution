@@ -25,10 +25,15 @@ public final class RulesList {
   }
 
   public static List<RuleKey> getSonarWayRuleKeys() {
+    return getSonarWayRuleKeys(new RuleReplacementFilter());
+  }
+
+  static List<RuleKey> getSonarWayRuleKeys(RuleReplacementFilter replacementFilter) {
     return toRuleKeys(List.of(
       "S2095",
       "S2189",
       "S2222",
+      "S2259",
       "S2583",
       "S2589",
       "S2637",
@@ -36,13 +41,18 @@ public final class RulesList {
       "S2755",
       "S3065",
       "S3516",
+      "S3518",
+      "S3655",
       "S3824",
       "S3958",
+      "S3959",
       "S4165",
       "S4449",
       "S6373",
       "S6376",
-      "S6377"));
+      "S6377").stream()
+      .filter(replacementFilter::keeps)
+      .toList());
   }
 
   private static List<RuleKey> toRuleKeys(List<String> rules) {
