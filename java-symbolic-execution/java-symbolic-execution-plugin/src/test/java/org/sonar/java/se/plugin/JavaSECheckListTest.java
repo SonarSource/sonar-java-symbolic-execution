@@ -23,6 +23,7 @@ import org.sonar.java.se.checks.NullDereferenceCheck;
 import org.sonar.plugins.javasymbolicexecution.api.JavaRuleReplacements;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 class JavaSECheckListTest {
 
@@ -38,6 +39,15 @@ class JavaSECheckListTest {
     assertThat(JavaSECheckList.getChecks(new RuleReplacementFilter(replacements)))
       .doesNotContain(NullDereferenceCheck.class)
       .hasSize(22);
+  }
+
+  @Test
+  void getChecks_rejects_replacement_of_rule_with_dependent_checks() {
+    JavaRuleReplacements replacements = () -> Set.of(RuleKey.of("java", "S2755"));
+
+    assertThatIllegalArgumentException()
+      .isThrownBy(() -> JavaSECheckList.getChecks(new RuleReplacementFilter(replacements)))
+      .withMessage("Rule java:S2755 cannot be replaced because other symbolic execution rules depend on it");
   }
 
 }

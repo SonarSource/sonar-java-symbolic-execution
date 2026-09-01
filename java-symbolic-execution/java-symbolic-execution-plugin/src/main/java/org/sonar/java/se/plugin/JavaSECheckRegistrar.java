@@ -18,6 +18,7 @@ package org.sonar.java.se.plugin;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import org.sonar.api.SonarRuntime;
 import org.sonar.api.batch.rule.CheckFactory;
@@ -62,17 +63,17 @@ public class JavaSECheckRegistrar implements CheckRegistrar {
 
   @Override
   public void register(RegistrarContext registrarContext, CheckFactory checkFactory) {
-    Checks<JavaCheck> checks = checkFactory.<JavaCheck>create(REPOSITORY_KEY).addAnnotatedChecks(this.checks);
+    Checks<JavaCheck> registeredChecks = checkFactory.<JavaCheck>create(REPOSITORY_KEY).addAnnotatedChecks(this.checks);
 
-    var seChecks = checks.all().stream()
+    var seChecks = registeredChecks.all().stream()
       .filter(SECheck.class::isInstance)
       .map(c -> (SECheck) c)
       .toList();
 
-    var ruleKeys = seChecks.stream().map(checks::ruleKey).toList();
+    var ruleKeys = seChecks.stream().map(registeredChecks::ruleKey).toList();
 
     registrarContext.registerMainSharedCheck(new SymbolicExecutionVisitor(seChecks), ruleKeys);
-    registrarContext.registerMainChecks(checks, seChecks);
+    registrarContext.registerMainChecks(registeredChecks, seChecks);
   }
 
   @Override
@@ -85,6 +86,9 @@ public class JavaSECheckRegistrar implements CheckRegistrar {
   }
 
   private static void setTemplates(RulesDefinition.NewRepository repository) {
-    RULE_TEMPLATES_KEY.forEach(ruleKey -> repository.rule(ruleKey).setTemplate(true));
+    RULE_TEMPLATES_KEY.stream()
+      .map(repository::rule)
+      .filter(Objects::nonNull)
+      .forEach(rule -> rule.setTemplate(true));
   }
 }

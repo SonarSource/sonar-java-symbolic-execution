@@ -54,6 +54,10 @@ public class JavaSECheckList {
   }
 
   static List<Class<? extends SECheck>> getChecks(RuleReplacementFilter replacementFilter) {
+    if (!replacementFilter.keeps("S2755")) {
+      throw new IllegalArgumentException("Rule java:S2755 cannot be replaced because other symbolic execution rules depend on it");
+    }
+
     return List.of(
       // SEChecks ordered by ExplodedGraphWalker need
       NullDereferenceCheck.class,
