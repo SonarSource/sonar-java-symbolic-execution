@@ -87,7 +87,7 @@
     <sonar.plugin.api.version>13.11.0.4459</sonar.plugin.api.version>
     <sonar.scanner.version>13.10.0.4657</sonar.scanner.version>
     <analyzer.commons.version>2.30.0.5193</analyzer.commons.version>
-    <orchestrator.version>5.6.2.2625</orchestrator.version>
+    <orchestrator.version>6.4.2.4626</orchestrator.version>
     <sslr.version>1.26.0.4194</sslr.version>
     <argLine>-Xmx512m</argLine>
     <gitRepositoryName>sonar-java-symbolic-execution</gitRepositoryName>
