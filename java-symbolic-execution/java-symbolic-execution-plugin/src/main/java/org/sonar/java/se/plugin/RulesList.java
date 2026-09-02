@@ -24,10 +24,6 @@ public final class RulesList {
   private RulesList() {
   }
 
-  public static List<RuleKey> getSonarWayRuleKeys() {
-    return getSonarWayRuleKeys(new RuleReplacementFilter());
-  }
-
   static List<RuleKey> getSonarWayRuleKeys(RuleReplacementFilter replacementFilter) {
     return toRuleKeys(List.of(
       "S2095",

@@ -50,4 +50,16 @@ class JavaSEProfileRegistrarTest {
       .hasSize(19);
   }
 
+  @Test
+  void non_replaced_rules_are_kept_in_profile() {
+    JavaSEProfileRegistrar registrar = new JavaSEProfileRegistrar();
+    TestProfileRegistrarContext context = new TestProfileRegistrarContext();
+
+    registrar.register(context);
+
+    assertThat(context.rulesByQualityProfile.get("Sonar way"))
+      .extracting(RuleKey::toString)
+      .contains("java:S2259", "java:S3518");
+  }
+
 }

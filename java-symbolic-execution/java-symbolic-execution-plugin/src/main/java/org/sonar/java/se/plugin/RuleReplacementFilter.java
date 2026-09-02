@@ -22,6 +22,10 @@ import java.util.stream.Collectors;
 import org.sonar.api.rule.RuleKey;
 import org.sonar.plugins.javasymbolicexecution.api.JavaRuleReplacements;
 
+/**
+ * Filters out symbolic execution rules that are replaced by rules provided by other plugins,
+ * as declared through {@link JavaRuleReplacements}.
+ */
 final class RuleReplacementFilter {
 
   private final Set<RuleKey> replacedRuleKeys;

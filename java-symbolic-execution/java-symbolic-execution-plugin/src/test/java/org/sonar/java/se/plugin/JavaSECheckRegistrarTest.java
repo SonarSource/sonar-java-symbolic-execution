@@ -16,11 +16,13 @@
  */
 package org.sonar.java.se.plugin;
 
+import com.sonarsource.scanner.engine.sensor.test.fixtures.TestSonarRuntime;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+
 import org.junit.jupiter.api.Test;
 import org.sonar.api.SonarEdition;
 import org.sonar.api.SonarQubeSide;
@@ -42,6 +44,7 @@ import org.sonar.scanner.plugin.api.impl.rule.NewActiveRule;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class JavaSECheckRegistrarTest {
+  private SonarRuntime sonarRuntime = TestSonarRuntime.forSonarQube(Version.create(26, 8, 0), SonarQubeSide.SCANNER, SonarEdition.COMMUNITY);
 
   private static final ActiveRules activeRules = activeRules(getRuleKeysWithRepo());
 
@@ -49,12 +52,11 @@ class JavaSECheckRegistrarTest {
     "S2583",
     "S2589",
     "S3546",
-    "S6374"
-  );
+    "S6374");
 
   @Test
   void register_rules() {
-    CheckRegistrar registrar = new JavaSECheckRegistrar(null);
+    CheckRegistrar registrar = new JavaSECheckRegistrar(sonarRuntime);
     TestCheckRegistrarContext context = new TestCheckRegistrarContext();
 
     CheckFactory checkFactory = new CheckFactory(activeRules);
@@ -67,7 +69,7 @@ class JavaSECheckRegistrarTest {
   @Test
   void register_rules_excludes_replaced_rules() {
     JavaRuleReplacements replacements = () -> Set.of(RuleKey.of("java", "S2259"), RuleKey.of("java", "S3518"));
-    CheckRegistrar registrar = new JavaSECheckRegistrar(null, new JavaRuleReplacements[] {replacements});
+    CheckRegistrar registrar = new JavaSECheckRegistrar(sonarRuntime, new JavaRuleReplacements[] {replacements});
     TestCheckRegistrarContext context = new TestCheckRegistrarContext();
 
     registrar.register(context, new CheckFactory(activeRules));
@@ -75,6 +77,19 @@ class JavaSECheckRegistrarTest {
     assertThat(context.mainRuleKeys).map(RuleKey::toString)
       .doesNotContain("java:S2259", "java:S3518")
       .hasSize(21);
+  }
+
+  @Test
+  void register_rules_keeps_non_replaced_rules() {
+    CheckRegistrar registrar = new JavaSECheckRegistrar(sonarRuntime);
+    TestCheckRegistrarContext context = new TestCheckRegistrarContext();
+
+    registrar.register(context, new CheckFactory(activeRules));
+
+    assertThat(context.mainRuleKeys)
+      .describedAs("This is a sanity check for register_rules_excludes_replaced_rules(): If java:S2259, java:S3518 are not explicitly replaced, they must be present.")
+      .map(RuleKey::toString)
+      .contains("java:S2259", "java:S3518");
   }
 
   @Test
@@ -109,9 +124,9 @@ class JavaSECheckRegistrarTest {
 
   @Test
   void rules_definition_excludes_replaced_rules() {
-    SonarRuntime sonarRuntime = SonarRuntimeImpl.forSonarQube(Version.create(10, 2), SonarQubeSide.SERVER, SonarEdition.ENTERPRISE);
+    var enterpriseRuntime = SonarRuntimeImpl.forSonarQube(Version.create(10, 2), SonarQubeSide.SERVER, SonarEdition.ENTERPRISE);
     JavaRuleReplacements replacements = () -> Set.of(RuleKey.of("java", "S3546"), RuleKey.of("java", "S3655"), RuleKey.of("java", "S3959"));
-    JavaSECheckRegistrar rulesDefinition = new JavaSECheckRegistrar(sonarRuntime, new JavaRuleReplacements[] {replacements});
+    JavaSECheckRegistrar rulesDefinition = new JavaSECheckRegistrar(enterpriseRuntime, new JavaRuleReplacements[] {replacements});
     RulesDefinition.Context context = new RulesDefinition.Context();
     RulesDefinition.NewRepository javaRepo = context.createRepository("java", "java").setName("SonarAnalyzer");
 
@@ -122,6 +137,21 @@ class JavaSECheckRegistrarTest {
       .extracting(RulesDefinition.Rule::key)
       .doesNotContain("S3546", "S3655", "S3959")
       .hasSize(20);
+  }
+
+  @Test
+  void rules_definition_keeps_non_replaced_rules() {
+    JavaSECheckRegistrar rulesDefinition = new JavaSECheckRegistrar(sonarRuntime);
+    RulesDefinition.Context context = new RulesDefinition.Context();
+    RulesDefinition.NewRepository javaRepo = context.createRepository("java", "java").setName("SonarAnalyzer");
+
+    rulesDefinition.customRulesDefinition(context, javaRepo);
+    javaRepo.done();
+
+    assertThat(context.repository("java").rules())
+      .describedAs("This is a sanity check for rules_definition_excludes_replaced_rules(): If S3546, S3655, or S3959 are not explicitly replaced, they must be present.")
+      .extracting(RulesDefinition.Rule::key)
+      .contains("S3546", "S3655", "S3959");
   }
 
   private static ActiveRules activeRules(String... repositoryAndKeys) {
@@ -145,7 +175,7 @@ class JavaSECheckRegistrarTest {
 
   private static String[] getRuleKeys() {
     var ruleKeys = new ArrayList<String>();
-    for (Class<? extends SECheck> check : JavaSECheckList.getChecks()) {
+    for (Class<? extends SECheck> check : JavaSECheckList.getChecks(new RuleReplacementFilter())) {
       ruleKeys.add(check.getAnnotation(Rule.class).key());
     }
     return ruleKeys.toArray(new String[0]);

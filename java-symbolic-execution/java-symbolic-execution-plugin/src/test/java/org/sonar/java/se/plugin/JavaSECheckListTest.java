@@ -29,7 +29,7 @@ class JavaSECheckListTest {
 
   @Test
   void getChecks() {
-    assertThat(JavaSECheckList.getChecks()).isNotNull().hasSize(23);
+    assertThat(JavaSECheckList.getChecks(new RuleReplacementFilter())).isNotNull().hasSize(23);
   }
 
   @Test
