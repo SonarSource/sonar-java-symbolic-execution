@@ -113,3 +113,5 @@ jobs:
     steps:
       - name: Promote artifacts
         uses: SonarSource/ci-github-actions/promote@v1
+        with:
+          promote-pull-request: true
