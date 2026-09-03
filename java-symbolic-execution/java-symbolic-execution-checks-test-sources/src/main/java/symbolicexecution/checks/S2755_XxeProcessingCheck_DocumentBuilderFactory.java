@@ -27,14 +27,21 @@ class DocumentBuilderFactoryTest {
   }
 
   DocumentBuilderFactory set_feature_secure() throws ParserConfigurationException {
-    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance(); // Noncompliant
-    factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true); // No effect to protect against xxe
+    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance(); // Compliant
+    factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+    return factory;
+  }
+
+  DocumentBuilderFactory set_feature_secure_with_literal() throws ParserConfigurationException {
+    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance(); // Compliant
+    factory.setFeature("http://javax.xml.XMLConstants/feature/secure-processing", true);
     return factory;
   }
 
   // Not vulnerable when "http://apache.org/xml/features/disallow-doctype-decl" set to true
   // or http://apache.org/xml/features/nonvalidating/load-external-dtd set to false
-  // or http://xml.org/sax/features/external-general-entities
+  // or http://xml.org/sax/features/external-general-entities and
+  // http://xml.org/sax/features/external-parameter-entities are both set to false
   DocumentBuilderFactory set_disallow_doctype_true() throws ParserConfigurationException {
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance(); // Compliant
     factory.setFeature("http://apache.org/xml/features/disallow-doctype-decl", true);
@@ -65,9 +72,23 @@ class DocumentBuilderFactoryTest {
     return factory;
   }
 
+  // external-general-entities alone is not enough, it must be combined with external-parameter-entities
   DocumentBuilderFactory set_external_general_false() throws ParserConfigurationException {
-    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance(); // Noncompliant
     factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+    return factory;
+  }
+
+  DocumentBuilderFactory set_external_parameter_false() throws ParserConfigurationException {
+    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance(); // Noncompliant
+    factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+    return factory;
+  }
+
+  DocumentBuilderFactory set_external_general_and_parameter_false() throws ParserConfigurationException {
+    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance(); // Compliant
+    factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+    factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
     return factory;
   }
 
@@ -97,9 +118,16 @@ class DocumentBuilderFactoryTest {
     return factory;
   }
 
+  // ACCESS_EXTERNAL_DTD alone is enough to secure a DocumentBuilderFactory
   DocumentBuilderFactory univeral_fix_only_dtd() {
-    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance(); // Noncompliant
+    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance(); // Compliant
     factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+    return factory;
+  }
+
+  DocumentBuilderFactory univeral_fix_only_dtd_with_literal() {
+    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance(); // Compliant
+    factory.setAttribute("http://javax.xml.XMLConstants/property/accessExternalDTD", "");
     return factory;
   }
 
@@ -109,8 +137,9 @@ class DocumentBuilderFactoryTest {
     return factory;
   }
 
+  // ACCESS_EXTERNAL_DTD alone secures regardless of the ACCESS_EXTERNAL_SCHEMA value
   DocumentBuilderFactory univeral_fix_not_empty() {
-    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance(); // Noncompliant
+    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance(); // Compliant
     factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
     factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "all");
     return factory;

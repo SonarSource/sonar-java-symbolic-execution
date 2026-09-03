@@ -23,11 +23,29 @@ class TransformerFactoryTest {
     return factory;
   }
 
-  // setFeature has no effect to protect against XXE
+  // setFeature(FEATURE_SECURE_PROCESSING, true) is enough to secure a TransformerFactory
 
   TransformerFactory secure_processing_true() throws TransformerConfigurationException {
-    TransformerFactory factory = TransformerFactory.newInstance(); // Noncompliant
+    TransformerFactory factory = TransformerFactory.newInstance(); // Compliant
     factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+    return factory;
+  }
+
+  TransformerFactory secure_processing_true_sax() throws TransformerConfigurationException {
+    TransformerFactory factory = SAXTransformerFactory.newInstance(); // Compliant
+    factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+    return factory;
+  }
+
+  TransformerFactory secure_processing_true_with_literal() throws TransformerConfigurationException {
+    TransformerFactory factory = TransformerFactory.newInstance(); // Compliant
+    factory.setFeature("http://javax.xml.XMLConstants/feature/secure-processing", true);
+    return factory;
+  }
+
+  TransformerFactory secure_processing_true_with_literal_sax() throws TransformerConfigurationException {
+    TransformerFactory factory = SAXTransformerFactory.newInstance(); // Compliant
+    factory.setFeature("http://javax.xml.XMLConstants/feature/secure-processing", true);
     return factory;
   }
 
@@ -69,7 +87,8 @@ class TransformerFactoryTest {
   TransformerFactory setattribute_dtd_and_stylesheet_with_non_empty_value() {
     TransformerFactory factory = TransformerFactory.newInstance(); // Noncompliant [[flows=stylesheet]]
     factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_DTD, "");
-    factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "xxx"); // flow@stylesheet [[sc=5;ec=73]] {{Implies 'factory' is unsecured. Set to "" (empty string) to protect against XXE.}}
+    factory.setAttribute(XMLConstants.ACCESS_EXTERNAL_STYLESHEET, "xxx"); // flow@stylesheet [[sc=5;ec=73]] {{Implies 'factory' is unsecured. Set to "" (empty string) to protect
+                                                                          // against XXE.}}
     return factory;
   }
 

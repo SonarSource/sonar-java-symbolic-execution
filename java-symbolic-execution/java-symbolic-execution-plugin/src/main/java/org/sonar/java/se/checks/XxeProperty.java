@@ -223,6 +223,20 @@ public interface XxeProperty {
     }
   }
 
+  enum FeatureExternalParameterEntities implements Constraint, XxeProperty {
+    UNSECURED, SECURED, NAMED;
+
+    private static final XxePropertyHolder PROPERTIES = new XxePropertyHolder(
+      "http://xml.org/sax/features/external-parameter-entities", NAMED,
+      XxeProperty::isSetToFalse, SECURED,
+      XxeProperty::isSetToTrue, UNSECURED);
+
+    @Override
+    public XxePropertyHolder properties() {
+      return PROPERTIES;
+    }
+  }
+
   enum FeatureSecureProcessing implements Constraint, XxeProperty {
     UNSECURED, SECURED, NAMED;
 
