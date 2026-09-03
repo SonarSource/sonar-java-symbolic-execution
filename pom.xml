@@ -84,7 +84,7 @@
       sonar-plugin-api should be compatible with SQ peach. You can see which version SQ is using
       at SonarSource/sonarqube/gradle.properties
      -->
-    <sonar.plugin.api.version>13.11.0.4459</sonar.plugin.api.version>
+    <sonar.plugin.api.version>13.2.0.3137</sonar.plugin.api.version>
     <sonar.scanner.version>13.10.0.4657</sonar.scanner.version>
     <analyzer.commons.version>2.30.0.5193</analyzer.commons.version>
     <orchestrator.version>6.4.2.4626</orchestrator.version>
