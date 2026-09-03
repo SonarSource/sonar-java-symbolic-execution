@@ -165,7 +165,7 @@ public class XxeProcessingCheck extends SECheck {
   private static final Map<MethodMatchers, Predicate<ConstraintsByDomain>> CONDITIONS_FOR_SECURED_BY_TYPE =
     MapBuilder.<MethodMatchers, Predicate<ConstraintsByDomain>>newMap()
       .put(XML_INPUT_FACTORY_NEW_INSTANCE,
-        c -> (c.hasConstraint(AttributeDTD.SECURED) && c.hasConstraint(AttributeSchema.SECURED))
+        c -> c.hasConstraint(AttributeDTD.SECURED)
           || c.hasConstraint(FeatureSupportDtd.SECURED)
           || c.hasConstraint(FeatureIsSupportingExternalEntities.SECURED)
           || c.hasConstraint(XxeEntityResolver.CUSTOM_ENTITY_RESOLVER))
@@ -182,7 +182,7 @@ public class XxeProcessingCheck extends SECheck {
         c -> (c.hasConstraint(AttributeDTD.SECURED) && c.hasConstraint(AttributeStyleSheet.SECURED))
           || c.hasConstraint(FeatureSecureProcessing.SECURED))
       .put(CREATE_XML_READER,
-        c -> (c.hasConstraint(AttributeDTD.SECURED) && c.hasConstraint(AttributeSchema.SECURED))
+        c -> c.hasConstraint(AttributeDTD.SECURED)
           || c.hasConstraint(FeatureDisallowDoctypeDecl.SECURED)
           || (c.hasConstraint(FeatureExternalGeneralEntities.SECURED) && c.hasConstraint(FeatureExternalParameterEntities.SECURED))
           || c.hasConstraint(XxeEntityResolver.CUSTOM_ENTITY_RESOLVER))
@@ -202,7 +202,7 @@ public class XxeProcessingCheck extends SECheck {
   private static final Map<MethodMatchers, Predicate<ConstraintsByDomain>> CONDITIONS_FOR_SECURED_BY_TYPE_NEW_CLASS =
     MapBuilder.<MethodMatchers, Predicate<ConstraintsByDomain>>newMap()
       .put(SAX_BUILDER_CONSTRUCTOR,
-        c -> (c.hasConstraint(AttributeDTD.SECURED) && c.hasConstraint(AttributeSchema.SECURED))
+        c -> c.hasConstraint(AttributeDTD.SECURED)
           || c.hasConstraint(FeatureDisallowDoctypeDecl.SECURED)
           || c.hasConstraint(XxeEntityResolver.CUSTOM_ENTITY_RESOLVER))
       .put(SAX_READER_CONSTRUCTOR,

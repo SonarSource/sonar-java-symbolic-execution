@@ -154,7 +154,7 @@ class XMLInputFactoryTest {
     return factory;
   }
 
-  // "universal fix": ACCESS_EXTERNAL_DTD and ACCESS_EXTERNAL_SCHEMA should be set to ""
+  // "universal fix": ACCESS_EXTERNAL_DTD and ACCESS_EXTERNAL_SCHEMA can be set to "" (ACCESS_EXTERNAL_DTD alone is enough)
   XMLInputFactory setProperty_dtd_schema(Object value) {
     XMLInputFactory factory = XMLInputFactory.newInstance();
     factory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
@@ -176,8 +176,9 @@ class XMLInputFactoryTest {
     return factory;
   }
 
+  // ACCESS_EXTERNAL_DTD alone is enough to secure an XMLInputFactory
   XMLInputFactory setProperty_dtd_only(Object value) {
-    XMLInputFactory factory = XMLInputFactory.newInstance(); // Noncompliant
+    XMLInputFactory factory = XMLInputFactory.newInstance(); // Compliant
     factory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
     return factory;
   }
@@ -189,7 +190,7 @@ class XMLInputFactoryTest {
   }
 
   XMLInputFactory setattribute_dtd_and_other(Object value) {
-    XMLInputFactory factory = XMLInputFactory.newInstance(); // Noncompliant
+    XMLInputFactory factory = XMLInputFactory.newInstance(); // Compliant
     factory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
     factory.setProperty(XMLConstants.DEFAULT_NS_PREFIX, "");
     return factory;

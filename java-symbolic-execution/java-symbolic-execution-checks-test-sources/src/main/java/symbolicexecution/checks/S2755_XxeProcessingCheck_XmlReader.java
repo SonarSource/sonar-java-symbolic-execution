@@ -66,8 +66,9 @@ class XmlReaderTest {
     return xmlReader;
   }
 
-  XMLReader unsecure_with_properties_2(XMLReaderFactory factory) throws SAXException {
-    XMLReader xmlReader = factory.createXMLReader(); // Noncompliant
+  // ACCESS_EXTERNAL_DTD alone is enough to secure an XMLReader
+  XMLReader secure_with_properties_dtd_only(XMLReaderFactory factory) throws SAXException {
+    XMLReader xmlReader = factory.createXMLReader(); // Compliant
     xmlReader.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
     return xmlReader;
   }
