@@ -188,6 +188,7 @@ public class DenialOfServiceXMLCheckSample {
   SAXReader sax_reader_new_instance() throws SAXException {
     SAXReader saxer = new SAXReader();
     saxer.setFeature("http://xml.org/sax/features/external-general-entities", false); // To make XxeProcessingCheck secured
+    saxer.setFeature("http://xml.org/sax/features/external-parameter-entities", false); // To make XxeProcessingCheck secured
 
     return saxer;
   }
@@ -195,6 +196,7 @@ public class DenialOfServiceXMLCheckSample {
   SAXReader sax_reader_unsecured() throws SAXException {
     SAXReader saxer = new SAXReader();
     saxer.setFeature("http://xml.org/sax/features/external-general-entities", false); // To make XxeProcessingCheck secured
+    saxer.setFeature("http://xml.org/sax/features/external-parameter-entities", false); // To make XxeProcessingCheck secured
 
     saxer.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, false); // Noncompliant {{Enable XML parsing limitations to prevent Denial of Service attacks.}}
     return saxer;
@@ -203,6 +205,7 @@ public class DenialOfServiceXMLCheckSample {
   void sax_reader_new_instance_used() throws SAXException, DocumentException {
     SAXReader saxer = new SAXReader();
     saxer.setFeature("http://xml.org/sax/features/external-general-entities", false); // To make XxeProcessingCheck secured
+    saxer.setFeature("http://xml.org/sax/features/external-parameter-entities", false); // To make XxeProcessingCheck secured
 
     org.dom4j.Document xmlResponse = saxer.read("something.xml");
   }
@@ -210,6 +213,7 @@ public class DenialOfServiceXMLCheckSample {
   void sax_reader_unsecured_used() throws SAXException, DocumentException {
     SAXReader saxer = new SAXReader();
     saxer.setFeature("http://xml.org/sax/features/external-general-entities", false); // To make XxeProcessingCheck secured
+    saxer.setFeature("http://xml.org/sax/features/external-parameter-entities", false); // To make XxeProcessingCheck secured
 
     saxer.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, false); // Noncompliant {{Enable XML parsing limitations to prevent Denial of Service attacks.}}
     org.dom4j.Document xmlResponse = saxer.read("something.xml");

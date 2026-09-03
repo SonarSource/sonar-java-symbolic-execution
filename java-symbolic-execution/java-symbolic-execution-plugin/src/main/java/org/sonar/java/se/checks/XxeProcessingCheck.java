@@ -184,7 +184,7 @@ public class XxeProcessingCheck extends SECheck {
       .put(CREATE_XML_READER,
         c -> (c.hasConstraint(AttributeDTD.SECURED) && c.hasConstraint(AttributeSchema.SECURED))
           || c.hasConstraint(FeatureDisallowDoctypeDecl.SECURED)
-          || c.hasConstraint(FeatureExternalGeneralEntities.SECURED)
+          || (c.hasConstraint(FeatureExternalGeneralEntities.SECURED) && c.hasConstraint(FeatureExternalParameterEntities.SECURED))
           || c.hasConstraint(XxeEntityResolver.CUSTOM_ENTITY_RESOLVER))
       .build();
 
@@ -207,7 +207,7 @@ public class XxeProcessingCheck extends SECheck {
           || c.hasConstraint(XxeEntityResolver.CUSTOM_ENTITY_RESOLVER))
       .put(SAX_READER_CONSTRUCTOR,
         c -> c.hasConstraint(FeatureDisallowDoctypeDecl.SECURED)
-          || c.hasConstraint(FeatureExternalGeneralEntities.SECURED)
+          || (c.hasConstraint(FeatureExternalGeneralEntities.SECURED) && c.hasConstraint(FeatureExternalParameterEntities.SECURED))
           || c.hasConstraint(XxeEntityResolver.CUSTOM_ENTITY_RESOLVER))
       .build();
 
