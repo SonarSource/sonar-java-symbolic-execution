@@ -35,6 +35,7 @@ import org.sonar.java.se.checks.XxeProperty.AttributeSchema;
 import org.sonar.java.se.checks.XxeProperty.AttributeStyleSheet;
 import org.sonar.java.se.checks.XxeProperty.FeatureDisallowDoctypeDecl;
 import org.sonar.java.se.checks.XxeProperty.FeatureExternalGeneralEntities;
+import org.sonar.java.se.checks.XxeProperty.FeatureExternalParameterEntities;
 import org.sonar.java.se.checks.XxeProperty.FeatureIsSupportingExternalEntities;
 import org.sonar.java.se.checks.XxeProperty.FeatureLoadExternalDtd;
 import org.sonar.java.se.checks.XxeProperty.FeatureSecureProcessing;
@@ -170,13 +171,16 @@ public class XxeProcessingCheck extends SECheck {
           || c.hasConstraint(XxeEntityResolver.CUSTOM_ENTITY_RESOLVER))
       .put(DOCUMENT_BUILDER_FACTORY_NEW_INSTANCE, XxeProcessingCheck::documentBuilderFactoryIsSecured)
       .put(SAX_PARSER_FACTORY_NEW_INSTANCE,
-        c -> (c.hasConstraint(AttributeDTD.SECURED) && c.hasConstraint(AttributeSchema.SECURED))
+        c -> c.hasConstraint(AttributeDTD.SECURED)
+          || c.hasConstraint(FeatureSecureProcessing.SECURED)
           || c.hasConstraint(FeatureDisallowDoctypeDecl.SECURED)
-          || c.hasConstraint(FeatureExternalGeneralEntities.SECURED))
+          || (c.hasConstraint(FeatureExternalGeneralEntities.SECURED) && c.hasConstraint(FeatureExternalParameterEntities.SECURED)))
       .put(SCHEMA_FACTORY_NEW_INSTANCE,
-        c -> c.hasConstraint(AttributeDTD.SECURED) && c.hasConstraint(AttributeSchema.SECURED))
+        c -> c.hasConstraint(AttributeDTD.SECURED)
+          || c.hasConstraint(FeatureSecureProcessing.SECURED))
       .put(TRANSFORMER_FACTORY_NEW_INSTANCE,
-        c -> c.hasConstraint(AttributeDTD.SECURED) && c.hasConstraint(AttributeStyleSheet.SECURED))
+        c -> (c.hasConstraint(AttributeDTD.SECURED) && c.hasConstraint(AttributeStyleSheet.SECURED))
+          || c.hasConstraint(FeatureSecureProcessing.SECURED))
       .put(CREATE_XML_READER,
         c -> (c.hasConstraint(AttributeDTD.SECURED) && c.hasConstraint(AttributeSchema.SECURED))
           || c.hasConstraint(FeatureDisallowDoctypeDecl.SECURED)
@@ -186,10 +190,11 @@ public class XxeProcessingCheck extends SECheck {
 
   private static boolean documentBuilderFactoryIsSecured(@Nullable ConstraintsByDomain c) {
     return c == null
-      || (c.hasConstraint(AttributeDTD.SECURED) && c.hasConstraint(AttributeSchema.SECURED))
+      || c.hasConstraint(AttributeDTD.SECURED)
+      || c.hasConstraint(FeatureSecureProcessing.SECURED)
       || c.hasConstraint(FeatureDisallowDoctypeDecl.SECURED)
       || c.hasConstraint(FeatureLoadExternalDtd.SECURED)
-      || c.hasConstraint(FeatureExternalGeneralEntities.SECURED)
+      || (c.hasConstraint(FeatureExternalGeneralEntities.SECURED) && c.hasConstraint(FeatureExternalParameterEntities.SECURED))
       || c.hasConstraint(XxeSetExpandEntity.DISABLE)
       || c.hasConstraint(XxeEntityResolver.CUSTOM_ENTITY_RESOLVER);
   }
@@ -211,7 +216,7 @@ public class XxeProcessingCheck extends SECheck {
       .names("setAttribute").addParametersMatcher(JAVA_LANG_STRING, JAVA_LANG_OBJECT).build(),
     MethodMatchers.create().ofSubTypes(XML_INPUT_FACTORY, SAX_PARSER, SCHEMA_FACTORY, VALIDATOR, XML_READER, SAX_BUILDER)
       .names("setProperty").addParametersMatcher(JAVA_LANG_STRING, JAVA_LANG_OBJECT).build(),
-    MethodMatchers.create().ofSubTypes(DOCUMENT_BUILDER_FACTORY, SAX_PARSER_FACTORY, TRANSFORMER_FACTORY, SCHEMA_FACTORY, XML_READER, SAX_BUILDER, SAX_READER)
+    MethodMatchers.create().ofSubTypes(DOCUMENT_BUILDER_FACTORY, SAX_PARSER_FACTORY, TRANSFORMER_FACTORY, SCHEMA_FACTORY, VALIDATOR, XML_READER, SAX_BUILDER, SAX_READER)
       .names("setFeature").addParametersMatcher(JAVA_LANG_STRING, BOOLEAN).build());
 
   private static final String DOCUMENT_BUILDER = "javax.xml.parsers.DocumentBuilder";
@@ -245,6 +250,7 @@ public class XxeProcessingCheck extends SECheck {
     FeatureIsSupportingExternalEntities.values(),
     FeatureDisallowDoctypeDecl.values(),
     FeatureExternalGeneralEntities.values(),
+    FeatureExternalParameterEntities.values(),
     FeatureLoadExternalDtd.values(),
     FeatureSecureProcessing.values(),
     FeatureXInclude.values(),
