@@ -28,9 +28,17 @@ class SAXReaderTest {
     return xmlReader;
   }
 
+  // external-general-entities alone is not enough, it must be combined with external-parameter-entities
   SAXReader securing_with_feature_2() throws SAXException {
+    SAXReader xmlReader = new SAXReader(); // Noncompliant
+    xmlReader.setFeature("http://xml.org/sax/features/external-general-entities", false);
+    return xmlReader;
+  }
+
+  SAXReader securing_with_feature_2_and_parameter_entities() throws SAXException {
     SAXReader xmlReader = new SAXReader();
     xmlReader.setFeature("http://xml.org/sax/features/external-general-entities", false);
+    xmlReader.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
     return xmlReader;
   }
 
