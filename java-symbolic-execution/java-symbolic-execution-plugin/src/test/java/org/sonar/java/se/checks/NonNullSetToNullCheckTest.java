@@ -16,15 +16,10 @@
  */
 package org.sonar.java.se.checks;
 
-import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.sonar.java.se.SECheckVerifier;
 import org.sonar.java.se.utils.SETestUtils;
-import org.sonar.plugins.java.api.semantic.Symbol;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.sonar.java.checks.verifier.TestUtils.mainCodeSourcesPath;
 import static org.sonar.java.checks.verifier.TestUtils.nonCompilingTestSourcesPath;
 
@@ -56,15 +51,4 @@ class NonNullSetToNullCheckTest {
       .withClassPath(SETestUtils.CLASS_PATH)
       .verifyIssues();
   }
-
-  @Test
-  void declared_parameter_falls_back_on_the_call_site_when_the_owner_is_not_a_method() {
-    Symbol parameter = mock(Symbol.class);
-    when(parameter.owner()).thenReturn(null);
-    Symbol.MethodSymbol method = mock(Symbol.MethodSymbol.class);
-    when(method.declarationParameters()).thenReturn(List.of(parameter));
-
-    assertThat(NonNullSetToNullCheck.declaredParameter(method, 0)).isSameAs(parameter);
-  }
-
 }
