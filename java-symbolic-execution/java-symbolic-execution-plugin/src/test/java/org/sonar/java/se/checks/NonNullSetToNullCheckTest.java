@@ -51,5 +51,4 @@ class NonNullSetToNullCheckTest {
       .withClassPath(SETestUtils.CLASS_PATH)
       .verifyIssues();
   }
-
 }
