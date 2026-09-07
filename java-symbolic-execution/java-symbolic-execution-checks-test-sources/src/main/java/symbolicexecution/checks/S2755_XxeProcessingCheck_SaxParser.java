@@ -42,15 +42,41 @@ class SAXParserTest {
     return factory;
   }
 
+  // external-general-entities alone is not enough, it must be combined with external-parameter-entities
   SAXParserFactory extrenal_general_property_set_to_false() throws SAXNotSupportedException, SAXNotRecognizedException, ParserConfigurationException {
-    SAXParserFactory factory = SAXParserFactory.newInstance();
+    SAXParserFactory factory = SAXParserFactory.newInstance(); // Noncompliant
     factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
     return factory;
   }
 
-  SAXParserFactory secure_processing_set_to_false() throws SAXNotSupportedException, SAXNotRecognizedException, ParserConfigurationException {
+  SAXParserFactory external_parameter_property_set_to_true() throws SAXNotSupportedException, SAXNotRecognizedException, ParserConfigurationException {
     SAXParserFactory factory = SAXParserFactory.newInstance(); // Noncompliant
-    factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true); // No effect
+    factory.setFeature("http://xml.org/sax/features/external-parameter-entities", true);
+    return factory;
+  }
+
+  SAXParserFactory external_parameter_property_set_to_false() throws SAXNotSupportedException, SAXNotRecognizedException, ParserConfigurationException {
+    SAXParserFactory factory = SAXParserFactory.newInstance(); // Noncompliant
+    factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+    return factory;
+  }
+
+  SAXParserFactory external_general_and_parameter_property_set_to_false() throws SAXNotSupportedException, SAXNotRecognizedException, ParserConfigurationException {
+    SAXParserFactory factory = SAXParserFactory.newInstance(); // Compliant
+    factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+    factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+    return factory;
+  }
+
+  SAXParserFactory secure_processing_set_to_true() throws SAXNotSupportedException, SAXNotRecognizedException, ParserConfigurationException {
+    SAXParserFactory factory = SAXParserFactory.newInstance(); // Compliant
+    factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+    return factory;
+  }
+
+  SAXParserFactory set_feature_secure_with_literal() throws SAXNotSupportedException, SAXNotRecognizedException, ParserConfigurationException {
+    SAXParserFactory factory = SAXParserFactory.newInstance(); // Compliant
+    factory.setFeature("http://javax.xml.XMLConstants/feature/secure-processing", true);
     return factory;
   }
 
@@ -75,10 +101,18 @@ class SAXParserTest {
     return factory;
   }
 
+  // ACCESS_EXTERNAL_DTD alone is enough to secure a SAXParser
   SAXParserFactory univeral_fix_only_dtd() throws SAXException, ParserConfigurationException {
-    SAXParserFactory factory = SAXParserFactory.newInstance(); // Noncompliant
+    SAXParserFactory factory = SAXParserFactory.newInstance(); // Compliant
     SAXParser parser = factory.newSAXParser();
     parser.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+    return factory;
+  }
+
+  SAXParserFactory univeral_fix_only_dtd_with_literal() throws SAXException, ParserConfigurationException {
+    SAXParserFactory factory = SAXParserFactory.newInstance(); // Compliant
+    SAXParser parser = factory.newSAXParser();
+    parser.setProperty("http://javax.xml.XMLConstants/property/accessExternalDTD", "");
     return factory;
   }
 
@@ -98,7 +132,7 @@ class SAXParserTest {
   }
 
   SAXParserFactory univeral_fix_not_enough_but_entities_disabled() throws SAXException, ParserConfigurationException {
-    SAXParserFactory factory = SAXParserFactory.newInstance();
+    SAXParserFactory factory = SAXParserFactory.newInstance(); // Noncompliant
     factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
     SAXParser parser = factory.newSAXParser();
     parser.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
@@ -155,6 +189,15 @@ class SAXParserTest {
     parser.parse(inputStream, handler, "a");
   }
 
+  // Factory already secured: the derived SAXParser needs no further securing of its own
+  void factory_secured_parser_used_without_extra_setting() throws ParserConfigurationException, SAXException, IOException {
+    DefaultHandler handler = new DefaultHandler();
+    SAXParserFactory factory = SAXParserFactory.newInstance(); // Compliant
+    factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+    SAXParser parser = factory.newSAXParser();
+    parser.parse("xxe.xml", handler);
+  }
+
   void xml_reader_from_sax_parser_used() throws ParserConfigurationException, SAXException, IOException {
     SAXParserFactory factory = SAXParserFactory.newInstance(); // Noncompliant
     SAXParser parser = factory.newSAXParser();
@@ -176,7 +219,7 @@ class SAXParserTest {
       parser.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
       parser.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
       parser.parse("xxe.xml", handler);
-    } catch(Exception e) {
+    } catch (Exception e) {
       // Do nothing
     }
   }

@@ -23,11 +23,29 @@ class TransformerFactoryTest {
     return factory;
   }
 
-  // setFeature has no effect to protect against XXE
+  // setFeature(FEATURE_SECURE_PROCESSING, true) is enough to secure a TransformerFactory
 
   TransformerFactory secure_processing_true() throws TransformerConfigurationException {
-    TransformerFactory factory = TransformerFactory.newInstance(); // Noncompliant
+    TransformerFactory factory = TransformerFactory.newInstance(); // Compliant
     factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+    return factory;
+  }
+
+  TransformerFactory secure_processing_true_sax() throws TransformerConfigurationException {
+    TransformerFactory factory = SAXTransformerFactory.newInstance(); // Compliant
+    factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+    return factory;
+  }
+
+  TransformerFactory secure_processing_true_with_literal() throws TransformerConfigurationException {
+    TransformerFactory factory = TransformerFactory.newInstance(); // Compliant
+    factory.setFeature("http://javax.xml.XMLConstants/feature/secure-processing", true);
+    return factory;
+  }
+
+  TransformerFactory secure_processing_true_with_literal_sax() throws TransformerConfigurationException {
+    TransformerFactory factory = SAXTransformerFactory.newInstance(); // Compliant
+    factory.setFeature("http://javax.xml.XMLConstants/feature/secure-processing", true);
     return factory;
   }
 

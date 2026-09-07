@@ -154,7 +154,7 @@ class XMLInputFactoryTest {
     return factory;
   }
 
-  // "universal fix": ACCESS_EXTERNAL_DTD and ACCESS_EXTERNAL_SCHEMA should be set to ""
+  // "universal fix": ACCESS_EXTERNAL_DTD and ACCESS_EXTERNAL_SCHEMA can be set to "" (ACCESS_EXTERNAL_DTD alone is enough)
   XMLInputFactory setProperty_dtd_schema(Object value) {
     XMLInputFactory factory = XMLInputFactory.newInstance();
     factory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
@@ -176,8 +176,9 @@ class XMLInputFactoryTest {
     return factory;
   }
 
+  // ACCESS_EXTERNAL_DTD alone is enough to secure an XMLInputFactory
   XMLInputFactory setProperty_dtd_only(Object value) {
-    XMLInputFactory factory = XMLInputFactory.newInstance(); // Noncompliant
+    XMLInputFactory factory = XMLInputFactory.newInstance(); // Compliant
     factory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
     return factory;
   }
@@ -189,7 +190,7 @@ class XMLInputFactoryTest {
   }
 
   XMLInputFactory setattribute_dtd_and_other(Object value) {
-    XMLInputFactory factory = XMLInputFactory.newInstance(); // Noncompliant
+    XMLInputFactory factory = XMLInputFactory.newInstance(); // Compliant
     factory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
     factory.setProperty(XMLConstants.DEFAULT_NS_PREFIX, "");
     return factory;
@@ -205,14 +206,14 @@ class XMLInputFactoryTest {
   XMLInputFactory setProperty_dtd_schema_non_empty_2(Object value) {
     XMLInputFactory myFactory = XMLInputFactory.newInstance(); // Noncompliant [[flows=dtd21]]
     myFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "all");  // flow@dtd21 [[sc=5;ec=67]] {{Implies 'myFactory' is unsecured. Set to "" (empty string) to protect against XXE.}}
-    myFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "all"); // flow@dtd21 [[sc=5;ec=70]] {{Implies 'myFactory' is unsecured. Set to "" (empty string) to protect against XXE.}}
+    myFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "all");
     return myFactory;
   }
 
   XMLInputFactory setProperty_dtd_schema_unknown(String value) {
     XMLInputFactory factory = XMLInputFactory.newInstance(); // Noncompliant [[flows=unknown1]]
     factory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, value); // flow@unknown1 [[sc=5;ec=65]] {{Implies 'factory' is unsecured. Set to "" (empty string) to protect against XXE.}}
-    factory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, value); // flow@unknown1 [[sc=5;ec=68]] {{Implies 'factory' is unsecured. Set to "" (empty string) to protect against XXE.}}
+    factory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, value);
     return factory;
   }
 
@@ -220,10 +221,9 @@ class XMLInputFactoryTest {
     XMLInputFactory factory = XMLInputFactory.newInstance(); // Noncompliant [[flows=flow1,flow2]]
     if (b) {
       factory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "all"); // flow@flow1 [[sc=7;ec=67]] {{Implies 'factory' is unsecured. Set to "" (empty string) to protect against XXE.}}
-      factory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "all"); // flow@flow1 [[sc=7;ec=70]] {{Implies 'factory' is unsecured. Set to "" (empty string) to protect against XXE.}}
       XMLEventReader eventReader = factory.createXMLEventReader(reader);
     } else {
-      factory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "all"); // flow@flow2 [[sc=7;ec=70]] {{Implies 'factory' is unsecured. Set to "" (empty string) to protect against XXE.}}
+      factory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "all"); // flow@flow2 [[sc=7;ec=67]] {{Implies 'factory' is unsecured. Set to "" (empty string) to protect against XXE.}}
       XMLEventReader eventReader = factory.createXMLEventReader(reader);
     }
   }

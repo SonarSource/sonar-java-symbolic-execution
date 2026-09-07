@@ -40,7 +40,7 @@ class SAXBuilderTest {
     return builder;
   }
 
-  // "universal fix": ACCESS_EXTERNAL_DTD and ACCESS_EXTERNAL_SCHEMA should be set to ""
+  // "universal fix": ACCESS_EXTERNAL_DTD and ACCESS_EXTERNAL_SCHEMA can be set to "" (ACCESS_EXTERNAL_DTD alone is enough)
   SAXBuilder univeral_fix() throws SAXException, ParserConfigurationException {
     SAXBuilder builder = new SAXBuilder(); // Compliant
     builder.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
@@ -49,7 +49,7 @@ class SAXBuilderTest {
   }
 
   SAXBuilder univeral_fix_only_dtd() throws SAXException, ParserConfigurationException {
-    SAXBuilder builder = new SAXBuilder(); // Noncompliant
+    SAXBuilder builder = new SAXBuilder(); // Compliant
     builder.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
     return builder;
   }

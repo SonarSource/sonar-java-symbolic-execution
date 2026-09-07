@@ -28,7 +28,40 @@ class SchemaFactory_Validator {
     return validator;
   }
 
+  // Securing at schema factory level with the secure-processing feature
+  Validator withSecureProcessingFeature() throws SAXException  {
+    SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI); // Compliant
+    schemaFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+    Schema schema = schemaFactory.newSchema();
+    Validator validator = schema.newValidator();
+    return validator;
+  }
+
+  Validator withSecureProcessingFeatureLiteral() throws SAXException  {
+    SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI); // Compliant
+    schemaFactory.setFeature("http://javax.xml.XMLConstants/feature/secure-processing", true);
+    Schema schema = schemaFactory.newSchema();
+    Validator validator = schema.newValidator();
+    return validator;
+  }
+
   // Securing at validator level
+  Validator withSecureProcessingFeature_validator() throws SAXException  {
+    SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI); // Compliant
+    Schema schema = schemaFactory.newSchema();
+    Validator validator = schema.newValidator();
+    validator.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+    return validator;
+  }
+
+  Validator withSecureProcessingFeatureLiteral_validator() throws SAXException  {
+    SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI); // Compliant
+    Schema schema = schemaFactory.newSchema();
+    Validator validator = schema.newValidator();
+    validator.setFeature("http://javax.xml.XMLConstants/feature/secure-processing", true);
+    return validator;
+  }
+
   Validator withAccessExternalDtdAndExternalSchema_validator() throws SAXException  {
     SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI); // Compliant
     Schema schema = schemaFactory.newSchema();
@@ -47,8 +80,9 @@ class SchemaFactory_Validator {
     return validator;
   }
 
+  // ACCESS_EXTERNAL_DTD alone is enough to secure a Validator
   Validator withAccessExternalDtd_validator() throws SAXException {
-    SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI); // Noncompliant
+    SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI); // Compliant
     Schema schema = schemaFactory.newSchema();
     Validator validator = schema.newValidator();
     validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
@@ -99,8 +133,9 @@ class SchemaFactory_Validator {
     return validator;
   }
 
+  // ACCESS_EXTERNAL_DTD alone is enough to secure a SchemaFactory
   Validator withAccessExternalDtd() throws SAXException  {
-    SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI); // Noncompliant
+    SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI); // Compliant
     schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
 
     Schema schema = schemaFactory.newSchema();
@@ -117,8 +152,9 @@ class SchemaFactory_Validator {
     return validator;
   }
 
+  // ACCESS_EXTERNAL_DTD alone secures regardless of the ACCESS_EXTERNAL_SCHEMA value
   Validator withAccessNotEmptyString() throws SAXException  {
-    SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI); // Noncompliant
+    SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI); // Compliant
     schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
     schemaFactory.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "all");
 
@@ -135,6 +171,16 @@ class SchemaFactory_Validator {
     Schema schema = schemaFactory.newSchema();
     Validator validator = schema.newValidator();
     validator.setProperty(XMLConstants.ACCESS_EXTERNAL_SCHEMA, "");
+    return validator;
+  }
+
+  // SchemaFactory is already secured: the Validator is not re-checked, an "insecure-looking" setting on it has no effect
+  Validator schemaFactoryAlreadySecured_validatorSetsUnsecureValue() throws SAXException  {
+    SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI); // Compliant
+    schemaFactory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+    Schema schema = schemaFactory.newSchema();
+    Validator validator = schema.newValidator();
+    validator.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "all");
     return validator;
   }
 
