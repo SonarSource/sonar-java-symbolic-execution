@@ -49,6 +49,12 @@ class SAXParserTest {
     return factory;
   }
 
+  SAXParserFactory external_parameter_property_set_to_true() throws SAXNotSupportedException, SAXNotRecognizedException, ParserConfigurationException {
+    SAXParserFactory factory = SAXParserFactory.newInstance(); // Noncompliant
+    factory.setFeature("http://xml.org/sax/features/external-parameter-entities", true);
+    return factory;
+  }
+
   SAXParserFactory external_parameter_property_set_to_false() throws SAXNotSupportedException, SAXNotRecognizedException, ParserConfigurationException {
     SAXParserFactory factory = SAXParserFactory.newInstance(); // Noncompliant
     factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
@@ -100,6 +106,13 @@ class SAXParserTest {
     SAXParserFactory factory = SAXParserFactory.newInstance(); // Compliant
     SAXParser parser = factory.newSAXParser();
     parser.setProperty(XMLConstants.ACCESS_EXTERNAL_DTD, "");
+    return factory;
+  }
+
+  SAXParserFactory univeral_fix_only_dtd_with_literal() throws SAXException, ParserConfigurationException {
+    SAXParserFactory factory = SAXParserFactory.newInstance(); // Compliant
+    SAXParser parser = factory.newSAXParser();
+    parser.setProperty("http://javax.xml.XMLConstants/property/accessExternalDTD", "");
     return factory;
   }
 
@@ -174,6 +187,15 @@ class SAXParserTest {
     SAXParser parser = factory.newSAXParser();
     parser.parse("xxe.xml", handler);
     parser.parse(inputStream, handler, "a");
+  }
+
+  // Factory already secured: the derived SAXParser needs no further securing of its own
+  void factory_secured_parser_used_without_extra_setting() throws ParserConfigurationException, SAXException, IOException {
+    DefaultHandler handler = new DefaultHandler();
+    SAXParserFactory factory = SAXParserFactory.newInstance(); // Compliant
+    factory.setFeature(XMLConstants.FEATURE_SECURE_PROCESSING, true);
+    SAXParser parser = factory.newSAXParser();
+    parser.parse("xxe.xml", handler);
   }
 
   void xml_reader_from_sax_parser_used() throws ParserConfigurationException, SAXException, IOException {

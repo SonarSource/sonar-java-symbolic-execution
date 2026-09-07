@@ -79,6 +79,12 @@ class DocumentBuilderFactoryTest {
     return factory;
   }
 
+  DocumentBuilderFactory set_external_parameter_true() throws ParserConfigurationException {
+    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance(); // Noncompliant
+    factory.setFeature("http://xml.org/sax/features/external-parameter-entities", true);
+    return factory;
+  }
+
   DocumentBuilderFactory set_external_parameter_false() throws ParserConfigurationException {
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance(); // Noncompliant
     factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
