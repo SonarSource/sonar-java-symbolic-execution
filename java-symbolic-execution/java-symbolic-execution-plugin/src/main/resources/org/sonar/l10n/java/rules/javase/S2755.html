@@ -58,7 +58,15 @@ public void decode() {
     factory.setProperty(XMLInputFactory.SUPPORT_DTD, false);
 }
 </pre>
-<p>Other combinations of settings are secure, but in general, it is recommendable to use the approaches shown here, as they are the most clear.</p>
+<p>Other combinations of settings are secure, but in general, it is recommended to use <code>XMLConstants.FEATURE_SECURE_PROCESSING</code> (or
+<code>SUPPORT_DTD</code> for <code>XMLInputFactory</code>), as these are the most clear.</p>
+<p>If DTDs must still be accepted, ruling out <code>disallow-doctype-decl</code>, external entity retrieval can still be prevented for
+<code>DocumentBuilderFactory</code> and <code>SAXParserFactory</code> by setting both <code>external-general-entities</code> and
+<code>external-parameter-entities</code> to <code>false</code> (one alone is not enough). This does not stop entity-expansion DoS, however.</p>
+<pre>
+factory.setFeature("http://xml.org/sax/features/external-general-entities", false);
+factory.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+</pre>
 <h3>How does this work?</h3>
 <h4>Disable external entities</h4>
 <p>The most effective approach to prevent XXE vulnerabilities is to disable external entity processing entirely, unless it is explicitly required for
