@@ -313,13 +313,14 @@ public class NonNullSetToNullCheck extends SECheck {
    * the substituted signature of {@code orElse} be {@code @NonNull String orElse(@NonNull String)}. Such an annotation is not part
    * of the contract of the called method, so nullability is read from the parameters of its declaration instead.
    */
-  // VisibleForTesting
-  static Symbol declaredParameter(Symbol.MethodSymbol symbol, int index) {
+  private static Symbol declaredParameter(Symbol.MethodSymbol symbol, int index) {
     Symbol parameter = symbol.declarationParameters().get(index);
     // The owner of a parameter is the declaration of the method, whose parameters carry the declared, non-substituted types.
+    // Ideally, the nullability api form sonar-java takes care of it, but this is buggy SONARJAVA-5918.
     if (parameter.owner() instanceof Symbol.MethodSymbol declaration) {
       return declaration.declarationParameters().get(index);
     }
+    // This is a defensive fallback: the owner of a parameter should always be a method symbol, but if it is not, we return the parameter itself.
     return parameter;
   }
 
