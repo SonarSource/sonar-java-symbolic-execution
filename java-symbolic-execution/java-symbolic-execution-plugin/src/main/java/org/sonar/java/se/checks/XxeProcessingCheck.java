@@ -262,7 +262,6 @@ public class XxeProcessingCheck extends SECheck {
 
   private static final List<Class<? extends Constraint>> FLOW_CONSTRAINT_DOMAIN = Arrays.asList(
     AttributeDTD.class,
-    AttributeSchema.class,
     AttributeStyleSheet.class);
 
   @Override
@@ -466,9 +465,8 @@ public class XxeProcessingCheck extends SECheck {
         "Disable access to external entities in XML parsing.",
         FlowComputation.flowWithoutExceptions(context.getNode(), xxeSV,
           c -> c == AttributeDTD.UNSECURED
-            || c == AttributeSchema.UNSECURED
-            || c == AttributeStyleSheet.UNSECURED
-          , FLOW_CONSTRAINT_DOMAIN, FlowComputation.MAX_REPORTED_FLOWS));
+            || c == AttributeStyleSheet.UNSECURED,
+          FLOW_CONSTRAINT_DOMAIN, FlowComputation.MAX_REPORTED_FLOWS));
     }
   }
 
