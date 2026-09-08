@@ -317,7 +317,9 @@ public class NonNullSetToNullCheck extends SECheck {
     Symbol parameter = symbol.declarationParameters().get(index);
     // The owner of a parameter is the declaration of the method, whose parameters carry the declared, non-substituted types.
     // Ideally, the nullability api form sonar-java takes care of it, but this is buggy SONARJAVA-5918.
-    if (parameter.owner() instanceof Symbol.MethodSymbol declaration) {
+    if (parameter.owner() instanceof Symbol.MethodSymbol declaration
+        // In some rare cases where the symbols are not fully resolved, there may be a mismatch
+        && index < declaration.declarationParameters().size()) {
       return declaration.declarationParameters().get(index);
     }
     // This is a defensive fallback: the owner of a parameter should always be a method symbol, but if it is not, we return the parameter itself.
