@@ -356,7 +356,7 @@ public class FlowComputation {
       if (exception instanceof SymbolicValue.ExceptionalSymbolicValue exceptionalSymbolicValue) {
         if (isMethodInvocationNode(edge.parent)) {
           Type type = exceptionalSymbolicValue.exceptionType();
-          String msg = String.format("%s is thrown.", exceptionName(type));
+          String msg = exceptionName(type) + " is thrown.";
           return Optional.of(location(edge.parent, msg));
         } else if (isDivByZeroExceptionalYield(edge)) {
           return Optional.of(location(edge.parent, "Division by zero."));
@@ -377,7 +377,7 @@ public class FlowComputation {
         SymbolicValue.CaughtExceptionSymbolicValue caughtSv = ((SymbolicValue.CaughtExceptionSymbolicValue) edge.child.programState.getValue(catchVariable.symbol()));
         Objects.requireNonNull(caughtSv, "Caught exception not found in program state");
         Type exceptionType = caughtSv.exception().exceptionType();
-        return Optional.of(location(edge.parent, String.format("%s is caught.", exceptionName(exceptionType))));
+        return Optional.of(location(edge.parent, exceptionName(exceptionType) + " is caught."));
       }
       return Optional.empty();
     }

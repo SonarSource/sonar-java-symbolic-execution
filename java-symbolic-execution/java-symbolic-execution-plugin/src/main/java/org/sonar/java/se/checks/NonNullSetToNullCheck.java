@@ -348,7 +348,7 @@ public class NonNullSetToNullCheck extends SECheck {
       name += " via meta-annotation";
     }
     String level = levelToString(nullabilityData.level());
-    return Optional.of(String.format("@%s%s", name, level));
+    return Optional.of("@" + name + level);
   }
 
   private static String getAnnotationName(SymbolMetadata.AnnotationInstance annotation) {
@@ -371,7 +371,7 @@ public class NonNullSetToNullCheck extends SECheck {
   private static String levelToString(SymbolMetadata.NullabilityLevel level) {
     switch (level) {
       case PACKAGE, CLASS:
-        return String.format(" at %s level", level.toString().toLowerCase(Locale.ROOT));
+        return " at " + level.toString().toLowerCase(Locale.ROOT) + " level";
       case METHOD, VARIABLE:
       default:
         return "";

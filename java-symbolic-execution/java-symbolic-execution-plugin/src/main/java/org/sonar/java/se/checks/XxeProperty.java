@@ -16,7 +16,6 @@
  */
 package org.sonar.java.se.checks;
 
-import java.util.function.BiPredicate;
 import javax.annotation.Nullable;
 import org.sonar.java.se.constraint.Constraint;
 import org.sonar.java.se.symbolicvalues.SymbolicValue;
@@ -32,27 +31,27 @@ public interface XxeProperty {
   XxePropertyHolder properties();
 
   default boolean isNamed(String name) {
-    return properties().propertyName.equals(name);
+    return properties().propertyName().equals(name);
   }
 
   default Constraint securedConstraint() {
-    return properties().secured;
+    return properties().secured();
   }
 
   default Constraint namedConstraint() {
-    return properties().named;
+    return properties().named();
   }
 
   default boolean isSecuring(@Nullable SymbolicValue sv1, ExpressionTree arg1) {
-    return properties().securing.test(sv1, arg1);
+    return properties().securing().test(sv1, arg1);
   }
 
   default Constraint unsecuredConstraint() {
-    return properties().unsecured;
+    return properties().unsecured();
   }
 
   default boolean isUnsecuring(@Nullable SymbolicValue sv1, ExpressionTree arg1) {
-    return properties().unsecuring.test(sv1, arg1);
+    return properties().unsecuring().test(sv1, arg1);
   }
 
   static boolean isSetToEmptyString(@Nullable SymbolicValue sv1, ExpressionTree arg1) {
@@ -71,29 +70,6 @@ public interface XxeProperty {
   static boolean isSetToTrue(@Nullable SymbolicValue sv1, ExpressionTree arg1) {
     return sv1 == SymbolicValue.TRUE_LITERAL
       || arg1.asConstant(String.class).filter("true"::equalsIgnoreCase).isPresent();
-  }
-
-  class XxePropertyHolder {
-    private final String propertyName;
-
-    private final BiPredicate<SymbolicValue, ExpressionTree> securing;
-    private final Constraint secured;
-
-    private final BiPredicate<SymbolicValue, ExpressionTree> unsecuring;
-    private final Constraint unsecured;
-
-    private final Constraint named;
-
-    public XxePropertyHolder(String propertyName, Constraint named,
-      BiPredicate<SymbolicValue, ExpressionTree> securing, Constraint secured,
-      BiPredicate<SymbolicValue, ExpressionTree> unsecuring, Constraint unsecured) {
-      this.propertyName = propertyName;
-      this.named = named;
-      this.securing = securing;
-      this.secured = secured;
-      this.unsecuring = unsecuring;
-      this.unsecured = unsecured;
-    }
   }
 
   enum AttributeDTD implements Constraint, XxeProperty {
