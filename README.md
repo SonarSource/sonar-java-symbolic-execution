@@ -1,14 +1,32 @@
-Sonar Java symbolic execution plugin  [![Build Status](https://github.com/SonarSource/sonar-java-symbolic-execution/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/SonarSource/sonar-java-symbolic-execution/actions/workflows/build.yml) [![Quality Gate](https://next.sonarqube.com/sonarqube/api/project_badges/measure?project=org.sonarsource.java%3Asonar-java-symbolic-execution&metric=alert_status)](https://next.sonarqube.com/sonarqube/dashboard?id=org.sonarsource.java%3Asonar-java-symbolic-execution) [![Coverage](https://next.sonarqube.com/sonarqube/api/project_badges/measure?project=org.sonarsource.java%3Asonar-java-symbolic-execution&metric=coverage)](https://next.sonarqube.com/sonarqube/component_measures/domain/Coverage?id=org.sonarsource.java%3Asonar-java-symbolic-execution)
-==========
+<!-- Sonar Marketing hosts these approved brand assets on its Kentico Kontent CDN (assets-eu-01.kc-usercontent.com). Shared URLs are intentional; consult Marketing before replacing them. -->
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="https://assets-eu-01.kc-usercontent.com/ef593040-b591-0198-9506-ed88b30bc023/a23fc7ba-23f0-489a-829d-ed88c0748521/Sonar_Logo_Dark%20Backgrounds.svg">
+    <img src="https://assets-eu-01.kc-usercontent.com/ef593040-b591-0198-9506-ed88b30bc023/82c13eba-d95c-4bb8-8007-7ce77c14e043/Sonar_Logo_Light%20Backgrounds.svg" alt="Sonar logo" width="400">
+  </picture>
+</p>
 
-This SonarSource project is a plugin designed for advanced bug detection in Java projects, helping developers write [Clean Code](https://www.sonarsource.com/solutions/clean-code/).
+[![Build Status](https://github.com/SonarSource/sonar-java-symbolic-execution/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/SonarSource/sonar-java-symbolic-execution/actions/workflows/build.yml)
+[![Quality Gate](https://next.sonarqube.com/sonarqube/api/project_badges/measure?project=org.sonarsource.java%3Asonar-java-symbolic-execution&metric=alert_status)](https://next.sonarqube.com/sonarqube/dashboard?id=org.sonarsource.java%3Asonar-java-symbolic-execution)
+[![Coverage](https://next.sonarqube.com/sonarqube/api/project_badges/measure?project=org.sonarsource.java%3Asonar-java-symbolic-execution&metric=coverage)](https://next.sonarqube.com/sonarqube/component_measures/domain/Coverage?id=org.sonarsource.java%3Asonar-java-symbolic-execution)
+
+<!-- sonar-marketing:start -->
+<!-- Marketing maintains this section. For wording changes, consult the relevant Product Marketing Manager (PMM). Repository maintainers review accuracy and merge changes. -->
+
+# Sonar Java symbolic execution plugin
+
+This repository contains the Java symbolic execution plugin for advanced bug detection. Symbolic execution follows possible execution paths to identify problems in Java code; the development and test instructions below are for contributors working on the plugin.
+
+To learn more about Sonar products, visit the [Sonar website](https://www.sonarsource.com/knowledge/languages/java/).
+
+<!-- sonar-marketing:end -->
+
+This plugin uses the [Sonar Source-Available License v1.0](LICENSE.txt); see the license for its terms.
 
 Useful links
 ------------
 
 * [Java Analyzer](https://github.com/SonarSource/sonar-java)
-* [Issue tracking](https://jira.sonarsource.com/browse/SONARSE/)
-* [Available rules](https://rules.sonarsource.com/java/tag/symbolic-execution/)
 * [Sonar Community Forum](https://community.sonarsource.com/)
 
 Have questions or feedback?
@@ -91,7 +109,7 @@ For example using the command:
 
 ### License
 
-Copyright 2012-2025 SonarSource.
+Copyright 2012-2026 SonarSource.
 
 SonarQube analyzers released after November 29, 2024, including patch fixes for prior versions, are published under the [Sonar Source-Available License Version 1 (SSALv1)](LICENSE.txt).
 
