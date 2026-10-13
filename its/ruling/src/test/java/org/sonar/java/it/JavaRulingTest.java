@@ -94,7 +94,7 @@ public class JavaRulingTest {
   public static void prepare() throws Exception {
     Set<String> result = new HashSet<>();
     List<String> extraNonDefaultRules = List.of("S3546", "S6374");
-    ProfileGenerator.generate(ORCHESTRATOR, "Sonar Way", ImmutableMap.of(), new HashSet<>(), SUBSET_OF_ENABLED_RULES, result,
+    ProfileGenerator.generate(ORCHESTRATOR, "Sonar way comprehensive", ImmutableMap.of(), new HashSet<>(), SUBSET_OF_ENABLED_RULES, result,
       extraNonDefaultRules);
     assertThat(result).hasSize(19); // ALL symbolic-execution rules
 
