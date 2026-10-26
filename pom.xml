@@ -78,14 +78,14 @@
 
     <sonar.organization>sonarsource</sonar.organization>
     <!-- minimum supported sonar-java-plugin version used in the packaging / requirePlugins and the CI -->
-    <sonar.java.version>8.44.0.48651</sonar.java.version>
+    <sonar.java.version>8.45.0.59462</sonar.java.version>
     <sonar.version>26.10.0.133078</sonar.version>
     <!--
       sonar-plugin-api should be compatible with SQ peach. You can see which version SQ is using
       at SonarSource/sonarqube/gradle.properties
      -->
     <sonar.plugin.api.version>13.11.0.4459</sonar.plugin.api.version>
-    <sonar.scanner.version>13.15.0.6376</sonar.scanner.version>
+    <sonar.scanner.version>13.16.0.6705</sonar.scanner.version>
     <analyzer.commons.version>2.33.0.5369</analyzer.commons.version>
     <orchestrator.version>6.4.4.4797</orchestrator.version>
     <sslr.version>1.26.0.4194</sslr.version>
