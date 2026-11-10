@@ -2,6 +2,10 @@ name: Slack Notifications
 on:
   check_suite:
     types: [completed]
+  # TEMPORARY before-merge replay: remove this push trigger and the push-only values below before merging.
+  push:
+    branches: [az/slack-notification-fix]
+    paths: [.github/workflows/slack_notify.yml]
 
 permissions:
   contents: read
@@ -11,11 +15,14 @@ permissions:
 jobs:
   slack-notifications:
     if: >-
-      github.event.check_suite.conclusion == 'failure' &&
+      github.event_name == 'push' ||
       (
-        contains(fromJSON('["main", "master"]'), github.event.check_suite.head_branch) ||
-        startsWith(github.event.check_suite.head_branch, 'dogfood-') ||
-        startsWith(github.event.check_suite.head_branch, 'branch-')
+        github.event.check_suite.conclusion == 'failure' &&
+        (
+          contains(fromJSON('["main", "master"]'), github.event.check_suite.head_branch) ||
+          startsWith(github.event.check_suite.head_branch, 'dogfood-') ||
+          startsWith(github.event.check_suite.head_branch, 'branch-')
+        )
       )
     runs-on: sonar-xs
     env:
@@ -32,9 +39,11 @@ jobs:
         id: failed
         env:
           GH_TOKEN: ${{ github.token }}
-          CHECK_SUITE_ID: ${{ github.event.check_suite.id }}
-          HEAD_BRANCH: ${{ github.event.check_suite.head_branch }}
-          HEAD_SHA: ${{ github.event.check_suite.head_sha }}
+          # Replay a verified historical failed external SonarQube Next suite on push only.
+          CHECK_SUITE_ID: ${{ github.event_name == 'push' && '105430719718' || github.event.check_suite.id }}
+          HEAD_BRANCH: ${{ github.event_name == 'push' && 'master' || github.event.check_suite.head_branch }}
+          HEAD_SHA: ${{ github.event_name == 'push' && 'cafa33eab2b3142ce4fcf05271ef69475990e9ee' || github.event.check_suite.head_sha }}
+          REPLAY_PREFIX: ${{ github.event_name == 'push' && '[TEST REPLAY] ' || '' }}
         run: |
           set -euo pipefail
           gh api --paginate \
@@ -52,8 +61,9 @@ jobs:
             --arg branch "$HEAD_BRANCH" \
             --arg sha "$HEAD_SHA" \
             --arg actor "$GITHUB_ACTOR" \
+            --arg prefix "$REPLAY_PREFIX" \
             --slurpfile runs "$RUNNER_TEMP/failed.json" \
-            '{channel: $channel, text: (["Failed checks in *\($repo)*", "Branch: *\($branch)*", "Commit: `\($sha)`", "Actor: `\($actor)`", ""] + [$runs[0][] | "• *\(.app)* — <\(.url)|\(.name)>"] | join("\n"))}' \
+            '{channel: $channel, text: (["\($prefix)Failed checks in *\($repo)*", "Branch: *\($branch)*", "Commit: `\($sha)`", "Actor: `\($actor)`", ""] + [$runs[0][] | "• *\(.app)* — <\(.url)|\(.name)>"] | join("\n"))}' \
             > "$RUNNER_TEMP/payload.json"
           echo "payload=$RUNNER_TEMP/payload.json" >> "$GITHUB_OUTPUT"
 
