@@ -17,7 +17,7 @@ jobs:
         startsWith(github.event.check_suite.head_branch, 'dogfood-') ||
         startsWith(github.event.check_suite.head_branch, 'branch-')
       )
-    runs-on: sonar-xs-public
+    runs-on: sonar-xs
     env:
       SLACK_CHANNEL: squad-jvm-notifs
     steps:
@@ -39,7 +39,7 @@ jobs:
           set -euo pipefail
           gh api --paginate \
             "repos/${GITHUB_REPOSITORY}/check-suites/${CHECK_SUITE_ID}/check-runs" \
-            --jq '.check_runs[] | select(.conclusion == "failure") | {app: .app.name, name: .name, url: .details_url}' \
+            --jq '.check_runs[] | select(.conclusion == "failure") | {app: .app.name, name: .name, url: (.details_url // .html_url)}' \
             | jq -s '.' > "$RUNNER_TEMP/failed.json"
           count="$(jq 'length' "$RUNNER_TEMP/failed.json")"
           echo "count=${count}" >> "$GITHUB_OUTPUT"
