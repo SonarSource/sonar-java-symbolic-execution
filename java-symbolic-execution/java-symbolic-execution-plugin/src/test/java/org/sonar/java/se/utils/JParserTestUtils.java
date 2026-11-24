@@ -22,9 +22,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.sonar.api.batch.fs.InputFile;
+import org.sonar.api.batch.fs.internal.TestInputFileBuilder;
 import org.sonar.java.model.JParser;
-import org.sonar.java.model.JParserConfig;
-import org.sonar.plugins.java.api.JavaVersion;
 import org.sonar.plugins.java.api.tree.CompilationUnitTree;
 
 public class JParserTestUtils {
@@ -66,8 +66,12 @@ public class JParserTestUtils {
   }
 
   public static CompilationUnitTree parse(String unitName, String source, List<File> classpath) {
-    JavaVersion version = JParserConfig.MAXIMUM_SUPPORTED_JAVA_VERSION;
-    return JParser.parse(JParserConfig.Mode.FILE_BY_FILE.create(version, classpath).astParser(), version.toString(), unitName, source);
+    InputFile inputFile = new TestInputFileBuilder("", unitName)
+      .setContents(source)
+      .setCharset(StandardCharsets.UTF_8)
+      .setLanguage("java")
+      .build();
+    return JParser.parse(inputFile, classpath, JParser.MAXIMUM_SUPPORTED_JAVA_VERSION);
   }
 
 }
