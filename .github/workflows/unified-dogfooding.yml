@@ -13,7 +13,7 @@ jobs:
       contents: read
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
-      - uses: jdx/mise-action@5228313ee0372e111a38da051671ca30fc5a96db # v3.6.3
+      - uses: SonarSource/mise-action-wrapper@v2
         with:
           version: 2026.10.10
       - uses: SonarSource/ci-github-actions/build-maven@v1
