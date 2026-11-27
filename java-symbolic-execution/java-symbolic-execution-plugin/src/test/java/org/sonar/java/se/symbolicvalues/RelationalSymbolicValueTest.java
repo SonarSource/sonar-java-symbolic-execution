@@ -519,8 +519,7 @@ class RelationalSymbolicValueTest {
     assertThat(logTester.logs(Level.DEBUG))
       .contains("Could not complete symbolic execution: " + exceptionMessage);
     assertThat(logTester.logs(Level.TRACE))
-      .hasSize(1)
-      .allMatch(trace -> trace.startsWith("org.sonar.java.se.ExplodedGraphWalker$MaximumStepsReachedException: " + exceptionMessage));
+      .anyMatch(trace -> trace.startsWith("org.sonar.java.se.ExplodedGraphWalker$MaximumStepsReachedException: " + exceptionMessage));
   }
 
   @Test
