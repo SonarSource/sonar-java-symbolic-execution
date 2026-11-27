@@ -30,7 +30,7 @@ jobs:
       deployed: ${{ steps.build-step.outputs.deployed }}
     steps:
       - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
-      - uses: SonarSource/mise-action-wrapper@65aa289d3f408f4999d13a52a14cde4f54b48442 # 2.0.0
+      - uses: SonarSource/mise-action-wrapper@v2
         with:
           version: 2026.10.10
       - uses: SonarSource/ci-github-actions/build-maven@v1
@@ -62,7 +62,7 @@ jobs:
         uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5.1.0
         with:
           submodules: recursive
-      - uses: SonarSource/mise-action-wrapper@65aa289d3f408f4999d13a52a14cde4f54b48442 # 2.0.0
+      - uses: SonarSource/mise-action-wrapper@v2
         with:
           version: 2026.10.10
       - name: Get GitHub Token for QA Licenses
